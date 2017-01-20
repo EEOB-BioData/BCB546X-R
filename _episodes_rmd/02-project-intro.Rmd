@@ -247,3 +247,20 @@ between files from different commits.
 > > {: . shell}
 > {: .solution}
 {: .challenge}
+
+Now we want to push the contents of this commit to GitHub, so it is also backed-up off site and available to collaborators.
+
+> ## Challenge 4
+>
+> 1. In GitHub, create a New repository, called here `BCB546-R-Exercise`. 
+> Don't initialize it with a README file because we'll be importing an existing repository..
+> 2. In RStudio, again click Tools -> Shell … . Enter:
+> ```{r}
+> $ git remote add origin git@github.com/[path to your directory]
+> $ git config remote.origin.url git@github.com:[path to your directory]
+> $ git pull -u origin master
+> $ git push -u origin master
+```
+> {: . shell}
+{: .challenge}
+
