@@ -30,7 +30,7 @@ keypoints:
 ## Motivation
 
 Science is a multi-step process: once you've designed an experiment and collected
-data, the real fun begins! This lesson will teach you how to start this process using
+data, the real fun begins (But remember R.A.Fisher)! This lesson will teach you how to start this process using
 R and RStudio. We will begin with raw data, perform exploratory analyses, and learn
 how to plot results graphically. This example starts with a dataset from
 [gapminder.org](https://www.gapminder.org) containing population information for many
@@ -50,7 +50,7 @@ Please ensure you have the latest version of R and RStudio installed on your mac
 
 Welcome to the R portion of the Software Carpentry workshop.
 
-Throughout this lesson, we're going to teach you some of the fundamentals of
+Throughout this lesson, you're going to learn some of the fundamentals of
 the R language as well as some best practices for organizing code for
 scientific projects that will make your life easier.
 
@@ -651,7 +651,7 @@ function (name, pos = -1L, envir = as.environment(pos), all.names = FALSE,
     }
     else all.names
 }
-<bytecode: 0x7ffda6e47838>
+<bytecode: 0x7f8cda6136a8>
 <environment: namespace:base>
 ~~~
 {: .output}
