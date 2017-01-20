@@ -122,7 +122,8 @@ get shared between projects.
 > This package will set up an ideal directory structure for project management.
 > This is very useful as it enables you to have your analysis pipeline/workflow organised and structured.
 > Together with the default RStudio project functionality and Git you will be able to keep track of your
-> work as well as be able to share your work with collaborators.
+> work as well as be able to share your work with collaborators. **Notice** that the name of the project in the `create.project()`
+> command below is the same as was used above to create a new project.
 >
 > 1. Install `ProjectTemplate`.
 > 2. Load the library
@@ -141,12 +142,6 @@ get shared between projects.
 {: .callout}
 
 ### Separate function definition and application
-
-The most effective way I find to work in R, is to play around in the interactive
-session, then copy commands across to a script file when I'm sure they work and
-do what I want. You can also save all the commands you've entered using the
-`history` command, but I don't find it useful because when I'm typing its 90%
-trial and error.
 
 When your project is new and shiny, the script file usually contains many lines
 of directly executed code. As it matures, reusable chunks get pulled into their
@@ -173,9 +168,12 @@ Now we have a good directory structure we will now place/save the data file in t
 > ## Challenge 1
 > Download the gapminder data from [here](https://raw.githubusercontent.com/resbaz/r-novice-gapminder-files/master/data/gapminder-FiveYearData.csv).
 >
-> 1. Download the file (CTRL + S, right mouse click -> "Save as", or File -> "Save page as")
-> 2. Make sure it's saved under the name `gapminder-FiveYearData.csv`
-> 3. Save the file in the `data/` folder within your project.
+> 1. Download the file into the `data/` folder within your project:
+> 
+> ~~~
+> download.file("https://raw.githubusercontent.com/resbaz/r-novice-gapminder-files/master/data/gapminder-FiveYearData.csv", "data/gapminder-FiveYearData.csv") 
+> ~~~
+> {: .r}
 >
 > We will load and inspect these data later.
 {: .challenge}
@@ -188,6 +186,7 @@ Now we have a good directory structure we will now place/save the data file in t
 > 1. What is the size of the file?
 > 2. How many rows of data does it contain?
 > 3. What are the data types of values stored in this file
+>
 >
 > > ## Solution to Challenge 2
 > >
@@ -202,7 +201,7 @@ Now we have a good directory structure we will now place/save the data file in t
 > > 
 > > 
 > > ~~~
-> > -rw-r--r--  1 dlavrov  staff    80K Jan 19 17:45 data/gapminder-FiveYearData.csv
+> > -rw-r--r--  1 dlavrov  staff    80K Jan 20 15:04 data/gapminder-FiveYearData.csv
 > > ~~~
 > > {: .output}
 > > The file size is 80K.
@@ -288,3 +287,34 @@ between files from different commits.
 > > {: . shell}
 > {: .solution}
 {: .challenge}
+
+Now we want to push the contents of this commit to GitHub, so it is also backed-up off site and available to collaborators.
+
+> ## Challenge 4
+>
+> 1. In GitHub, create a New repository, called here `BCB546-R-Exercise`. 
+> Don't initialize it with a README file because we'll be importing an existing repository...
+> 2. Make sure you have a proper public key in your GitHub settings
+> 3. In RStudio, again click Tools -> Shell … . Enter:
+> 
+> ~~~
+> $ git remote add origin git@github.com/[path to your directory]
+> $ git config remote.origin.url git@github.com:[path to your directory]
+> $ git pull -u origin master
+> $ git push -u origin master
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+> Error: <text>:1:1: unexpected '$'
+> 1: $
+>     ^
+> ~~~
+> {: .error}
+> {: . shell}
+> 4. Change README.md file to indicate the changes you made
+> 5. Commit and push it from the Git tab on the Environment/history panel of Rstudio.
+{: .challenge}
+
