@@ -219,16 +219,12 @@ names(x)
 * By modifying an existing vector in place: 
 ```{r}
 x <- 1:3; names(x) <- c("a", "b", "c")
-x
-names(x)
 ```
 
 * By creating a modified copy of a vector: 
 ```{r}
 x <- 1:3
 y <- setNames(x, c("a", "b", "c"))
-x
-y
 ```
 
 Names don't have to be uniqueand not all elements of a vector need to have a name. If some names are missing, `names()` will return an empty string for those elements. If all names are missing, `names()` will return `NULL`.
@@ -436,8 +432,6 @@ cats$weight + 2
 paste("My cat is", cats$coat)
 ```
 
-Understanding what happened here is key to successfully analyzing data in R.
-
 We can ask what type of
 data something is:
 
@@ -446,7 +440,7 @@ typeof(cats$weight)
 ```
 
 
-> ## Challenge 1
+> ## Challenge 2
 >
 > There are several subtly different ways to call variables, observations and
 > elements from data.frames:
@@ -463,7 +457,7 @@ typeof(cats$weight)
 >
 > *Hint:* Use the function `typeof()` to examine what is returned in each case.
 >
-> > ## Solution to Challenge 3
+> > ## Solution to Challenge 2
 > > ```{r, eval=TRUE, echo=TRUE}
 > > cats[1]
 > > ```
@@ -508,7 +502,7 @@ typeof(cats$weight)
 {: .challenge}
 
 
-> ## Challenge 2
+> ## Challenge 3
 >  Create a list of length two containing a character vector for each of the sections in this part of the workshop:
 >
 >  - Data types
@@ -517,7 +511,7 @@ typeof(cats$weight)
 >  Populate each character vector with the names of the data types and data
 >  structures we've seen so far.
 >
-> > ## Solution to Challenge 6
+> > ## Solution to Challenge 3
 > > ```{r}
 > > dataTypes <- c('double', 'complex', 'integer', 'character', 'logical')
 > > dataStructures <- c('data.frame', 'vector', 'factor', 'list', 'matrix')
