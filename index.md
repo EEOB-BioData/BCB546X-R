@@ -28,8 +28,8 @@ are not necessarily the best, nor are they comprehensive, but they are
 packages we find useful, and have been chosen primarily for their
 usability.
 
-## Additional resources
-#### Here are some additional resources that I found very useful:
+## Additional resources  
+#### Here are some additional resources that I found very useful:  
 * The R Project: [https://www.r-project.org/](https://www.r-project.org/)
 * Advanced R (book): [http://adv-r.had.co.nz/](http://adv-r.had.co.nz/)
 * Biocunductor: [http://www.bioconductor.org/](http://www.bioconductor.org/)
