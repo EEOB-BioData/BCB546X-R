@@ -8,9 +8,9 @@ root: .
 Our goal here is to teach you the basics or R and some best practices for using R for data analysis. 
 For these lessons we are using a modified version of the [Software Carpentry workshop](http://swcarpentry.github.io/r-novice-gapminder/) with the same name.  
 
-##Brief Introduction to R (from [www.r-project.org](www.r-project.org))
+## Brief Introduction to R (from [www.r-project.org](www.r-project.org))
 
-![IEEE Spectrum ranking](../fig/ranking.png)
+![IEEE Spectrum ranking](./fig/ranking.png)
 
 R is a language and environment for statistical computing and graphics. It is a GNU project which is similar to the S language and environment which was developed at Bell Laboratories (formerly AT&T, now Lucent Technologies) by John Chambers and colleagues. R can be considered as a different implementation of S. There are some important differences, but much code written for S runs unaltered under R.
 
@@ -29,12 +29,12 @@ packages we find useful, and have been chosen primarily for their
 usability.
 
 ## Additional resources
-####Here are some additional resources that I found very useful:
-*The R Project: [https://www.r-project.org/](https://www.r-project.org/)
-*Advanced R (book): [http://adv-r.had.co.nz/](http://adv-r.had.co.nz/)
-*Biocunductor: [http://www.bioconductor.org/](http://www.bioconductor.org/)
-*R for Data Science (book): [http://r4ds.had.co.nz/](http://r4ds.had.co.nz/)
-*RStudio: [https://www.rstudio.com/](https://www.rstudio.com/)
+#### Here are some additional resources that I found very useful:
+* The R Project: [https://www.r-project.org/](https://www.r-project.org/)
+* Advanced R (book): [http://adv-r.had.co.nz/](http://adv-r.had.co.nz/)
+* Biocunductor: [http://www.bioconductor.org/](http://www.bioconductor.org/)
+* R for Data Science (book): [http://r4ds.had.co.nz/](http://r4ds.had.co.nz/)
+* RStudio: [https://www.rstudio.com/](https://www.rstudio.com/)
 
 > ## Prerequisites
 >
