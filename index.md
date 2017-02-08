@@ -3,7 +3,7 @@ layout: lesson
 root: .
 ---
 
-**Welcome to the R part of the BCB546 course!**
+## Welcome to the R part of the BCB546 course!
 
 Our goal here is to teach you the basics or R and some best practices for using R for data analysis. 
 For these lessons we are using a modified version of the [Software Carpentry workshop](http://swcarpentry.github.io/r-novice-gapminder/) with the same name.  
@@ -30,7 +30,7 @@ usability.
 
 ## Additional resources  
 
-#### Here are some additional resources that I found very useful:  
+#### Here are some additional resources that we found very useful:  
 
 * The R Project: [https://www.r-project.org/](https://www.r-project.org/)
 * Advanced R (book): [http://adv-r.had.co.nz/](http://adv-r.had.co.nz/)
