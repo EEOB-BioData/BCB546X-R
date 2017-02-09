@@ -1,6 +1,6 @@
 ---
 title: "Data Structures"
-teaching: 40
+teaching: 30
 exercises: 15
 questions:
 - "How can I read data in R?"
@@ -39,11 +39,11 @@ cats <- cats_orig
 R's base data structures can be organised by their dimensionality (1d, 2d, or nd) and whether they're homogeneous 
 (all contents must be of the same type) or heterogeneous (the contents can be of different types): 
 
-|    | Homogeneous   | Heterogeneous |                |
-|----|---------------|---------------|----------------|
-| 1d | Atomic vector | List          |  <-- Vectors   |
-| 2d | Matrix        | Data frame    |                |
-| nd | Array         |               |                |
+|    | Homogeneous   | Heterogeneous |
+|----|---------------|---------------|
+| 1d | Atomic vector | List          |
+| 2d | Matrix        | Data frame    |
+| nd | Array         |               |
 
 Almost all other objects are built upon these foundations. 
 Note that R has no 0-dimensional, or scalar types. Individual numbers or strings are vectors of length one. 
@@ -78,17 +78,6 @@ chr_var <- c("these are", "some strings")
 Atomic vectors are always flat, even if you nest `c()`'s: Try `c(1, c(2, c(3, 4)))`
 
 Missing values are specified with `NA`, which is a logical vector of length 1. `NA` will always be coerced to the correct type if used inside `c()`.
-
-#### Types and tests
-
-Given a vector, you can determine its type with `typeof()`, or check if it's a specific type with an "is" function: `is.character()`, `is.double()`, `is.integer()`, `is.logical()`, or, more generally, `is.atomic()`.
-
-NB: `is.numeric()` is a general test for the "numberliness" of a vector and returns `TRUE` for both integer and double vectors. 
-
-```{r}
-is.numeric(int_var)
-is.numeric(dbl_var)
-```
 
 #### Coercion
 
@@ -167,7 +156,7 @@ is.list(mod)
 >
 > Where does these data come from?
 >
-> {: .callout}
+{: .callout}
 
 
 > ## Discussion 1
@@ -395,144 +384,3 @@ You can coerce an object to a data frame with `as.data.frame()`:
 > 
 > 1.  Can you have a data frame with 0 rows? What about 0 columns?
 {: .discussion}
-
-### Reading data into a dataframe
-
-One of R's most powerful features is its ability to deal with tabular data -
-like what you might already have in a spreadsheet or a CSV. 
-The `read.csv` function is used for reading in tabular data stored in a text
-file where the columns of data are delimited by commas (csv = comma separated
-values). Tabs are also commonly used to separated columns - if your data are in
-this format you can use the function `read.delim`. If the columns in your data
-are delimited by a character other than commas or tabs, you can use the more
-general and flexible `read.table` function. CSV data are read into dataframes.
-
-Let's start by making a toy dataset in your `data/` directory, called `feline-data.csv` with the following data:
-
-```{r, eval=FALSE}
-coat,weight,likes_string
-calico,2.1,1
-black,5.0,0
-tabby,3.2,1
-```
-
-> ## Tip: Editing Text files in R
->
-> You can create `data/feline-data.csv` using a text editor (vi or Nano),
-> or within RStudio with the **File -> New File -> Text File** menu item.
-{: .callout}
-
-We can load this into R via the following:
-
-```{r}
-cats <- read.csv(file = "data/feline-data.csv")
-cats
-```
-
-We can begin exploring our dataset right away, pulling out columns by specifying
-them using the `$` operator:
-
-```{r}
-cats$weight
-cats$coat
-```
-
-We can do other operations on the columns:
-
-```{r}
-## Say we discovered that the scale weighs two Kg light:
-cats$weight + 2
-paste("My cat is", cats$coat)
-```
-
-We can ask what type of
-data something is:
-
-```{r}
-typeof(cats$weight)
-```
-
-
-> ## Challenge 2
->
-> There are several subtly different ways to call variables, observations and
-> elements from data.frames:
->
-> - `cats[1]`
-> - `cats[[1]]`
-> - `cats$coat`
-> - `cats["coat"]`
-> - `cats[1, 1]`
-> - `cats[, 1]`
-> - `cats[1, ]`
->
-> Try out these examples and explain what is returned by each one.
->
-> *Hint:* Use the function `typeof()` to examine what is returned in each case.
->
-> > ## Solution to Challenge 2
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats[1]
-> > ```
-> > We can think of a data frame as a list of vectors. The single brace `[1]`
-> returns the first slice of the list, as another list. In this case it is the
-> first column of the data frame.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats[[1]]
-> > ```
-> > The double brace `[[1]]` returns the contents of the list item. In this case
-> it is the contents of the first column, a _vector_ of type _factor_.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats$coat
-> > ```
-> > This example uses the `$` character to address items by name. _coat_ is the
-> first column of the data frame, again a _vector_ of type _factor_.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats["coat"]
-> > ```
-> > Here we are using a single brace `["coat"]` replacing the index number with
-> the column name. Like example 1, the returned object is a _list_.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats[1, 1]
-> > ```
-> > This example uses a single brace, but this time we provide row and column
-> coordinates. The returned object is the value in row 1, column 1. The object
-> is an _integer_ but because it is part of a _vector_ of type _factor_, R
-> displays the label "calico" associated with the integer value.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats[, 1]
-> > ```
-> > Like the previous example we use single braces and provide row and column
-> coordinates. The row coordinate is not specified, R interprets this missing
-> value as all the elements in this _column_ _vector_.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats[1, ]
-> > ```
-> > Again we use the single brace with row and column coordinates. The column
-> coordinate is not specified. The return value is a _list_ containing all the
-> values in the first row.
-> {: .solution}
-{: .challenge}
-
-
-> ## Challenge 3
->  Create a list of length two containing a character vector for each of the sections in this part of the workshop:
->
->  - Data types
->  - Data structures
->
->  Populate each character vector with the names of the data types and data
->  structures we've seen so far.
->
-> > ## Solution to Challenge 3
-> > ```{r}
-> > dataTypes <- c('double', 'complex', 'integer', 'character', 'logical')
-> > dataStructures <- c('data.frame', 'vector', 'factor', 'list', 'matrix')
-> > answer <- list(dataTypes, dataStructures)
-> > ```
-> > Note: it's nice to make a list in big writing on the board or taped to the wall
-> > listing all of these types and structures - leave it up for the rest of the workshop
-> > to remind people of the importance of these basics.
-> >
-> {: .solution}
-{: .challenge}

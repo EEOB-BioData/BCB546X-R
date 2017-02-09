@@ -1,0 +1,874 @@
+---
+title: "Exploring Data Frames"
+teaching: 30
+exercises: 10
+questions:
+- "How can I manipulate a data frame?"
+objectives:
+- "Be able to add and remove rows and columns."
+- "Be able to remove rows with `NA` values."
+- "Be able to append two data frames"
+- "Be able to articulate what a `factor` is and how to convert between `factor` and `character`."
+- "Be able to find basic properties of a data frames including size, class or type of the columns, names, and first few rows."
+keypoints:
+- "Use `cbind()` to add a new column to a data frame."
+- "Use `rbind()` to add a new row to a data frame."
+- "Remove rows from a data frame."
+- "Use `na.omit()` to remove rows from a data frame with `NA` values."
+- "Use `levels()` and `as.character()` to explore and manipulate factors"
+- "Use `str()`, `nrow()`, `ncol()`, `dim()`, `colnames()`, `rownames()`, `head()` and `typeof()` to understand structure of the data frame"
+- "Read in a csv file using `read.csv()`"
+- "Understand `length()` of a data frame"
+---
+
+```{r, include=FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("05-")
+```
+
+
+In one of the previous lessons, we toured all the basic data types and data structures in R. 
+Everything you do will be a manipulation of those objects. But a whole lot of the time, 
+the structure you'll be dealing with is going to be the data frame - that table that we started 
+with that information from a CSV gets dumped into when we load it. In this lesson, we'll learn more
+about working with data frames.
+
+## Reading data into a dataframe
+
+One of R's most powerful features is its ability to deal with tabular data -
+like what you might already have in a spreadsheet or a CSV. 
+The `read.csv` function is used for reading in tabular data stored in a text
+file where the columns of data are delimited by commas (csv = comma separated
+values). Tabs are also commonly used to separated columns - if your data are in
+this format you can use the function `read.delim`. If the columns in your data
+are delimited by a character other than commas or tabs, you can use the more
+general and flexible `read.table` function. CSV data are read into dataframes.
+
+Let's start by making a toy dataset in your `data/` directory, called `feline-data.csv` with the following data:
+
+```{r, eval=FALSE}
+coat,weight,likes_string
+calico,2.1,1
+black,5.0,0
+tabby,3.2,1
+```
+
+> ## Tip: Editing Text files in R
+>
+> You can create `data/feline-data.csv` using a text editor (vi or Nano),
+> or within RStudio with the **File -> New File -> Text File** menu item.
+{: .callout}
+
+We can load this into R via the following:
+
+```{r}
+cats <- read.csv(file = "data/feline-data.csv")
+cats
+```
+
+We can begin exploring our dataset right away, pulling out columns by specifying
+them using the `$` operator:
+
+```{r}
+cats$weight
+cats$coat
+```
+
+We can do other operations on the columns:
+
+```{r}
+## Say we discovered that the scale weighs two Kg light:
+cats$weight + 2
+paste("My cat is", cats$coat)
+```
+
+We can ask what type of
+data something is:
+
+```{r}
+typeof(cats$weight)
+```
+
+
+> ## Challenge 2
+>
+> There are several subtly different ways to call variables, observations and
+> elements from data.frames:
+>
+> - `cats[1]`
+> - `cats[[1]]`
+> - `cats$coat`
+> - `cats["coat"]`
+> - `cats[1, 1]`
+> - `cats[, 1]`
+> - `cats[1, ]`
+>
+> Try out these examples and explain what is returned by each one.
+>
+> *Hint:* Use the function `typeof()` to examine what is returned in each case.
+>
+> > ## Solution to Challenge 2
+> > ```{r, eval=TRUE, echo=TRUE}
+> > cats[1]
+> > ```
+> > We can think of a data frame as a list of vectors. The single brace `[1]`
+> returns the first slice of the list, as another list. In this case it is the
+> first column of the data frame.
+> > ```{r, eval=TRUE, echo=TRUE}
+> > cats[[1]]
+> > ```
+> > The double brace `[[1]]` returns the contents of the list item. In this case
+> it is the contents of the first column, a _vector_ of type _factor_.
+> > ```{r, eval=TRUE, echo=TRUE}
+> > cats$coat
+> > ```
+> > This example uses the `$` character to address items by name. _coat_ is the
+> first column of the data frame, again a _vector_ of type _factor_.
+> > ```{r, eval=TRUE, echo=TRUE}
+> > cats["coat"]
+> > ```
+> > Here we are using a single brace `["coat"]` replacing the index number with
+> the column name. Like example 1, the returned object is a _list_.
+> > ```{r, eval=TRUE, echo=TRUE}
+> > cats[1, 1]
+> > ```
+> > This example uses a single brace, but this time we provide row and column
+> coordinates. The returned object is the value in row 1, column 1. The object
+> is an _integer_ but because it is part of a _vector_ of type _factor_, R
+> displays the label "calico" associated with the integer value.
+> > ```{r, eval=TRUE, echo=TRUE}
+> > cats[, 1]
+> > ```
+> > Like the previous example we use single braces and provide row and column
+> coordinates. The row coordinate is not specified, R interprets this missing
+> value as all the elements in this _column_ _vector_.
+> > ```{r, eval=TRUE, echo=TRUE}
+> > cats[1, ]
+> > ```
+> > Again we use the single brace with row and column coordinates. The column
+> coordinate is not specified. The return value is a _list_ containing all the
+> values in the first row.
+> {: .solution}
+{: .challenge}
+
+
+> ## Challenge 3
+>  Create a list of length two containing a character vector for each of the sections in this part of the workshop:
+>
+>  - Data types
+>  - Data structures
+>
+>  Populate each character vector with the names of the data types and data
+>  structures we've seen so far.
+>
+> > ## Solution to Challenge 3
+> > ```{r}
+> > dataTypes <- c('double', 'complex', 'integer', 'character', 'logical')
+> > dataStructures <- c('data.frame', 'vector', 'factor', 'list', 'matrix')
+> > answer <- list(dataTypes, dataStructures)
+> > ```
+> > Note: it's nice to make a list in big writing on the board or taped to the wall
+> > listing all of these types and structures - leave it up for the rest of the workshop
+> > to remind people of the importance of these basics.
+> >
+> {: .solution}
+{: .challenge}
+
+## Adding columns and rows in data frame
+
+We learned last time that the columns in a data frame were vectors, so that our
+data are consistent in type throughout the column. As such, if we want to add a
+new column, we need to start by making a new vector:
+
+```{r, echo = FALSE}
+cats <- read.csv("data/feline-data.csv")
+```
+
+```{r}
+age <- c(2,3,5,12)
+cats
+```
+
+We can then add this as a column with the `cbind` function:
+
+```{r, error=TRUE}
+cats <- cbind(cats, age)
+```
+
+Why didn't this work? Of course, R wants to see one element in our new column
+for every row in the table:
+
+```{r}
+cats
+age <- c(4,5,8)
+cats <- cbind(cats, age)
+cats
+```
+
+Now how about adding rows - in this case, we saw last time that the rows of a
+data frame are made of lists (why?):
+
+```{r}
+newRow <- list("tortoiseshell", 3.3, TRUE, 9)
+cats <- rbind(cats, newRow)
+```
+
+## Factors
+
+The previous command produced a warning: "invalid factor level, NA generated".
+This is because when R creates a factor, it only allows whatever is originally 
+there when our data was first loaded, which was 'black', 'calico' and 'tabby'. 
+Anything new that doesn't fit into one of these categories is rejected as nonsense (becomes NA).
+
+The warning is telling us that we unsuccessfully added 'tortoiseshell' to our
+*coat* factor, but 3.3 (a numeric), TRUE (a logical), and 9 (a numeric) were
+successfully added to *weight*, *likes_string*, and *age*, respectfully, since
+those values are not factors. To successfully add a cat with a
+'tortoiseshell' *coat*, explicitly add 'tortoiseshell' as a *level* in the factor:
+
+```{r}
+levels(cats$coat)
+levels(cats$coat) <- c(levels(cats$coat), 'tortoiseshell')
+cats <- rbind(cats, list("tortoiseshell", 3.3, TRUE, 9))
+```
+
+Alternatively, we can change a factor column to a character vector; we lose the
+handy categories of the factor, but can subsequently add any word we want to the
+column without babysitting the factor levels:
+
+```{r}
+str(cats)
+cats$coat <- as.character(cats$coat)
+str(cats)
+```
+
+## Removing rows
+
+We now know how to add rows and columns to our data frame in R - but in our
+first attempt to add a 'tortoiseshell' cat to the data frame we've accidentally
+added a garbage row:
+
+```{r}
+cats
+```
+
+We can ask for a data frame minus this offending row:
+
+```{r}
+cats[-4,]
+```
+
+Notice the comma with nothing after it indicates that we want to drop the entire fourth row.
+
+Note: We could also remove both new rows at once by putting the row numbers
+inside of a vector: `cats[c(-4,-5),]`
+
+Alternatively, we can drop all rows with `NA` values:
+
+```{r}
+na.omit(cats)
+```
+
+> ## What did the previous command do?
+>
+> It's important to notice that the previous command simply printed our `cats` dataframe excluding some rows
+> In order to make changes in the dataframe itself, we want to assign them to the dataset itslef:
+> ~~~~~~~~
+> cats
+> cats <- cats[-4,]
+> cats
+> ~~~~~~~~
+{:  .callout}
+
+
+## Appending data frame
+
+The key to remember when adding data to a data frame is that *columns are
+vectors or factors, and rows are lists.* We can also glue two data frames
+together with `rbind`:
+
+```{r}
+cats <- rbind(cats, cats)
+cats
+```
+If you assigned row names in your dataframe, they may be unnecessarily complicated when we combine two dataframes. We can remove the rownames, and R will automatically re-name them sequentially:
+
+```{r}
+rownames(cats) <- NULL
+cats
+```
+
+> ## Challenge 1
+>
+> You can create a new data frame right from within R with the following syntax:
+> ```{r}
+> df <- data.frame(id = c('a', 'b', 'c'),
+>                  x = 1:3,
+>                  y = c(TRUE, TRUE, FALSE),
+>                  stringsAsFactors = FALSE)
+> ```
+> Make a data frame that holds the following information for yourself:
+>
+> - first name
+> - last name
+> - lucky number
+>
+> Then use `rbind` to add an entry for the people sitting beside you.
+> Finally, use `cbind` to add a column with each person's answer to the question, "Is it time for coffee break?"
+>
+> > ## Solution to Challenge 1
+> > ```{r}
+> > df <- data.frame(first = c('Grace'),
+> >                  last = c('Hopper'),
+> >                  lucky_number = c(0),
+> >                  stringsAsFactors = FALSE)
+> > df <- rbind(df, list('Marie', 'Curie', 238) )
+> > df <- cbind(df, coffeetime = c(TRUE,TRUE))
+> > ```
+> {: .solution}
+{: .challenge}
+
+## Realistic example
+With a knowledge of basic R language essentials, we’re ready to start working with real data. 
+We’ll work on a few datasets following examples in Chapter 8 of the Buffalo book. 
+All files to load these datasets into R are available in Chapter 8 directory on GitHub.
+
+The dataset we’ll use for learning data manipulation and visualization skills is from the 2006 paper “The Influence of Recombination on Human Genetic Diversity” by Spencer et al. (Dataset_S1.txt on GitHub).
+This dataset contains estimates of population genetics statistics such as nucleotide diversity 
+(e.g., the columns Pi and Theta), recombination (column Recombination), and sequence divergence 
+as estimated by percent identity between human and chimpanzee genomes (column Divergence). 
+Other columns contain information about the sequencing depth (depth), and GC content 
+(percent.GC). We’ll only work with a few columns in our examples; see the description 
+of Dataset_S1.txt in this paper’s supplementary information for more detail. 
+Dataset_S1.txt includes these estimates for 1kb windows in human chromosome 20.
+
+We can start by copying the dataset into your data directory and by examining the file using your 
+favorite unix commands.
+
+> ## Miscellaneous Tips
+>
+>
+> * Files can be downloaded directly from the Internet into a local
+> folder of your choice onto your computer using the `download.file` function.
+> The `read.csv` function can then be executed to read the downloaded file from the download location, for example,
+> ```{r eval=FALSE, echo=TRUE}
+> download.file("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt", destfile = "data/Dataset_S1.txt")
+> d <- read.csv("data/Dataset_S1.txt")
+> ```
+>
+> * Alternatively, you can also read in files directly into R from the Internet by replacing the file paths with a web address in `read.csv`. In doing this no local copy of the csv file is first saved onto your computer. For example,
+> ```{r eval=FALSE, echo=TRUE}
+> d <- read.csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt")
+> ```
+>
+> * You can read directly from excel spreadsheets without
+> converting them to plain text first by using the [readxl](https://cran.r-project.org/web/packages/readxl/index.html) package.
+{: .callout}
+
+Note that R’s read.csv() and read.delim() functions have numerous arguments, many of which will need to be adjusted for certain files you’ll come across in bioinformatics. See Table 8-4 of the Buffalo book for a list of some commonly used arguments, and/or consult help(read.csv) for full documentation.
+
+Ok, let’s take a look at the dataframe we’ve loaded in `d` with `str`:
+
+```{r}
+str(d)
+```
+
+We can also look at the data in the databrame with the function `head`:
+```{r}
+head(d, n=3)
+```
+
+> ## Challenge 1
+>
+> Use what you've learned about factors, lists and vectors,
+> as well as the output of functions like `colnames` and `dim`
+> to explain what everything that `str` prints out for this dataset means.
+> If there are any parts you can't interpret, discuss with your neighbors!
+>
+> > ## Solution to Challenge 1
+> >
+> > The object `d` is a data frame with 16 columns (variables)
+> > - all columns are vectors;
+> > - some are integer vectors, other are numeric vectors.
+> >
+> {: .solution}
+{: .challenge}
+
+`str` shows you a lot of information. You can access specific information with functions: nrow() (number of rows), ncol() (number of columns), and dim() (returns both):
+
+```{r}
+nrow(d) 
+ncol(d)
+dim(d)
+```
+
+We can also print the columns of this dataframe using colnames() (there’s also a row.names() function):
+
+```{r}
+colnames(d)
+```
+
+Note that R’s read.csv() function has automatically renamed some of these columns for us: spaces have been converted to periods and the percent sign in %GC has been changed to an “X.” “X.GC” isn’t a very descriptive column name, so let’s change this:
+
+```{r}
+colnames(d)[12] # original name
+colnames(d)[12] <- "percent.GC"
+```
+
+Because the `dataframe$column` command returns a vector, we can pass it to R functions like mean() or summary() to get an idea of what depth looks like across this dataset:
+
+```{r}
+mean(d$depth)
+summary(d$depth)
+```
+
+As we saw above, the dollar sign operator is a syntactic shortcut for a more general bracket operator 
+used to access rows, columns, and cells of a dataframe. Using the bracket operator is similar to accessing 
+the elements of a vector (e.g., vec[2]), except as two-dimensional data structures, dataframes use two 
+indexes separated by a comma: df[row, col].
+
+>  ## Selecting multiple rows and/or columns
+>
+> 1. The indexes we use for dataframes can be vectors to select multiple rows and columns simultaneously. 
+> 1. Omitting the row index retrieves all rows, and omitting the column index retrieves all columns.
+> ~~~~~~~~~~
+> d[,1:2]
+> d[, c("start", "end")]
+> d[1, c("start", "end")]
+> d[1,]
+> d[2, 3]
+> ~~~~~~~~~~
+>
+{: .callout}
+
+When accessing a single column from a dataframe, R’s default behavior is to return this as a vector—not 
+a dataframe with one column. Sometimes this can cause problems if downstream code expects to work with 
+a dataframe. To disable this behavior, we set the argument drop to FALSE in the bracket operator:
+
+```{r}
+d[, "start", drop=FALSE]
+```
+
+Now, let’s add an additional column to our dataframe that indicates whether a window is in the centromere region. The positions of the chromosome 20 centromere (based on Giemsa banding) are 25,800,000 to 29,700,000 (see this chapter’s README on GitHub to see how these coordinates were found). We can append to our d dataframe a column called cent that has TRUE/FALSE values indicating whether the current window is fully within a centromeric region using comparison and logical operations:
+
+```{r}
+d$cent <- d$start >= 25800000 & d$end <= 29700000
+```
+
+> ## Challenge 2
+>
+> How many windows fall into this centromeric region? 
+>
+> > ## Solutions to challenge 2
+> >
+> > We can use `table()` 
+> > ```{r}
+> > table(d$cent)
+> > ```
+> > or sum()
+> > 
+> > ```{r}
+> > sum(d$cent)
+> > ```
+> {: .solution}
+{: .challenge}
+
+In the dataset we are using, the diversity estimate Pi is measured per sampling window (1kb) and scaled up by 10x (see supplementary Text S1 for more details). It would be useful to have this scaled as per basepair nucleotide diversity (so as to make the scale more intuitive). Hence our next challenge.
+
+> ## Challenge 3
+>
+> 1. Create a new rescaled column called diversity, in which the nucleotide diversity is calculated per basepair 
+> 
+> > ## Solution
+> >
+> > ```{r}
+> > d$diversity <- d$Pi / (10*1000) # rescale, removing 10x and making per bp
+> > ```
+> {: .solution}
+>
+> 2. Use the `summary()` function to calculate the basic statistics for the nucleotide diversity
+>
+> > ## Solution
+> >
+> > ```{r}
+> > summary(d$diversity)
+> > ```
+> >
+> {: .solution}
+{: .challenge}
+
+Finally, to make sure our analysis is reproducible, we should put the code
+into a script file so we can come back to it later.
+
+> ## Challenge 4
+>
+> Go to file -> new file -> R script, and write an R script
+> to load in the dataset we used and to create additional columns. Put it in the `scripts/`
+> directory and add it to version control.
+>
+> Run the script using the `source` function, using the file path
+> as its argument (or by pressing the "source" button in RStudio).
+>
+> > ## Solution to Challenge 4
+> > The contents of `script/first_script.R`:
+> > ```{r eval = FALSE}
+> > d <- read.csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt")
+> > d$cent <- d$start >= 25800000 & d$end <= 29700000
+> > d$diversity <- d$Pi / (10*1000) # rescale, removing 10x and making per bp
+> > ```
+> > To run the script and load the data into the `gapminder` variable:
+> > ```{r eval = FALSE}
+> > source(file = "scripts/load-gapminder.R")
+> > ```
+> {: .solution}
+{: .challenge}
+
+## Exploring Data Through Slicing and Dicing: Subsetting Dataframes
+
+The most powerful feature of dataframes is the ability to slice out specific rows by 
+applying the same vector subsetting techniques we used before. Combined with R’s 
+comparison and logical operators, this leads to an incredibly powerful method to 
+query out rows in a dataframe.
+
+Let’s start by looking at the total number of SNPs per window. From `summary()`, 
+we see that this varies quite considerably across all windows on chromosome 20:
+
+```{r}
+summary(d$total.SNPs)
+```
+
+Notice how right-skewed this data is: the third quartile is 12 SNPs, but the maximum is 93 SNPs. 
+Often we want to investigate such outliers more closely. Let’s use data subsetting to select 
+out some rows that have 85 or more SNPs (the number is arbitrary). We can create a logical 
+vector containing whether each observation (row) has 85 or more SNPs using the following:
+
+```{r}
+d$total.SNPs >= 85
+```
+We can use this logical vector to extract the rows of our dataframe that have a TRUE value for d$total.SNPs >= 85:
+
+```{r}
+d[d$total.SNPs >= 85, ]
+```
+We can build more elaborate queries by chaining comparison operators. For example, suppose we wanted to see all windows where Pi (nucleotide diversity) is greater than 16 and percent GC is greater than 80.We’d use:
+
+```{r}
+d[d$Pi > 16 & d$percent.GC > 80, ]
+```
+> ## Discussion time!
+> What we just did is really cool, so take a minute to talk to your neighbor to make sure that you/him/her 
+> understand how these commands work. So here are some questions to discuss:
+> * Why do we need to have d$ before column names?  
+> * Do we need a comma? 
+> * Do we need the space?
+> * How can we print only some but not all columns?
+> You can try ommitting some of these elements and checking the results
+{: .discussion}
+
+Remember, columns of a dataframe are just vectors. If you only need the data from one column, 
+just subset it as you would a vector:
+
+```{r}
+d$percent.GC[d$Pi > 16]
+```
+Subsetting columns can be a useful way to summarize data across two different conditions. 
+For example, we might be curious if the average depth in a window (the depth column) 
+differs between very high GC content windows (greater than 80%) and all other windows:
+
+```{r}
+summary(d$depth[d$percent.GC >= 80])
+summary(d$depth[d$percent.GC < 80])
+```
+
+This is a fairly large difference, but it’s important to consider how many windows this includes. 
+Indeed, there are only nine windows that have a GC content over 80%:
+
+```{r}
+sum(d$percent.GC >= 80)
+```
+
+> ## Challenge 5
+>
+> As another example, consider looking at Pi by windows that fall in the centromere and those that do not.
+> Does the centromer have higher nucleotide diversity than other regions in these data?
+>
+> > ## Solutions to challenge 5
+> >
+> > Because d$cent is a logical vector, we can subset with it directly (and take its complement 
+> > by using the negation operator, !):
+> > 
+> > ```{r}
+> > summary(d$Pi[d$cent])
+> > summary(d$Pi[!d$cent])
+> > ```
+> > Indeed, the centromere does appear to have higher nucleotide diversity than other regions in this data. 
+> >
+> {: .solution}
+{: .challenge}
+
+In addition to using logical vectors to subset dataframes, it’s also possible to subset 
+rows by referring to their integer positions. The function which() takes a vector of 
+logical values and returns the positions of all TRUE values. For example:
+
+```{r}
+d$Pi>3
+which(d$Pi > 3)
+```
+Thus, `d[$Pi > 3, ]` is identical to `d[which(d$Pi > 3), ]`; subsetting operations can be expressed using either method. 
+In general, you should omit which() when subsetting dataframes and use logical vectors, 
+as it leads to simpler and more readable code. Under other circumstances, which() is 
+necessary—for example, if we wanted to select the four first TRUE values in a vector:
+
+```{r}
+which(d$Pi > 10)[1:4]
+```
+
+which() also has two related functions that return the index of the first minimum or maximum element of a vector: 
+which.min() and which.max(). For example:
+
+```{r}
+d[which.min(d$total.Bases),]
+d[which.max(d$depth),]
+```
+
+Sometimes subsetting expressions inside brackets can be quite redundant (because each column must be 
+specified like `d$Pi`, `d$depth`, etc). A useful convenience function (intended primarily for interactive use) 
+is the R function `subset()`. `subset()` takes two arguments: the dataframe to operate on, and then conditions 
+to include a row. With `subset()`, `d[d$Pi > 16 & d$percent.GC > 80, ]` can be expressed as:
+
+```{r}
+subset(d, Pi > 16 & percent.GC > 80)
+```
+
+Optionally, a third argument can be supplied to specify which columns (and in what order) to include:
+
+```{r}
+subset(d, Pi > 16 & percent.GC > 80, c(start, end, Pi, percent.GC, depth))
+```
+
+Note that we (somewhat magically) don’t need to quote column names. This is because `subset()` follows 
+special evaluation rules, and for this reason, `subset()` is best used only for interactive work.
+
+## End of lesson
+
+Now we'll introduce some new subsetting operators. There are three functions
+used to subset lists. `[`, as we've seen for atomic vectors and matrices,
+as well as `[[` and `$`.
+
+Using `[` will always return a list. If you want to *subset* a list, but not
+*extract* an element, then you will likely use `[`.
+
+```{r}
+xlist <- list(a = "Software Carpentry", b = 1:10, data = head(iris))
+xlist[1]
+```
+
+This returns a *list with one element*.
+
+We can subset elements of a list exactly the same was as atomic
+vectors using `[`. Comparison operations however won't work as
+they're not recursive, they will try to condition on the data structures
+in each element of the list, not the individual elements within those
+data structures.
+
+```{r}
+xlist[1:2]
+```
+
+To extract individual elements of a list, you need to use the double-square
+bracket function: `[[`.
+
+```{r}
+xlist[[1]]
+```
+
+Notice that now the result is a vector, not a list.
+
+You can't extract more than one element at once:
+
+```{r, error=TRUE}
+xlist[[1:2]]
+```
+
+Nor use it to skip elements:
+
+```{r, error=TRUE}
+xlist[[-1]]
+```
+
+But you can use names to both subset and extract elements:
+
+```{r}
+xlist[["a"]]
+```
+
+The `$` function is a shorthand way for extracting elements by name:
+
+```{r}
+xlist$data
+```
+
+> ## Challenge 5
+> Given the following list:
+>
+> ```{r, eval=FALSE}
+> xlist <- list(a = "Software Carpentry", b = 1:10, data = head(iris))
+> ```
+>
+> Using your knowledge of both list and vector subsetting, extract the number 2 from xlist.
+> Hint: the number 2 is contained within the "b" item in the list.
+>
+> > ## Solution to challenge 5
+> >
+> > ```{r}
+> > xlist$b[2]
+> > ```
+> > ```{r}
+> > xlist[[2]][2]
+> > ```
+> > ```{r}
+> > xlist[["b"]][2]
+> > ```
+> {: .solution}
+{: .challenge}
+
+
+## Data frames
+
+Remember the data frames are lists underneath the hood, so similar rules
+apply. However they are also two dimensional objects:
+
+`[` with one argument will act the same was as for lists, where each list
+element corresponds to a column. The resulting object will be a data frame:
+
+```{r}
+head(gapminder[3])
+```
+
+Similarly, `[[` will act to extract *a single column*:
+
+```{r}
+head(gapminder[["lifeExp"]])
+```
+
+And `$` provides a convenient shorthand to extract columns by name:
+
+```{r}
+head(gapminder$year)
+```
+
+With two arguments, `[` behaves the same way as for matrices:
+
+```{r}
+gapminder[1:3,]
+```
+
+If we subset a single row, the result will be a data frame (because
+the elements are mixed types):
+
+```{r}
+gapminder[3,]
+```
+
+But for a single column the result will be a vector (this can
+be changed with the third argument, `drop = FALSE`).
+
+> ## Challenge 7
+>
+> Fix each of the following common data frame subsetting errors:
+>
+> 1. Extract observations collected for the year 1957
+>
+>    ```{r, eval=FALSE}
+>    gapminder[gapminder$year = 1957,]
+>    ```
+>
+> 2. Extract all columns except 1 through to 4
+>
+>    ```{r, eval=FALSE}
+>    gapminder[,-1:4]
+>    ```
+>
+> 3. Extract the rows where the life expectancy is longer the 80 years
+>
+>    ```{r, eval=FALSE}
+>    gapminder[gapminder$lifeExp > 80]
+>    ```
+>
+> 4. Extract the first row, and the fourth and fifth columns
+>   (`lifeExp` and `gdpPercap`).
+>
+>    ```{r, eval=FALSE}
+>    gapminder[1, 4, 5]
+>    ```
+>
+> 5. Advanced: extract rows that contain information for the years 2002
+>    and 2007
+>
+>    ```{r, eval=FALSE}
+>    gapminder[gapminder$year == 2002 | 2007,]
+>    ```
+>
+> > ## Solution to challenge 7
+> >
+> > Fix each of the following common data frame subsetting errors:
+> >
+> > 1. Extract observations collected for the year 1957
+> >
+> >    ```{r, eval=FALSE}
+> >    # gapminder[gapminder$year = 1957,]
+> >    gapminder[gapminder$year == 1957,]
+> >    ```
+> >
+> > 2. Extract all columns except 1 through to 4
+> >
+> >    ```{r, eval=FALSE}
+> >    # gapminder[,-1:4]
+> >    gapminder[,-c(1:4)]
+> >    ```
+> >
+> > 3. Extract the rows where the life expectancy is longer the 80 years
+> >
+> >    ```{r, eval=FALSE}
+> >    # gapminder[gapminder$lifeExp > 80]
+> >    gapminder[gapminder$lifeExp > 80,]
+> >    ```
+> >
+> > 4. Extract the first row, and the fourth and fifth columns
+> >   (`lifeExp` and `gdpPercap`).
+> >
+> >    ```{r, eval=FALSE}
+> >    # gapminder[1, 4, 5]
+> >    gapminder[1, c(4, 5)]
+> >    ```
+> >
+> > 5. Advanced: extract rows that contain information for the years 2002
+> >    and 2007
+> >
+> >     ```{r, eval=FALSE}
+> >     # gapminder[gapminder$year == 2002 | 2007,]
+> >     gapminder[gapminder$year == 2002 | gapminder$year == 2007,]
+> >     gapminder[gapminder$year %in% c(2002, 2007),]
+> >     ```
+> {: .solution}
+{: .challenge}
+
+> ## Challenge 8
+>
+> 1. Why does `gapminder[1:20]` return an error? How does it differ from `gapminder[1:20, ]`?
+>
+>
+> 2. Create a new `data.frame` called `gapminder_small` that only contains rows 1 through 9
+> and 19 through 23. You can do this in one or two steps.
+>
+> > ## Solution to challenge 8
+> >
+> > 1.  `gapminder` is a data.frame so needs to be subsetted on two dimensions. `gapminder[1:20, ]` subsets the data to give the first 20 rows and all columns.
+> >
+> > 2. 
+> >
+> > ```{r}
+> > gapminder_small <- gapminder[c(1:9, 19:23),]
+> > ```
+> {: .solution}
+{: .challenge}

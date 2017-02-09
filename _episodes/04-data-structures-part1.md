@@ -1,6 +1,6 @@
 ---
 title: "Data Structures"
-teaching: 40
+teaching: 30
 exercises: 15
 questions:
 - "How can I read data in R?"
@@ -27,11 +27,11 @@ keypoints:
 R's base data structures can be organised by their dimensionality (1d, 2d, or nd) and whether they're homogeneous 
 (all contents must be of the same type) or heterogeneous (the contents can be of different types): 
 
-|    | Homogeneous   | Heterogeneous |                |
-|----|---------------|---------------|----------------|
-| 1d | Atomic vector | List          |  <-- Vectors   |
-| 2d | Matrix        | Data frame    |                |
-| nd | Array         |               |                |
+|    | Homogeneous   | Heterogeneous |
+|----|---------------|---------------|
+| 1d | Atomic vector | List          |
+| 2d | Matrix        | Data frame    |
+| nd | Array         |               |
 
 Almost all other objects are built upon these foundations. 
 Note that R has no 0-dimensional, or scalar types. Individual numbers or strings are vectors of length one. 
@@ -68,39 +68,6 @@ chr_var <- c("these are", "some strings")
 Atomic vectors are always flat, even if you nest `c()`'s: Try `c(1, c(2, c(3, 4)))`
 
 Missing values are specified with `NA`, which is a logical vector of length 1. `NA` will always be coerced to the correct type if used inside `c()`.
-
-#### Types and tests
-
-Given a vector, you can determine its type with `typeof()`, or check if it's a specific type with an "is" function: `is.character()`, `is.double()`, `is.integer()`, `is.logical()`, or, more generally, `is.atomic()`.
-
-NB: `is.numeric()` is a general test for the "numberliness" of a vector and returns `TRUE` for both integer and double vectors. 
-
-
-~~~
-is.numeric(int_var)
-~~~
-{: .r}
-
-
-
-~~~
-[1] TRUE
-~~~
-{: .output}
-
-
-
-~~~
-is.numeric(dbl_var)
-~~~
-{: .r}
-
-
-
-~~~
-[1] TRUE
-~~~
-{: .output}
 
 #### Coercion
 
@@ -207,7 +174,7 @@ Coercion often happens automatically. Most mathematical functions (`+`, `log`, `
 
 ### Lists
 
-Lists are different from atomic vectors because their elements can be of any type, including lists. You construct lists by using `list()` instead of `c()`: \index{lists} \index{vectors!lists|see{lists}}
+Lists are different from atomic vectors because their elements can be of any type, including lists. You construct lists by using `list()` instead of `c()`:
 
 
 ~~~
@@ -396,6 +363,12 @@ is.list(mod)
 [1] TRUE
 ~~~
 {: .output}
+> ## Callout
+>
+> Where does these data come from?
+>
+{: .callout}
+
 
 > ## Discussion 1
 >
@@ -426,7 +399,7 @@ is.list(mod)
 
 ## Attributes {#attributes}
 
-All objects can have arbitrary additional attributes, used to store metadata about the object. Attributes can be thought of as a named list (with unique names). Attributes can be accessed individually with `attr()` or all at once (as a list) with `attributes()`. \index{attributes}
+All objects can have arbitrary additional attributes, used to store metadata about the object. Attributes can be thought of as a named list (with unique names). Attributes can be accessed individually with `attr()` or all at once (as a list) with `attributes()`.
 
 The three most important attributes:
 
@@ -442,7 +415,7 @@ Each of these attributes has a specific accessor function to get and set values.
 
 #### Names {#vector-names}
 
-You can name elements in a vector in three ways: \index{attributes|names}
+You can name elements in a vector in three ways:
 
 * When creating it: 
 
@@ -524,7 +497,7 @@ You can create a new vector without names using `unname(x)`, or remove names in 
 
 ### Factors
 
-One important use of attributes is to define factors. A factor is a vector that can contain only predefined values, and is used to store categorical data. Factors are built on top of integer vectors using two attributes: the `class()`, "factor", which makes them behave differently from regular integer vectors, and the `levels()`, which defines the set of allowed values. \index{factors|(}
+One important use of attributes is to define factors. A factor is a vector that can contain only predefined values, and is used to store categorical data. Factors are built on top of integer vectors using two attributes: the `class()`, "factor", which makes them behave differently from regular integer vectors, and the `levels()`, which defines the set of allowed values.
 
 
 ~~~
@@ -684,7 +657,7 @@ Factors crip up all over R, and occasionally cause headaches for new R users. We
 
 ## Matrices and arrays {#matrices-and-arrays}
 
-Adding a `dim()` attribute to an atomic vector allows it to behave like a multi-dimensional __array__. A special case of the array is the __matrix__, which has two dimensions. Matrices are used commonly as part of the mathematical machinery of statistics. Arrays are much rarer, but worth being aware of. \index{arrays|(} \index{matrices|see{arrays}}
+Adding a `dim()` attribute to an atomic vector allows it to behave like a multi-dimensional __array__. A special case of the array is the __matrix__, which has two dimensions. Matrices are used commonly as part of the mathematical machinery of statistics. Arrays are much rarer, but worth being aware of.
 
 Matrices and arrays are created with `matrix()` and `array()`, or by using the assignment form of `dim()`:
 
@@ -758,7 +731,7 @@ c
 
 You can test if an object is a matrix or array using `is.matrix()` and `is.array()`, or by looking at the length of the `dim()`. `as.matrix()` and `as.array()` make it easy to turn an existing vector into a matrix or array.
 
-Vectors are not the only 1-dimensional data structure. You can have matrices with a single row or single column, or arrays with a single dimension. They may print similarly, but will behave differently. The differences aren't too important, but it's useful to know they exist in case you get strange output from a function (`tapply()` is a frequent offender). As always, use `str()` to reveal the differences. \index{arrays!1d}
+Vectors are not the only 1-dimensional data structure. You can have matrices with a single row or single column, or arrays with a single dimension. They may print similarly, but will behave differently. The differences aren't too important, but it's useful to know they exist in case you get strange output from a function (`tapply()` is a frequent offender). As always, use `str()` to reveal the differences.
 
 
 ~~~
@@ -815,7 +788,7 @@ str(array(1:3, 3))         # "array" vector
 ~~~
 {: .output}
 
-While atomic vectors are most commonly turned into matrices, the dimension attribute can also be set on lists to make list-matrices or list-arrays: \index{arrays!list-arrays} \index{list-arrays}
+While atomic vectors are most commonly turned into matrices, the dimension attribute can also be set on lists to make list-matrices or list-arrays:
 
 
 ~~~
@@ -834,7 +807,7 @@ l
 ~~~
 {: .output}
 
-These are relatively esoteric data structures, but can be useful if you want to arrange objects into a grid-like structure. For example, if you're running models on a spatio-temporal grid, it might be natural to preserve the grid structure by storing the models in a 3d array. \index{arrays|)}
+These are relatively esoteric data structures, but can be useful if you want to arrange objects into a grid-like structure. For example, if you're running models on a spatio-temporal grid, it might be natural to preserve the grid structure by storing the models in a 3d array.
 
 > ## Discussion 2
 >
@@ -856,7 +829,7 @@ These are relatively esoteric data structures, but can be useful if you want to 
 
 ## Data frames {#data-frames}
 
-A data frame is the most common way of storing data in R, and if [used systematically](http://vita.had.co.nz/papers/tidy-data.pdf) makes data analysis easier. Under the hood, a data frame is a list of equal-length vectors. This makes it a 2-dimensional structure, so it shares properties of both the matrix and the list.  This means that a data frame has `names()`, `colnames()`, and `rownames()`, although `names()` and `colnames()` are the same thing. The `length()` of a data frame is the length of the underlying list and so is the same as `ncol()`; `nrow()` gives the number of rows. \index{data frames|(}
+A data frame is the most common way of storing data in R, and if [used systematically](http://vita.had.co.nz/papers/tidy-data.pdf) makes data analysis easier. Under the hood, a data frame is a list of equal-length vectors. This makes it a 2-dimensional structure, so it shares properties of both the matrix and the list.  This means that a data frame has `names()`, `colnames()`, and `rownames()`, although `names()` and `colnames()` are the same thing. The `length()` of a data frame is the length of the underlying list and so is the same as `ncol()`; `nrow()` gives the number of rows.
 
 As described in [subsetting](#subsetting), you can subset a data frame like a 1d structure (where it behaves like a list), or a 2d structure (where it behaves like a matrix).
 
@@ -880,7 +853,7 @@ str(df)
 ~~~
 {: .output}
 
-Beware `data.frame()`'s default behaviour which turns strings into factors. Use `stringAsFactors = FALSE` to suppress this behaviour: \indexc{stringsAsFactors}
+Beware `data.frame()`'s default behaviour which turns strings into factors. Use `stringAsFactors = FALSE` to suppress this behaviour! Compare:
 
 
 ~~~
@@ -898,6 +871,24 @@ str(df)
 'data.frame':	3 obs. of  2 variables:
  $ x: int  1 2 3
  $ y: chr  "a" "b" "c"
+~~~
+{: .output}
+
+
+~~~
+df <- data.frame(
+  x = 1:3,
+  y = c("a", "b", "c"))
+str(df)
+~~~
+{: .r}
+
+
+
+~~~
+'data.frame':	3 obs. of  2 variables:
+ $ x: int  1 2 3
+ $ y: Factor w/ 3 levels "a","b","c": 1 2 3
 ~~~
 {: .output}
 
@@ -955,7 +946,7 @@ You can coerce an object to a data frame with `as.data.frame()`:
   
 * A matrix will create a data frame with the same number of columns and rows as the matrix.
 
-> ## Discussion 2
+> ## Discussion 3
 >
 > 1.  What attributes does a data frame possess?
 > 
@@ -964,288 +955,3 @@ You can coerce an object to a data frame with `as.data.frame()`:
 > 
 > 1.  Can you have a data frame with 0 rows? What about 0 columns?
 {: .discussion}
-
-### Reading data into a dataframe
-
-One of R's most powerful features is its ability to deal with tabular data -
-like what you might already have in a spreadsheet or a CSV. 
-The `read.csv` function is used for reading in tabular data stored in a text
-file where the columns of data are delimited by commas (csv = comma separated
-values). Tabs are also commonly used to separated columns - if your data are in
-this format you can use the function `read.delim`. If the columns in your data
-are delimited by a character other than commas or tabs, you can use the more
-general and flexible `read.table` function. CSV data are read into dataframes.
-
-Let's start by making a toy dataset in your `data/` directory, called `feline-data.csv` with the following data:
-
-
-~~~
-coat,weight,likes_string
-calico,2.1,1
-black,5.0,0
-tabby,3.2,1
-~~~
-{: .r}
-
-> ## Tip: Editing Text files in R
->
-> You can create `data/feline-data.csv` using a text editor (vi or Nano),
-> or within RStudio with the **File -> New File -> Text File** menu item.
-{: .callout}
-
-We can load this into R via the following:
-
-
-~~~
-cats <- read.csv(file = "data/feline-data.csv")
-cats
-~~~
-{: .r}
-
-
-
-~~~
-    coat weight likes_string
-1 calico    2.1            1
-2  black    5.0            0
-3  tabby    3.2            1
-~~~
-{: .output}
-
-We can begin exploring our dataset right away, pulling out columns by specifying
-them using the `$` operator:
-
-
-~~~
-cats$weight
-~~~
-{: .r}
-
-
-
-~~~
-[1] 2.1 5.0 3.2
-~~~
-{: .output}
-
-
-
-~~~
-cats$coat
-~~~
-{: .r}
-
-
-
-~~~
-[1] calico black  tabby 
-Levels: black calico tabby
-~~~
-{: .output}
-
-We can do other operations on the columns:
-
-
-~~~
-## Say we discovered that the scale weighs two Kg light:
-cats$weight + 2
-~~~
-{: .r}
-
-
-
-~~~
-[1] 4.1 7.0 5.2
-~~~
-{: .output}
-
-
-
-~~~
-paste("My cat is", cats$coat)
-~~~
-{: .r}
-
-
-
-~~~
-[1] "My cat is calico" "My cat is black"  "My cat is tabby" 
-~~~
-{: .output}
-
-We can ask what type of
-data something is:
-
-
-~~~
-typeof(cats$weight)
-~~~
-{: .r}
-
-
-
-~~~
-[1] "double"
-~~~
-{: .output}
-
-
-> ## Challenge 2
->
-> There are several subtly different ways to call variables, observations and
-> elements from data.frames:
->
-> - `cats[1]`
-> - `cats[[1]]`
-> - `cats$coat`
-> - `cats["coat"]`
-> - `cats[1, 1]`
-> - `cats[, 1]`
-> - `cats[1, ]`
->
-> Try out these examples and explain what is returned by each one.
->
-> *Hint:* Use the function `typeof()` to examine what is returned in each case.
->
-> > ## Solution to Challenge 2
-> > 
-> > ~~~
-> > cats[1]
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> >     coat
-> > 1 calico
-> > 2  black
-> > 3  tabby
-> > ~~~
-> > {: .output}
-> > We can think of a data frame as a list of vectors. The single brace `[1]`
-> returns the first slice of the list, as another list. In this case it is the
-> first column of the data frame.
-> > 
-> > ~~~
-> > cats[[1]]
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> > [1] calico black  tabby 
-> > Levels: black calico tabby
-> > ~~~
-> > {: .output}
-> > The double brace `[[1]]` returns the contents of the list item. In this case
-> it is the contents of the first column, a _vector_ of type _factor_.
-> > 
-> > ~~~
-> > cats$coat
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> > [1] calico black  tabby 
-> > Levels: black calico tabby
-> > ~~~
-> > {: .output}
-> > This example uses the `$` character to address items by name. _coat_ is the
-> first column of the data frame, again a _vector_ of type _factor_.
-> > 
-> > ~~~
-> > cats["coat"]
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> >     coat
-> > 1 calico
-> > 2  black
-> > 3  tabby
-> > ~~~
-> > {: .output}
-> > Here we are using a single brace `["coat"]` replacing the index number with
-> the column name. Like example 1, the returned object is a _list_.
-> > 
-> > ~~~
-> > cats[1, 1]
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> > [1] calico
-> > Levels: black calico tabby
-> > ~~~
-> > {: .output}
-> > This example uses a single brace, but this time we provide row and column
-> coordinates. The returned object is the value in row 1, column 1. The object
-> is an _integer_ but because it is part of a _vector_ of type _factor_, R
-> displays the label "calico" associated with the integer value.
-> > 
-> > ~~~
-> > cats[, 1]
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> > [1] calico black  tabby 
-> > Levels: black calico tabby
-> > ~~~
-> > {: .output}
-> > Like the previous example we use single braces and provide row and column
-> coordinates. The row coordinate is not specified, R interprets this missing
-> value as all the elements in this _column_ _vector_.
-> > 
-> > ~~~
-> > cats[1, ]
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> >     coat weight likes_string
-> > 1 calico    2.1            1
-> > ~~~
-> > {: .output}
-> > Again we use the single brace with row and column coordinates. The column
-> coordinate is not specified. The return value is a _list_ containing all the
-> values in the first row.
-> {: .solution}
-{: .challenge}
-
-
-> ## Challenge 3
->  Create a list of length two containing a character vector for each of the sections in this part of the workshop:
->
->  - Data types
->  - Data structures
->
->  Populate each character vector with the names of the data types and data
->  structures we've seen so far.
->
-> > ## Solution to Challenge 3
-> > 
-> > ~~~
-> > dataTypes <- c('double', 'complex', 'integer', 'character', 'logical')
-> > dataStructures <- c('data.frame', 'vector', 'factor', 'list', 'matrix')
-> > answer <- list(dataTypes, dataStructures)
-> > ~~~
-> > {: .r}
-> > Note: it's nice to make a list in big writing on the board or taped to the wall
-> > listing all of these types and structures - leave it up for the rest of the workshop
-> > to remind people of the importance of these basics.
-> >
-> {: .solution}
-{: .challenge}

@@ -1,0 +1,866 @@
+---
+title: Subsetting Data
+teaching: 20
+exercises: 10
+questions:
+- "How can I work with subsets of data in R?"
+objectives:
+- "To be able to subset vectors, factors, matrices, lists, and data frames"
+- "To be able to extract individual and multiple elements: by index, by name, using comparison operations"
+- "To be able to skip and remove elements from various data structures."
+keypoints:
+- "Indexing in R starts at 1, not 0."
+- "Access individual values by location using `[]`."
+- "Access slices of data using `[low:high]`."
+- "Access arbitrary sets of data using `[c(...)]`."
+- "Use `which` to select subsets of data based on value."
+---
+
+
+
+
+R has many powerful subset operators and mastering them will allow you to
+easily perform complex operations on any kind of dataset.
+
+There are six different ways we can subset any kind of object, and three
+different subsetting operators for the different data structures.
+
+Let's start with the workhorse of R: atomic vectors.
+
+
+~~~
+x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
+names(x) <- c('a', 'b', 'c', 'd', 'e')
+x
+~~~
+{: .r}
+
+
+
+~~~
+  a   b   c   d   e 
+5.4 6.2 7.1 4.8 7.5 
+~~~
+{: .output}
+
+So now that we've created a dummy vector to play with, how do we get at its
+contents?
+
+## Accessing elements using their indices
+
+To extract elements of a vector we can give their corresponding index, starting
+from one:
+
+
+~~~
+x[1]
+~~~
+{: .r}
+
+
+
+~~~
+  a 
+5.4 
+~~~
+{: .output}
+
+
+~~~
+x[4]
+~~~
+{: .r}
+
+
+
+~~~
+  d 
+4.8 
+~~~
+{: .output}
+
+It may look different, but the square brackets operator is a function. For atomic vectors
+(and matrices), it means "get me the nth element".
+
+We can ask for multiple elements at once:
+
+
+~~~
+x[c(1, 3)]
+~~~
+{: .r}
+
+
+
+~~~
+  a   c 
+5.4 7.1 
+~~~
+{: .output}
+
+Or slices of the vector:
+
+
+~~~
+x[1:4]
+~~~
+{: .r}
+
+
+
+~~~
+  a   b   c   d 
+5.4 6.2 7.1 4.8 
+~~~
+{: .output}
+
+We can ask for the same element multiple times:
+
+
+~~~
+x[c(1,1,3)]
+~~~
+{: .r}
+
+
+
+~~~
+  a   a   c 
+5.4 5.4 7.1 
+~~~
+{: .output}
+
+If we ask for a number outside of the vector, R will return missing values:
+
+
+~~~
+x[6]
+~~~
+{: .r}
+
+
+
+~~~
+<NA> 
+  NA 
+~~~
+{: .output}
+
+This is a vector of length one containing an `NA`, whose name is also `NA`.
+
+If we ask for the 0th element, we get an empty vector:
+
+
+~~~
+x[0]
+~~~
+{: .r}
+
+
+
+~~~
+named numeric(0)
+~~~
+{: .output}
+
+> ## Vector numbering in R starts at 1
+>
+> In many programming languages (C and python, for example), the first
+> element of a vector has an index of 0. In R, the first element is 1.
+{: .callout}
+
+## Skipping and removing elements
+
+If we use a negative number as the index of a vector, R will return
+every element *except* for the one specified:
+
+
+~~~
+x[-2]
+~~~
+{: .r}
+
+
+
+~~~
+  a   c   d   e 
+5.4 7.1 4.8 7.5 
+~~~
+{: .output}
+
+We can skip multiple elements:
+
+
+~~~
+x[c(-1, -5)]  # or x[-c(1,5)]
+~~~
+{: .r}
+
+
+
+~~~
+  b   c   d 
+6.2 7.1 4.8 
+~~~
+{: .output}
+
+> ## Tip: Order of operations
+>
+> A common trip up for novices occurs when trying to skip
+> slices of a vector. Most people first try to negate a
+> sequence like so:
+>
+> 
+> ~~~
+> x[-1:3]
+> ~~~
+> {: .r}
+>
+> This gives a somewhat cryptic error:
+>
+> 
+> ~~~
+> Error in x[-1:3]: only 0's may be mixed with negative subscripts
+> ~~~
+> {: .error}
+>
+> But remember the order of operations. `:` is really a function, so
+> what happens is it takes its first argument as -1, and second as 3,
+> so generates the sequence of numbers: `c(-1, 0, 1, 2, 3)`.
+>
+> The correct solution is to wrap that function call in brackets, so
+> that the `-` operator applies to the results:
+>
+> 
+> ~~~
+> x[-(1:3)]
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+>   d   e 
+> 4.8 7.5 
+> ~~~
+> {: .output}
+{: .callout}
+
+To remove elements from a vector, we need to assign the results back
+into the variable:
+
+
+~~~
+x <- x[-4]
+x
+~~~
+{: .r}
+
+
+
+~~~
+  a   b   c   e 
+5.4 6.2 7.1 7.5 
+~~~
+{: .output}
+
+> ## Challenge 1
+>
+> Given the following code:
+>
+> 
+> ~~~
+> x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
+> names(x) <- c('a', 'b', 'c', 'd', 'e')
+> print(x)
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+>   a   b   c   d   e 
+> 5.4 6.2 7.1 4.8 7.5 
+> ~~~
+> {: .output}
+>
+> Come up with at least 3 different commands that will produce the following output:
+>
+> 
+> ~~~
+>   b   c   d 
+> 6.2 7.1 4.8 
+> ~~~
+> {: .output}
+>
+> After you find 3 different commands, compare notes with your neighbour. Did you have different strategies?
+>
+> > ## Solution to challenge 1
+> >
+> > 
+> > ~~~
+> > x[2:4]
+> > ~~~
+> > {: .r}
+> > 
+> > 
+> > 
+> > ~~~
+> >   b   c   d 
+> > 6.2 7.1 4.8 
+> > ~~~
+> > {: .output}
+> > 
+> > ~~~
+> > x[-c(1,5)]
+> > ~~~
+> > {: .r}
+> > 
+> > 
+> > 
+> > ~~~
+> >   b   c   d 
+> > 6.2 7.1 4.8 
+> > ~~~
+> > {: .output}
+> > 
+> > ~~~
+> > x[c("b", "c", "d")]
+> > ~~~
+> > {: .r}
+> > 
+> > 
+> > 
+> > ~~~
+> >   b   c   d 
+> > 6.2 7.1 4.8 
+> > ~~~
+> > {: .output}
+> > 
+> > ~~~
+> > x[c(2,3,4)]
+> > ~~~
+> > {: .r}
+> > 
+> > 
+> > 
+> > ~~~
+> >   b   c   d 
+> > 6.2 7.1 4.8 
+> > ~~~
+> > {: .output}
+> >
+> {: .solution}
+{: .challenge}
+
+## Subsetting by name
+
+We can extract elements by using their name, instead of index:
+
+
+~~~
+x[c("a", "c")]
+~~~
+{: .r}
+
+
+
+~~~
+  a   c 
+5.4 7.1 
+~~~
+{: .output}
+
+This is usually a much more reliable way to subset objects: the
+position of various elements can often change when chaining together
+subsetting operations, but the names will always remain the same!
+
+Unfortunately we can't skip or remove elements so easily.
+
+To skip (or remove) a single named element:
+
+
+~~~
+x[-which(names(x) == "a")]
+~~~
+{: .r}
+
+
+
+~~~
+  b   c   d   e 
+6.2 7.1 4.8 7.5 
+~~~
+{: .output}
+
+The `which` function returns the indices of all `TRUE` elements of its argument.
+Remember that expressions evaluate before being passed to functions. Let's break
+this down so that its clearer what's happening.
+
+First this happens:
+
+
+~~~
+names(x) == "a"
+~~~
+{: .r}
+
+
+
+~~~
+[1]  TRUE FALSE FALSE FALSE FALSE
+~~~
+{: .output}
+
+The condition operator is applied to every name of the vector `x`. Only the
+first name is "a" so that element is TRUE.
+
+`which` then converts this to an index:
+
+
+~~~
+which(names(x) == "a")
+~~~
+{: .r}
+
+
+
+~~~
+[1] 1
+~~~
+{: .output}
+
+
+
+Only the first element is `TRUE`, so `which` returns 1. Now that we have indices
+the skipping works because we have a negative index!
+
+Skipping multiple named indices is similar, but uses a different comparison
+operator:
+
+
+~~~
+x[-which(names(x) %in% c("a", "c"))]
+~~~
+{: .r}
+
+
+
+~~~
+  b   d   e 
+6.2 4.8 7.5 
+~~~
+{: .output}
+
+The `%in%` goes through each element of its left argument, in this case the
+names of `x`, and asks, "Does this element occur in the second argument?".
+
+> ## Challenge 2
+>
+> Run the following code to define vector `x` as above:
+>
+> 
+> ~~~
+> x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
+> names(x) <- c('a', 'b', 'c', 'd', 'e')
+> print(x)
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+>   a   b   c   d   e 
+> 5.4 6.2 7.1 4.8 7.5 
+> ~~~
+> {: .output}
+>
+> Given this vector `x`, what would you expect the following to do?
+>
+>~~~
+> x[-which(names(x) == "g")]
+>~~~
+>{: .r}
+>
+> Try out this command and see what you get. Did this match your expectation?
+> Why did we get this result? (Tip: test out each part of the command on it's own - this is a useful debugging strategy)
+>
+> Which of the following are true:
+>
+> * A) if there are no `TRUE` values passed to `which`, an empty vector is returned
+> * B) if there are no `TRUE` values passed to `which`, an error message is shown
+> * C) `integer()` is an empty vector
+> * D) making an empty vector negative produces an "everything" vector
+> * E) `x[]` gives the same result as `x[integer()]`
+>
+> > ## Solution to challenge 2
+> >
+> > A and C are correct.
+> >
+> > The `which` command returns the index of every `TRUE` value in its
+> > input. The `names(x) == "g"` command didn't return any `TRUE` values. Because
+> > there were no `TRUE` values passed to the `which` command, it returned an
+> > empty vector. Negating this vector with the minus sign didn't change its
+> > meaning. Because we used this empty vector to retrieve values from `x`, it
+> > produced an empty numeric vector. It was a `named numeric` empty vector
+> > because the vector type of x is "named numeric" since we assigned names to the
+> > values (try `str(x)` ).
+> {: .solution}
+{: .challenge}
+
+> ## Tip: Non-unique names
+>
+> You should be aware that it is possible for multiple elements in a
+> vector to have the same name. (For a data frame, columns can have
+> the same name --- although R tries to avoid this --- but row names
+> must be unique.) Consider these examples:
+>
+>
+>~~~
+> x <- 1:3
+> x
+>~~~
+>{: .r}
+>
+>
+>
+>~~~
+>[1] 1 2 3
+>~~~
+>{: .output}
+>
+>
+>
+>~~~
+> names(x) <- c('a', 'a', 'a')
+> x
+>~~~
+>{: .r}
+>
+>
+>
+>~~~
+>a a a 
+>1 2 3 
+>~~~
+>{: .output}
+>
+>
+>
+>~~~
+> x['a']  # only returns first value
+>~~~
+>{: .r}
+>
+>
+>
+>~~~
+>a 
+>1 
+>~~~
+>{: .output}
+>
+>
+>
+>~~~
+> x[which(names(x) == 'a')]  # returns all three values
+>~~~
+>{: .r}
+>
+>
+>
+>~~~
+>a a a 
+>1 2 3 
+>~~~
+>{: .output}
+{: .callout}
+
+
+> ## Tip: Getting help for operators
+>
+> Remember you can search for help on operators by wrapping them in quotes:
+> `help("%in%")` or `?"%in%"`.
+>
+{: .callout}
+
+
+So why can't we use `==` like before? That's an excellent question.
+
+Let's take a look at the comparison component of this code:
+
+
+~~~
+names(x) == c('a', 'c')
+~~~
+{: .r}
+
+
+
+~~~
+Warning in names(x) == c("a", "c"): longer object length is not a multiple
+of shorter object length
+~~~
+{: .error}
+
+
+
+~~~
+[1]  TRUE FALSE  TRUE
+~~~
+{: .output}
+
+Obviously "c" is in the names of `x`, so why didn't this work? `==` works
+slightly differently than `%in%`. It will compare each element of its left argument
+to the corresponding element of its right argument.
+
+Here's a mock illustration:
+
+
+~~~
+c("a", "b", "c", "e")  # names of x
+   |    |    |    |    # The elements == is comparing
+c("a", "c")
+~~~
+{: .r}
+
+When one vector is shorter than the other, it gets *recycled*:
+
+
+~~~
+c("a", "b", "c", "e")  # names of x
+   |    |    |    |    # The elements == is comparing
+c("a", "c", "a", "c")
+~~~
+{: .r}
+
+In this case R simply repeats `c("a", "c")` twice. If the longer
+vector length isn't a multiple of the shorter vector length, then
+R will also print out a warning message:
+
+
+~~~
+names(x) == c('a', 'c', 'e')
+~~~
+{: .r}
+
+
+
+~~~
+[1]  TRUE FALSE FALSE
+~~~
+{: .output}
+
+This difference between `==` and `%in%` is important to remember,
+because it can introduce hard to find and subtle bugs!
+
+## Subsetting through other logical operations
+
+We can also more simply subset through logical operations:
+
+
+~~~
+x[c(TRUE, TRUE, FALSE, FALSE)]
+~~~
+{: .r}
+
+
+
+~~~
+a a 
+1 2 
+~~~
+{: .output}
+
+Note that in this case, the logical vector is also recycled to the
+length of the vector we're subsetting!
+
+
+~~~
+x[c(TRUE, FALSE)]
+~~~
+{: .r}
+
+
+
+~~~
+a a 
+1 3 
+~~~
+{: .output}
+
+Since comparison operators evaluate to logical vectors, we can also
+use them to succinctly subset vectors:
+
+
+~~~
+x[x > 7]
+~~~
+{: .r}
+
+
+
+~~~
+named integer(0)
+~~~
+{: .output}
+
+> ## Tip: Combining logical conditions
+>
+> There are many situations in which you will wish to combine multiple logical
+> criteria. For example, we might want to find all the countries that are
+> located in Asia **or** Europe **and** have life expectancies within a certain
+> range. Several operations for combining logical vectors exist in R:
+>
+>  * `&`, the "logical AND" operator: returns `TRUE` if both the left and right
+>    are `TRUE`.
+>  * `|`, the "logical OR" operator: returns `TRUE`, if either the left or right
+>    (or both) are `TRUE`.
+>
+> The recycling rule applies with both of these, so `TRUE & c(TRUE, FALSE, TRUE)`
+> will compare the first `TRUE` on the left of the `&` sign with each of the
+> three conditions on the right.
+>
+> You may sometimes see `&&` and `||` instead of `&` and `|`. These operators
+> do not use the recycling rule: they only look at the first element of each
+> vector and ignore the remaining elements. The longer operators are mainly used
+> in programming, rather than data analysis.
+>
+>  * `!`, the "logical NOT" operator: converts `TRUE` to `FALSE` and `FALSE` to
+>    `TRUE`. It can negate a single logical condition (eg `!TRUE` becomes
+>    `FALSE`), or a whole vector of conditions(eg `!c(TRUE, FALSE)` becomes
+>    `c(FALSE, TRUE)`).
+>
+> Additionally, you can compare the elements within a single vector using the
+> `all` function (which returns `TRUE` if every element of the vector is `TRUE`)
+> and the `any` function (which returns `TRUE` if one or more elements of the
+> vector are `TRUE`).
+{: .callout}
+
+> ## Challenge 3
+>
+> Given the following code:
+>
+> 
+> ~~~
+> x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
+> names(x) <- c('a', 'b', 'c', 'd', 'e')
+> print(x)
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+>   a   b   c   d   e 
+> 5.4 6.2 7.1 4.8 7.5 
+> ~~~
+> {: .output}
+>
+> Write a subsetting command to return the values in x that are greater than 4 and less than 7.
+>
+> > ## Solution to challenge 3
+> >
+> > 
+> > ~~~
+> > x_subset <- x[x<7 & x>4]
+> > print(x_subset)
+> > ~~~
+> > {: .r}
+> > 
+> > 
+> > 
+> > ~~~
+> >   a   b   d 
+> > 5.4 6.2 4.8 
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
+
+## Handling special values
+
+At some point you will encounter functions in R which cannot handle missing, infinite,
+or undefined data.
+
+There are a number of special functions you can use to filter out this data:
+
+ * `is.na` will return all positions in a vector, matrix, or data.frame
+   containing `NA`.
+ * likewise, `is.nan`, and `is.infinite` will do the same for `NaN` and `Inf`.
+ * `is.finite` will return all positions in a vector, matrix, or data.frame
+   that do not contain `NA`, `NaN` or `Inf`.
+ * `na.omit` will filter out all missing values from a vector
+
+## Factor subsetting
+
+Now that we've explored the different ways to subset vectors, how
+do we subset the other data structures?
+
+Factor subsetting works the same way as vector subsetting.
+
+
+~~~
+f <- factor(c("a", "a", "b", "c", "c", "d"))
+f[f == "a"]
+~~~
+{: .r}
+
+
+
+~~~
+[1] a a
+Levels: a b c d
+~~~
+{: .output}
+
+
+
+~~~
+f[f %in% c("b", "c")]
+~~~
+{: .r}
+
+
+
+~~~
+[1] b c c
+Levels: a b c d
+~~~
+{: .output}
+
+
+
+~~~
+f[1:3]
+~~~
+{: .r}
+
+
+
+~~~
+[1] a a b
+Levels: a b c d
+~~~
+{: .output}
+
+An important note is that skipping elements will not remove the level
+even if no more of that category exists in the factor:
+
+
+~~~
+f[-3]
+~~~
+{: .r}
+
+
+
+~~~
+[1] a a c c d
+Levels: a b c d
+~~~
+{: .output}
+
+You can read how to subset matrices in the full version of this lesson at the [Software Carpentry](http://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting/).
+
+We will discuss subsetting lists and dataframes in the next lesson.
