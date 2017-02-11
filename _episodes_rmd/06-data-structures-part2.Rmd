@@ -1,7 +1,7 @@
 ---
 title: "Exploring Data Frames"
-teaching: 30
-exercises: 10
+teaching: 40
+exercises: 20
 questions:
 - "How can I manipulate a data frame?"
 objectives:
@@ -28,12 +28,57 @@ knitr_fig_path("06-")
 d <- read.csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt", header=TRUE)
 ```
 
+## Data frames {#data-frames}
 
-In one of the previous lessons, we toured all the basic data types and data structures in R. 
-Everything you do will be a manipulation of those objects. But a whole lot of the time, 
-the structure you'll be dealing with is going to be the data frame - that table that we started 
-with that information from a CSV gets dumped into when we load it. In this lesson, we'll learn more
-about working with data frames.
+A data frame is the most common way of storing data in R, and if [used systematically](http://vita.had.co.nz/papers/tidy-data.pdf) makes data analysis easier. Under the hood, a data frame is a list of equal-length vectors. This makes it a 2-dimensional structure, so it shares properties of both the matrix and the list.  This means that a data frame has `names()`, `colnames()`, and `rownames()`, although `names()` and `colnames()` are the same thing. The `length()` of a data frame is the length of the underlying list and so is the same as `ncol()`; `nrow()` gives the number of rows.
+
+You can subset a data frame like a 1d structure (where it behaves like a list), or a 2d structure (where it behaves like a matrix).
+
+### Creation
+
+You create a data frame using `data.frame()`, which takes named vectors as input:
+
+```{r}
+df <- data.frame(x = 1:3, y = c("a", "b", "c"))
+str(df)
+```
+
+Beware `data.frame()`'s default behaviour which turns strings into factors. Use `stringAsFactors = FALSE` to suppress this behaviour! Compare:
+
+```{r}
+df <- data.frame(
+  x = 1:3,
+  y = c("a", "b", "c"),
+  stringsAsFactors = FALSE)
+str(df)
+```
+
+```{r}
+df <- data.frame(
+  x = 1:3,
+  y = c("a", "b", "c"))
+str(df)
+```
+
+### Testing and coercion
+
+Because a `data.frame` is an S3 class, its type reflects the underlying vector used to build it: the list. To check if an object is a data frame, use `class()` or test explicitly with `is.data.frame()`:
+
+```{r}
+typeof(df)
+class(df)
+is.data.frame(df)
+```
+
+You can coerce an object to a data frame with `as.data.frame()`:
+
+* A vector will create a one-column data frame.
+
+* A list will create one column for each element; it's an error if they're 
+  not all the same length.
+  
+* A matrix will create a data frame with the same number of columns and rows as the matrix.
+
 
 ## Reading data into a dataframe
 
@@ -41,10 +86,7 @@ One of R's most powerful features is its ability to deal with tabular data -
 like what you might already have in a spreadsheet or a CSV. 
 The `read.csv` function is used for reading in tabular data stored in a text
 file where the columns of data are delimited by commas (csv = comma separated
-values). Tabs are also commonly used to separated columns - if your data are in
-this format you can use the function `read.delim`. If the columns in your data
-are delimited by a character other than commas or tabs, you can use the more
-general and flexible `read.table` function. CSV data are read into dataframes.
+values). CSV data are read into dataframes.
 
 Let's start by making a toy dataset in your `data/` directory, called `feline-data.csv` with the following data:
 
@@ -90,71 +132,89 @@ data something is:
 ```{r}
 typeof(cats$weight)
 ```
+> ## Subsetting lists and dataframes
+> ### Subsetting lists: three functions: `[`, `[[`, and `$`.
+>
+> Using `[` will always return a list. If you want to *subset* a list, but not
+> *extract* an element, then you will likely use `[`.
+> 
+> ~~~~~~~~~~
+> cats[1]
+> ~~~~~~~~~~
+> {: .source}
+>
+> To *extract* individual elements of a list, you need to use the double-square
+> bracket function: `[[`.
+> 
+> ~~~~~~~~~~
+> cats[[1]]
+> ~~~~~~~~~~
+> {: .source}
+> 
+> You **can't** extract more than one element at once:
+> 
+> ~~~~~~~~~~
+> cats[[1:2]]
+> ~~~~~~~~~~
+> {: .source}
+> 
+> **Nor** use it to skip elements:
+> 
+> ~~~~~~~~~~
+> cats[[-1]]
+> ~~~~~~~~~~
+> {: .source}
+> 
+> But you can use names to both subset and extract elements:
+> 
+> ~~~~~~~~~~
+> d[["coat"]]
+> ~~~~~~~~~~
+> {: .source}
+>
+> The `$` function is a shorthand way for extracting elements by name:
+> 
+> ~~~~~~~~~~
+> cats$coat
+> ~~~~~~~~~~
+> {: .source}
+>
+> ### Subsetting dataframes
+>
+> Remember the data frames are lists underneath the hood, so similar rules
+> apply. However they are also two dimensional objects:
+> 
+> `[` with one argument will act the same was as for lists, where each list
+> element corresponds to a column. The resulting object will be a data frame:
+>
+> With two arguments, `[` behaves the same way as for matrices, 
+> exctracting raws (first argument) and columns (second argument):
+> 
+> ~~~~~~~~~~
+> cats[1:3,]
+> ~~~~~~~~~~
+> {: .source}
+>
+> If we subset a single row, the result will be a data frame (because
+> the elements are mixed types):
+> 
+> ~~~~~~~~~~
+> cats[3,]
+> ~~~~~~~~~~
+> {: .source}
+>
+> But for a single column the result will be a vector (this can
+> be changed with the third argument, `drop = FALSE`).
+> 
+> ~~~~~~~~~~
+> cats[,3]
+> ~~~~~~~~~~
+> {: .source}
+>
+{: .callout}
 
 
-> ## Challenge 2
->
-> There are several subtly different ways to call variables, observations and
-> elements from data.frames:
->
-> - `cats[1]`
-> - `cats[[1]]`
-> - `cats$coat`
-> - `cats["coat"]`
-> - `cats[1, 1]`
-> - `cats[, 1]`
-> - `cats[1, ]`
->
-> Try out these examples and explain what is returned by each one.
->
-> *Hint:* Use the function `typeof()` to examine what is returned in each case.
->
-> > ## Solution to Challenge 2
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats[1]
-> > ```
-> > We can think of a data frame as a list of vectors. The single brace `[1]`
-> returns the first slice of the list, as another list. In this case it is the
-> first column of the data frame.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats[[1]]
-> > ```
-> > The double brace `[[1]]` returns the contents of the list item. In this case
-> it is the contents of the first column, a _vector_ of type _factor_.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats$coat
-> > ```
-> > This example uses the `$` character to address items by name. _coat_ is the
-> first column of the data frame, again a _vector_ of type _factor_.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats["coat"]
-> > ```
-> > Here we are using a single brace `["coat"]` replacing the index number with
-> the column name. Like example 1, the returned object is a _list_.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats[1, 1]
-> > ```
-> > This example uses a single brace, but this time we provide row and column
-> coordinates. The returned object is the value in row 1, column 1. The object
-> is an _integer_ but because it is part of a _vector_ of type _factor_, R
-> displays the label "calico" associated with the integer value.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats[, 1]
-> > ```
-> > Like the previous example we use single braces and provide row and column
-> coordinates. The row coordinate is not specified, R interprets this missing
-> value as all the elements in this _column_ _vector_.
-> > ```{r, eval=TRUE, echo=TRUE}
-> > cats[1, ]
-> > ```
-> > Again we use the single brace with row and column coordinates. The column
-> coordinate is not specified. The return value is a _list_ containing all the
-> values in the first row.
-> {: .solution}
-{: .challenge}
-
-
-> ## Challenge 3
+> ## Challenge 1
 >  Create a list of length two containing a character vector for each of the sections in this part of the workshop:
 >
 >  - Data types
@@ -163,7 +223,7 @@ typeof(cats$weight)
 >  Populate each character vector with the names of the data types and data
 >  structures we've seen so far.
 >
-> > ## Solution to Challenge 3
+> > ## Solution to Challenge 1
 > > ```{r}
 > > dataTypes <- c('double', 'complex', 'integer', 'character', 'logical')
 > > dataStructures <- c('data.frame', 'vector', 'factor', 'list', 'matrix')
@@ -276,9 +336,7 @@ na.omit(cats)
 > It's important to notice that the previous command simply printed our `cats` dataframe excluding some rows
 > In order to make changes in the dataframe itself, we want to assign them to the dataset itslef:
 > ~~~~~~~~
-> cats
 > cats <- cats[-4,]
-> cats
 > ~~~~~~~~
 {:  .callout}
 
@@ -300,7 +358,7 @@ rownames(cats) <- NULL
 cats
 ```
 
-> ## Challenge 1
+> ## Challenge 2
 >
 > You can create a new data frame right from within R with the following syntax:
 > ```{r}
@@ -318,7 +376,7 @@ cats
 > Then use `rbind` to add an entry for the people sitting beside you.
 > Finally, use `cbind` to add a column with each person's answer to the question, "Is it time for coffee break?"
 >
-> > ## Solution to Challenge 1
+> > ## Solution to Challenge 2
 > > ```{r}
 > > df <- data.frame(first = c('Grace'),
 > >                  last = c('Hopper'),
@@ -380,14 +438,14 @@ We can also look at the data in the databrame with the function `head`:
 head(d, n=3)
 ```
 
-> ## Challenge 1
+> ## Challenge 3
 >
 > Use what you've learned about factors, lists and vectors,
 > as well as the output of functions like `colnames` and `dim`
 > to explain what everything that `str` prints out for this dataset means.
 > If there are any parts you can't interpret, discuss with your neighbors!
 >
-> > ## Solution to Challenge 1
+> > ## Solution to Challenge 3
 > >
 > > The object `d` is a data frame with 16 columns (variables)
 > > - all columns are vectors;
@@ -429,7 +487,7 @@ used to access rows, columns, and cells of a dataframe. Using the bracket operat
 the elements of a vector (e.g., vec[2]), except as two-dimensional data structures, dataframes use two 
 indexes separated by a comma: df[row, col].
 
->  ## Selecting multiple rows and/or columns
+> ## Selecting multiple rows and/or columns (reminder)
 >
 > 1. The indexes we use for dataframes can be vectors to select multiple rows and columns simultaneously. 
 > 1. Omitting the row index retrieves all rows, and omitting the column index retrieves all columns.
@@ -440,7 +498,7 @@ indexes separated by a comma: df[row, col].
 > d[1,]
 > d[2, 3]
 > ~~~~~~~~~~
->
+> {: .source}
 {: .callout}
 
 When accessing a single column from a dataframe, R’s default behavior is to return this as a vector—not 
@@ -457,11 +515,11 @@ Now, let’s add an additional column to our dataframe that indicates whether a 
 d$cent <- d$start >= 25800000 & d$end <= 29700000
 ```
 
-> ## Challenge 2
+> ## Challenge 4
 >
 > How many windows fall into this centromeric region? 
 >
-> > ## Solutions to challenge 2
+> > ## Solutions to challenge 4
 > >
 > > We can use `table()` 
 > > ```{r}
@@ -477,9 +535,9 @@ d$cent <- d$start >= 25800000 & d$end <= 29700000
 
 In the dataset we are using, the diversity estimate Pi is measured per sampling window (1kb) and scaled up by 10x (see supplementary Text S1 for more details). It would be useful to have this scaled as per basepair nucleotide diversity (so as to make the scale more intuitive). Hence our next challenge.
 
-> ## Challenge 3
+> ## Challenge 5
 >
-> 1. Create a new rescaled column called diversity, in which the nucleotide diversity is calculated per basepair 
+> *Create a new rescaled column called diversity, in which the nucleotide diversity is calculated per basepair 
 > 
 > > ## Solution
 > >
@@ -488,7 +546,7 @@ In the dataset we are using, the diversity estimate Pi is measured per sampling 
 > > ```
 > {: .solution}
 >
-> 2. Use the `summary()` function to calculate the basic statistics for the nucleotide diversity
+> *Use the `summary()` function to calculate the basic statistics for the nucleotide diversity
 >
 > > ## Solution
 > >
@@ -502,7 +560,7 @@ In the dataset we are using, the diversity estimate Pi is measured per sampling 
 Finally, to make sure our analysis is reproducible, we should put the code
 into a script file so we can come back to it later.
 
-> ## Challenge 4
+> ## Challenge 6
 >
 > Go to file -> new file -> R script, and write an R script
 > to load in the dataset we used and to create additional columns. Put it in the `scripts/`
@@ -511,16 +569,12 @@ into a script file so we can come back to it later.
 > Run the script using the `source` function, using the file path
 > as its argument (or by pressing the "source" button in RStudio).
 >
-> > ## Solution to Challenge 4
+> > ## Solution to Challenge 6
 > > The contents of `script/first_script.R`:
 > > ```{r eval = FALSE}
 > > d <- read.csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt")
 > > d$cent <- d$start >= 25800000 & d$end <= 29700000
 > > d$diversity <- d$Pi / (10*1000) # rescale, removing 10x and making per bp
-> > ```
-> > To run the script and load the data into the `gapminder` variable:
-> > ```{r eval = FALSE}
-> > source(file = "scripts/load-gapminder.R")
 > > ```
 > {: .solution}
 {: .challenge}
@@ -544,7 +598,7 @@ Often we want to investigate such outliers more closely. Let’s use data subset
 out some rows that have 85 or more SNPs (the number is arbitrary). We can create a logical 
 vector containing whether each observation (row) has 85 or more SNPs using the following:
 
-```{r}
+```{r, eval=FALSE}
 d$total.SNPs >= 85
 ```
 We can use this logical vector to extract the rows of our dataframe that have a TRUE value for d$total.SNPs >= 85:
@@ -570,7 +624,7 @@ d[d$Pi > 16 & d$percent.GC > 80, ]
 Remember, columns of a dataframe are just vectors. If you only need the data from one column, 
 just subset it as you would a vector:
 
-```{r}
+```{r, eval=FALSE}
 d$percent.GC[d$Pi > 16]
 ```
 Subsetting columns can be a useful way to summarize data across two different conditions. 
@@ -589,12 +643,12 @@ Indeed, there are only nine windows that have a GC content over 80%:
 sum(d$percent.GC >= 80)
 ```
 
-> ## Challenge 5
+> ## Challenge 7
 >
 > As another example, consider looking at Pi by windows that fall in the centromere and those that do not.
 > Does the centromer have higher nucleotide diversity than other regions in these data?
 >
-> > ## Solutions to challenge 5
+> > ## Solutions to challenge 7
 > >
 > > Because d$cent is a logical vector, we can subset with it directly (and take its complement 
 > > by using the negation operator, !):
@@ -612,7 +666,7 @@ In addition to using logical vectors to subset dataframes, it’s also possible 
 rows by referring to their integer positions. The function which() takes a vector of 
 logical values and returns the positions of all TRUE values. For example:
 
-```{r}
+```{r, eval=FALSE}
 d$Pi>3
 which(d$Pi > 3)
 ```
@@ -624,7 +678,6 @@ necessary—for example, if we wanted to select the four first TRUE values in a 
 ```{r}
 which(d$Pi > 10)[1:4]
 ```
-
 which() also has two related functions that return the index of the first minimum or maximum element of a vector: 
 which.min() and which.max(). For example:
 
@@ -632,7 +685,6 @@ which.min() and which.max(). For example:
 d[which.min(d$total.Bases),]
 d[which.max(d$depth),]
 ```
-
 Sometimes subsetting expressions inside brackets can be quite redundant (because each column must be 
 specified like `d$Pi`, `d$depth`, etc). A useful convenience function (intended primarily for interactive use) 
 is the R function `subset()`. `subset()` takes two arguments: the dataframe to operate on, and then conditions 
@@ -650,227 +702,3 @@ subset(d, Pi > 16 & percent.GC > 80, c(start, end, Pi, percent.GC, depth))
 
 Note that we (somewhat magically) don’t need to quote column names. This is because `subset()` follows 
 special evaluation rules, and for this reason, `subset()` is best used only for interactive work.
-
-## End of lesson
-
-Now we'll introduce some new subsetting operators. There are three functions
-used to subset lists. `[`, as we've seen for atomic vectors and matrices,
-as well as `[[` and `$`.
-
-Using `[` will always return a list. If you want to *subset* a list, but not
-*extract* an element, then you will likely use `[`.
-
-```{r}
-xlist <- list(a = "Software Carpentry", b = 1:10, data = head(iris))
-xlist[1]
-```
-
-This returns a *list with one element*.
-
-We can subset elements of a list exactly the same was as atomic
-vectors using `[`. Comparison operations however won't work as
-they're not recursive, they will try to condition on the data structures
-in each element of the list, not the individual elements within those
-data structures.
-
-```{r}
-xlist[1:2]
-```
-
-To extract individual elements of a list, you need to use the double-square
-bracket function: `[[`.
-
-```{r}
-xlist[[1]]
-```
-
-Notice that now the result is a vector, not a list.
-
-You can't extract more than one element at once:
-
-```{r, error=TRUE}
-xlist[[1:2]]
-```
-
-Nor use it to skip elements:
-
-```{r, error=TRUE}
-xlist[[-1]]
-```
-
-But you can use names to both subset and extract elements:
-
-```{r}
-xlist[["a"]]
-```
-
-The `$` function is a shorthand way for extracting elements by name:
-
-```{r}
-xlist$data
-```
-
-> ## Challenge 5
-> Given the following list:
->
-> ```{r, eval=FALSE}
-> xlist <- list(a = "Software Carpentry", b = 1:10, data = head(iris))
-> ```
->
-> Using your knowledge of both list and vector subsetting, extract the number 2 from xlist.
-> Hint: the number 2 is contained within the "b" item in the list.
->
-> > ## Solution to challenge 5
-> >
-> > ```{r}
-> > xlist$b[2]
-> > ```
-> > ```{r}
-> > xlist[[2]][2]
-> > ```
-> > ```{r}
-> > xlist[["b"]][2]
-> > ```
-> {: .solution}
-{: .challenge}
-
-
-## Data frames
-
-Remember the data frames are lists underneath the hood, so similar rules
-apply. However they are also two dimensional objects:
-
-`[` with one argument will act the same was as for lists, where each list
-element corresponds to a column. The resulting object will be a data frame:
-
-```{r}
-head(gapminder[3])
-```
-
-Similarly, `[[` will act to extract *a single column*:
-
-```{r}
-head(gapminder[["lifeExp"]])
-```
-
-And `$` provides a convenient shorthand to extract columns by name:
-
-```{r}
-head(gapminder$year)
-```
-
-With two arguments, `[` behaves the same way as for matrices:
-
-```{r}
-gapminder[1:3,]
-```
-
-If we subset a single row, the result will be a data frame (because
-the elements are mixed types):
-
-```{r}
-gapminder[3,]
-```
-
-But for a single column the result will be a vector (this can
-be changed with the third argument, `drop = FALSE`).
-
-> ## Challenge 7
->
-> Fix each of the following common data frame subsetting errors:
->
-> 1. Extract observations collected for the year 1957
->
->    ```{r, eval=FALSE}
->    gapminder[gapminder$year = 1957,]
->    ```
->
-> 2. Extract all columns except 1 through to 4
->
->    ```{r, eval=FALSE}
->    gapminder[,-1:4]
->    ```
->
-> 3. Extract the rows where the life expectancy is longer the 80 years
->
->    ```{r, eval=FALSE}
->    gapminder[gapminder$lifeExp > 80]
->    ```
->
-> 4. Extract the first row, and the fourth and fifth columns
->   (`lifeExp` and `gdpPercap`).
->
->    ```{r, eval=FALSE}
->    gapminder[1, 4, 5]
->    ```
->
-> 5. Advanced: extract rows that contain information for the years 2002
->    and 2007
->
->    ```{r, eval=FALSE}
->    gapminder[gapminder$year == 2002 | 2007,]
->    ```
->
-> > ## Solution to challenge 7
-> >
-> > Fix each of the following common data frame subsetting errors:
-> >
-> > 1. Extract observations collected for the year 1957
-> >
-> >    ```{r, eval=FALSE}
-> >    # gapminder[gapminder$year = 1957,]
-> >    gapminder[gapminder$year == 1957,]
-> >    ```
-> >
-> > 2. Extract all columns except 1 through to 4
-> >
-> >    ```{r, eval=FALSE}
-> >    # gapminder[,-1:4]
-> >    gapminder[,-c(1:4)]
-> >    ```
-> >
-> > 3. Extract the rows where the life expectancy is longer the 80 years
-> >
-> >    ```{r, eval=FALSE}
-> >    # gapminder[gapminder$lifeExp > 80]
-> >    gapminder[gapminder$lifeExp > 80,]
-> >    ```
-> >
-> > 4. Extract the first row, and the fourth and fifth columns
-> >   (`lifeExp` and `gdpPercap`).
-> >
-> >    ```{r, eval=FALSE}
-> >    # gapminder[1, 4, 5]
-> >    gapminder[1, c(4, 5)]
-> >    ```
-> >
-> > 5. Advanced: extract rows that contain information for the years 2002
-> >    and 2007
-> >
-> >     ```{r, eval=FALSE}
-> >     # gapminder[gapminder$year == 2002 | 2007,]
-> >     gapminder[gapminder$year == 2002 | gapminder$year == 2007,]
-> >     gapminder[gapminder$year %in% c(2002, 2007),]
-> >     ```
-> {: .solution}
-{: .challenge}
-
-> ## Challenge 8
->
-> 1. Why does `gapminder[1:20]` return an error? How does it differ from `gapminder[1:20, ]`?
->
->
-> 2. Create a new `data.frame` called `gapminder_small` that only contains rows 1 through 9
-> and 19 through 23. You can do this in one or two steps.
->
-> > ## Solution to challenge 8
-> >
-> > 1.  `gapminder` is a data.frame so needs to be subsetted on two dimensions. `gapminder[1:20, ]` subsets the data to give the first 20 rows and all columns.
-> >
-> > 2. 
-> >
-> > ```{r}
-> > gapminder_small <- gapminder[c(1:9, 19:23),]
-> > ```
-> {: .solution}
-{: .challenge}

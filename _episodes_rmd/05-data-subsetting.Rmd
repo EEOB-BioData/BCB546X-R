@@ -431,27 +431,6 @@ There are a number of special functions you can use to filter out this data:
    that do not contain `NA`, `NaN` or `Inf`.
  * `na.omit` will filter out all missing values from a vector
 
-## Factor subsetting
-
-Now that we've explored the different ways to subset vectors, how
-do we subset the other data structures?
-
-Factor subsetting works the same way as vector subsetting.
-
-```{r}
-f <- factor(c("a", "a", "b", "c", "c", "d"))
-f[f == "a"]
-f[f %in% c("b", "c")]
-f[1:3]
-```
-
-An important note is that skipping elements will not remove the level
-even if no more of that category exists in the factor:
-
-```{r}
-f[-3]
-```
-
-You can read how to subset matrices in the full version of this lesson at the [Software Carpentry](http://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting/).
+You can read how to subset factors and matrices in the full version of this lesson at the [Software Carpentry](http://swcarpentry.github.io/r-novice-gapminder/06-data-subsetting/).
 
 We will discuss subsetting lists and dataframes in the next lesson.
