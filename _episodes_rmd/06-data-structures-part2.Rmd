@@ -1,15 +1,18 @@
 ---
 title: "Exploring Data Frames"
-teaching: 40
+teaching: 50
 exercises: 20
 questions:
 - "How can I manipulate a data frame?"
+- "How can I join two data frames?"
 objectives:
 - "Be able to add and remove rows and columns."
 - "Be able to remove rows with `NA` values."
 - "Be able to append two data frames"
 - "Be able to articulate what a `factor` is and how to convert between `factor` and `character`."
 - "Be able to find basic properties of a data frames including size, class or type of the columns, names, and first few rows."
+- "Be able to match columns in two data frames"
+- "Be able to join two data frames"
 keypoints:
 - "Use `cbind()` to add a new column to a data frame."
 - "Use `rbind()` to add a new row to a data frame."
@@ -19,6 +22,8 @@ keypoints:
 - "Use `str()`, `nrow()`, `ncol()`, `dim()`, `colnames()`, `rownames()`, `head()` and `typeof()` to understand structure of the data frame"
 - "Read in a csv file using `read.csv()`"
 - "Understand `length()` of a data frame"
+- "Use `x%in%y` or `match` to match columns in dataframes"
+- "Use an index created by `match` or `merge` to merge two dataframes"
 ---
 
 ```{r, include=FALSE}
@@ -39,35 +44,21 @@ You can subset a data frame like a 1d structure (where it behaves like a list), 
 You create a data frame using `data.frame()`, which takes named vectors as input:
 
 ```{r}
-df <- data.frame(x = 1:3, y = c("a", "b", "c"))
+cats <- data.frame(coat = c("calico", "black", "tabby"), weight = c(2.1, 5.0, 3.2), likes_string = c(1, 0, 1))
 str(df)
 ```
 
-Beware `data.frame()`'s default behaviour which turns strings into factors. Use `stringAsFactors = FALSE` to suppress this behaviour! Compare:
-
-```{r}
-df <- data.frame(
-  x = 1:3,
-  y = c("a", "b", "c"),
-  stringsAsFactors = FALSE)
-str(df)
-```
-
-```{r}
-df <- data.frame(
-  x = 1:3,
-  y = c("a", "b", "c"))
-str(df)
-```
+Note that the `data.frame()`'s default behaviour which turns strings into factors. 
+Use `stringAsFactors = FALSE` to suppress this behaviour! 
 
 ### Testing and coercion
 
 Because a `data.frame` is an S3 class, its type reflects the underlying vector used to build it: the list. To check if an object is a data frame, use `class()` or test explicitly with `is.data.frame()`:
 
 ```{r}
-typeof(df)
-class(df)
-is.data.frame(df)
+typeof(cats)
+class(cats)
+is.data.frame(cats)
 ```
 
 You can coerce an object to a data frame with `as.data.frame()`:
@@ -82,13 +73,11 @@ You can coerce an object to a data frame with `as.data.frame()`:
 
 ## Reading data into a dataframe
 
-One of R's most powerful features is its ability to deal with tabular data -
-like what you might already have in a spreadsheet or a CSV. 
-The `read.csv` function is used for reading in tabular data stored in a text
-file where the columns of data are delimited by commas (csv = comma separated
-values). CSV data are read into dataframes.
+One of R's most powerful features is its ability to deal with tabular data - like what you might already have 
+in a spreadsheet or a CSV. The `read.csv` function is used for reading in tabular data stored in a text file 
+where the columns of data are delimited by commas (csv = comma separated values). CSV data are read into dataframes.
 
-Let's start by making a toy dataset in your `data/` directory, called `feline-data.csv` with the following data:
+Let's create a file in the `data/` directory, called `feline-data.csv` with the same data as above:
 
 ```{r, eval=FALSE}
 coat,weight,likes_string
@@ -214,37 +203,11 @@ typeof(cats$weight)
 {: .callout}
 
 
-> ## Challenge 1
->  Create a list of length two containing a character vector for each of the sections in this part of the workshop:
->
->  - Data types
->  - Data structures
->
->  Populate each character vector with the names of the data types and data
->  structures we've seen so far.
->
-> > ## Solution to Challenge 1
-> > ```{r}
-> > dataTypes <- c('double', 'complex', 'integer', 'character', 'logical')
-> > dataStructures <- c('data.frame', 'vector', 'factor', 'list', 'matrix')
-> > answer <- list(dataTypes, dataStructures)
-> > ```
-> > Note: it's nice to make a list in big writing on the board or taped to the wall
-> > listing all of these types and structures - leave it up for the rest of the workshop
-> > to remind people of the importance of these basics.
-> >
-> {: .solution}
-{: .challenge}
-
 ## Adding columns and rows in data frame
 
-We learned last time that the columns in a data frame were vectors, so that our
+We learned last time that the columns in a list (and data frame) were vectors, so that our
 data are consistent in type throughout the column. As such, if we want to add a
 new column, we need to start by making a new vector:
-
-```{r, echo = FALSE}
-cats <- read.csv("data/feline-data.csv")
-```
 
 ```{r}
 age <- c(2,3,5,12)
@@ -267,8 +230,7 @@ cats <- cbind(cats, age)
 cats
 ```
 
-Now how about adding rows - in this case, we saw last time that the rows of a
-data frame are made of lists (why?):
+We can also add raws to the dataframe (as lists) (why?):
 
 ```{r}
 newRow <- list("tortoiseshell", 3.3, TRUE, 9)
@@ -358,15 +320,8 @@ rownames(cats) <- NULL
 cats
 ```
 
-> ## Challenge 2
+> ## Challenge 1
 >
-> You can create a new data frame right from within R with the following syntax:
-> ```{r}
-> df <- data.frame(id = c('a', 'b', 'c'),
->                  x = 1:3,
->                  y = c(TRUE, TRUE, FALSE),
->                  stringsAsFactors = FALSE)
-> ```
 > Make a data frame that holds the following information for yourself:
 >
 > - first name
@@ -374,9 +329,9 @@ cats
 > - lucky number
 >
 > Then use `rbind` to add an entry for the people sitting beside you.
-> Finally, use `cbind` to add a column with each person's answer to the question, "Is it time for coffee break?"
+> Finally, use `cbind` to add a column with each person's answer to the question, "Is it time for a break?"
 >
-> > ## Solution to Challenge 2
+> > ## Solution to Challenge 1
 > > ```{r}
 > > df <- data.frame(first = c('Grace'),
 > >                  last = c('Hopper'),
@@ -438,14 +393,14 @@ We can also look at the data in the databrame with the function `head`:
 head(d, n=3)
 ```
 
-> ## Challenge 3
+> ## Challenge 2
 >
 > Use what you've learned about factors, lists and vectors,
 > as well as the output of functions like `colnames` and `dim`
 > to explain what everything that `str` prints out for this dataset means.
 > If there are any parts you can't interpret, discuss with your neighbors!
 >
-> > ## Solution to Challenge 3
+> > ## Solution to Challenge 2
 > >
 > > The object `d` is a data frame with 16 columns (variables)
 > > - all columns are vectors;
@@ -515,11 +470,11 @@ Now, let’s add an additional column to our dataframe that indicates whether a 
 d$cent <- d$start >= 25800000 & d$end <= 29700000
 ```
 
-> ## Challenge 4
+> ## Challenge 3
 >
 > How many windows fall into this centromeric region? 
 >
-> > ## Solutions to challenge 4
+> > ## Solutions to challenge 3
 > >
 > > We can use `table()` 
 > > ```{r}
@@ -535,7 +490,7 @@ d$cent <- d$start >= 25800000 & d$end <= 29700000
 
 In the dataset we are using, the diversity estimate Pi is measured per sampling window (1kb) and scaled up by 10x (see supplementary Text S1 for more details). It would be useful to have this scaled as per basepair nucleotide diversity (so as to make the scale more intuitive). Hence our next challenge.
 
-> ## Challenge 5
+> ## Challenge 4
 >
 > *Create a new rescaled column called diversity, in which the nucleotide diversity is calculated per basepair 
 > 
@@ -560,7 +515,7 @@ In the dataset we are using, the diversity estimate Pi is measured per sampling 
 Finally, to make sure our analysis is reproducible, we should put the code
 into a script file so we can come back to it later.
 
-> ## Challenge 6
+> ## Challenge 5
 >
 > Go to file -> new file -> R script, and write an R script
 > to load in the dataset we used and to create additional columns. Put it in the `scripts/`
@@ -569,7 +524,7 @@ into a script file so we can come back to it later.
 > Run the script using the `source` function, using the file path
 > as its argument (or by pressing the "source" button in RStudio).
 >
-> > ## Solution to Challenge 6
+> > ## Solution to Challenge 5
 > > The contents of `script/first_script.R`:
 > > ```{r eval = FALSE}
 > > d <- read.csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt")
@@ -643,12 +598,12 @@ Indeed, there are only nine windows that have a GC content over 80%:
 sum(d$percent.GC >= 80)
 ```
 
-> ## Challenge 7
+> ## Challenge 6
 >
 > As another example, consider looking at Pi by windows that fall in the centromere and those that do not.
 > Does the centromer have higher nucleotide diversity than other regions in these data?
 >
-> > ## Solutions to challenge 7
+> > ## Solutions to challenge 6
 > >
 > > Because d$cent is a logical vector, we can subset with it directly (and take its complement 
 > > by using the negation operator, !):
@@ -702,3 +657,171 @@ subset(d, Pi > 16 & percent.GC > 80, c(start, end, Pi, percent.GC, depth))
 
 Note that we (somewhat magically) don’t need to quote column names. This is because `subset()` follows 
 special evaluation rules, and for this reason, `subset()` is best used only for interactive work.
+
+## Merging and Combining Data: Matching Vectors and Merging Dataframes
+
+Bioinformatics analysis often involves connecting datasets: sequencing data, genomic features 
+(e.g., gene annotation), functional genomics data, population genetic data, and so on. As data piles 
+up in repositories, the ability to connect different datasets together to tell a cohesive story will 
+become an increasingly more important analysis skill. In this section, we’ll look at some canonical 
+ways to combine datasets together in R.
+
+Before we do, we'll download two datasets:
+
+```{r}
+download.file("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/chrX_rmsk.txt.gz", destfile = "data/chrX_rmsk.txt.gz")
+reps <- read.delim("data/chrX_rmsk.txt.gz")
+```
+
+Let's look at these files:
+
+```{r}
+head(reps, 3)
+head(mtfs, 3)
+```
+
+The first file shows the repeats on human chromosome X found by Repeat Masker.  Here repClass is an example of a factor column — try `class(reps$repClass)` and `levels(reps$repClass)`. Suppose we wanted to select out rows for some common repeat classes: DNA, LTR, LINE, SINE, and Simple_repeat. We can construct a statement to select these values using logical operators: 
+
+```{r, eval=FALSE}
+reps$repClass == "SINE" | reps$repClass == "LINE" | reps$repClass == "LTR" | reps$repClass == "DNA" | reps$repClass == "Simple_repeat"
+```
+
+However, this approach is tedious and error prone.
+
+Instead, we can use the  R’s %in% operator, which returns a logical vector indicating which of the values of x are in y. E.g.,:
+
+```{r}
+c(3,4,-1)%in%c(1,3,4,8)
+```
+
+In our case:
+
+```{r, eval=FALSE}
+common_repclass <- c("SINE", "LINE", "LTR", "DNA", "Simple_repeat") 
+reps[reps$repClass %in% common_repclass, ]
+```
+
+Note, that we can also create common_repclass vector programmatically:
+
+```{r}
+top5_repclass <- names(sort(table(reps$repClass), decreasing=TRUE)[1:5])
+top5_repclass
+```
+
+The `%in%` operator is a simplified version of another function, `match()`. `x %in% y` returns TRUE/FALSE for 
+each value in x depending on whether it’s in y. In contrast, `match(x, y)` returns the first occurrence of 
+each of x’s values in y. Back to our previous example:
+
+```{r}
+match(c(3,4,-1),c(1,3,4,8))
+```
+
+Note, the vector returned will always have the same length as the first argument and contains positions in the second argument.
+
+Because match() returns where it finds a particular value, match()’s output can be used to join two 
+dataframes together by a shared column. Here we’ll merge two datasets to explore recombination 
+rates around a degenerate sequence motif that occurs in repeats.  The first dataset contains 
+estimates of the recombination rate for all windows within 40kb of each motif (for two motif variants).
+The second dataset (motif_repeats.txt) contains which repeat each motif occurs in. Our goal is to merge 
+these two datasets so that we can look at the local effect of recombination of each motif on specific repeat backgrounds.
+
+Let’s start by loading in both files and peeking at them with head():
+
+```{r}
+mtfs <- read.delim("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_recombrates.txt", header=TRUE)
+rpts <- read.delim("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_repeats.txt", header=TRUE)
+head(mtfs, 3)
+head(rpts, 3)
+```
+
+> ## Discussion time!
+> Examine these two files and discuss the following questions with your neighbor
+> * How long is/are the motif(s) we are interested in?
+> * Why do we see the same motif on multiple lines in the dataset1?
+> * Why do we have two "start" columns in the second dataset?
+> * Can we have two columns with the same start/end in the dataset2?
+> * What column(s) can we use to combine these two datasets?
+> * What is our goal, again?
+{: .discussion}
+
+OK, so what we are trying to do is to add the colun "name" from the second dataset to the first one, 
+to see whether and in which repeat each motif is contained.
+
+Because we are dealing with multiple chromosomes, we start by merging two column, `chr` and `motif_start`:
+
+```{r}
+mtfs$pos <- paste(mtfs$chr, mtfs$motif_start, sep="-")
+rpts$pos <- paste(rpts$chr, rpts$motif_start, sep="-")
+```
+
+Now, this pos column functions as a common key between the two datasets.
+Let's validate that our keys overlap in the way we think they do before merging:
+
+```{r}
+table(mtfs$pos %in% rpts$pos)
+```
+
+Now, we use match() to find where each of the `mtfs$pos` keys occur in the `rpts$pos`. 
+We’ll create this indexing vector first before doing the merge:
+
+```{r}
+i <- match(mtfs$pos, rpts$pos)
+```
+
+All motif positions without a corresponding entry in rpts are NA; our number of NAs
+is exactly the number of `mts$pos` elements not in `rpts$pos`:
+
+```{r}
+table(is.na(i))
+```
+
+Finally, using this indexing vector we can select out the appropriate elements of rpts $name and merge these into mtfs:
+
+```{r}
+mtfs$repeat_name <- rpts$name[i]
+```
+
+Often in practice you might skip assigning match()’s results to i and use this directly:
+
+```{r}
+mtfs$repeat_name <- rpts$name[match(mtfs$pos, rpts$pos)]
+```
+
+Let's check our result:
+
+```{r}
+head(mtfs[!is.na(mtfs$repeat_name), ], 3)
+```
+
+Great, we’ve combined the `rpts$name` vector directly into our mtfs dataframe. Not all motifs have 
+entries in rpts, so some values in `mfs$repeat_name` are NA. We could easily remove these NAs with:
+
+```{r}
+mtfs_inner <- mtfs[!is.na(mtfs $repeat_name), ]
+nrow(mtfs_inner)
+```
+
+In this case, only motifs in mtfs contained in a repeat in rpts are kept (technically, this type of join is called an inner join). Inner joins are the most common way to merge data. 
+
+We’ve learned match() first because it’s a general, extensible way to merge data in R. 
+However, R does have a more user-friendly merging function: merge(). 
+Merge can directly merge two datasets:
+
+```{r}
+recm <- merge(mtfs, rpts, by.x="pos", by.y="pos")
+head(recm, 2)
+nrow(recm)
+```
+
+`merge()` takes two dataframes, x and y, and joins them by the columns supplied by by.x and by.y. 
+If they aren’t supplied, merge() will try to infer what these columns are, but it’s much safer 
+to supply them explicitly. If you want to keep all rows in both datasets, you can specify `all=TRUE`. 
+See `help(merge)` for more details on how merge() works. 
+
+> ## Vince Buffalo's guidelines for combining data:
+>
+> 1. Carefully consider the structure of both datasets;
+> 2. Validate that your keys overlap in the way you think they do before merging;
+> 3. Validate, validate, validate!
+>
+{: .callout}

@@ -82,7 +82,8 @@ To add a layer, we use the same `+` operator that we use for addition in R.
 
 We add `geom_point()` as a layer because we want points to create a scatterplot. `geom_point()` is a type of 
 geometric object (or geom in ggplot2 lingo). ggplot2 has many geoms (e.g., `geom_line()`, `geom_bar()`, 
-`geom_density()`, `geom_boxplot()`, etc.)
+`geom_density()`, `geom_boxplot()`, etc.). RStudio provides areally useful [cheat sheet][cheat], which, among other things, 
+shows different geometric objects.
 
 Geometric objects have many aesthetic attributes (e.g., x and y positions, color, shape, size, etc.). 
 The beauty of ggplot2s grammar is that it allows you to map geometric objects’ aesthetics to columns in your dataframe. 

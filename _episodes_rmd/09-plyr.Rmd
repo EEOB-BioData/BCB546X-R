@@ -17,6 +17,7 @@ knitr_fig_path("12-")
 gapminder <- read.csv("data/gapminder-FiveYearData.csv", header=TRUE)
 ```
 
+## Working with the Split-Apply-Combine Pattern
 Previously we looked at how you can use functions to simplify your code.
 We defined the `calcGDP` function, which takes the gapminder dataset,
 and multiplies the population and GDP per capita column. We also defined
