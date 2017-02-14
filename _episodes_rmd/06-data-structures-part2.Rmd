@@ -446,6 +446,7 @@ indexes separated by a comma: df[row, col].
 >
 > 1. The indexes we use for dataframes can be vectors to select multiple rows and columns simultaneously. 
 > 1. Omitting the row index retrieves all rows, and omitting the column index retrieves all columns.
+>
 > ~~~~~~~~~~
 > d[,1:2]
 > d[, c("start", "end")]
@@ -453,6 +454,7 @@ indexes separated by a comma: df[row, col].
 > d[1,]
 > d[2, 3]
 > ~~~~~~~~~~
+>
 > {: .source}
 {: .callout}
 
