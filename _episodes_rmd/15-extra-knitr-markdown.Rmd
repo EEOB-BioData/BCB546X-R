@@ -3,7 +3,7 @@ title: Producing Reports With knitr
 teaching: 60
 exercises: 15
 questions:
-- "How can I integrate software and reports?"
+- "Extra: How can I integrate software and reports?"
 objectives:
 - Value of reproducible reports
 - Basics of Markdown

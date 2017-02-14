@@ -3,7 +3,7 @@ title: Dataframe Manipulation with dplyr
 teaching: 40
 exercises: 15
 questions:
-- "How can I manipulate dataframes without repeating myself?"
+- "Extra: How can I manipulate dataframes without repeating myself?"
 objectives:
 - " To be able to use the six main dataframe manipulation 'verbs' with pipes in  `dplyr`."
 keypoints:

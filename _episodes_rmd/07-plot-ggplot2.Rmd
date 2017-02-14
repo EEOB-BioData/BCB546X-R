@@ -3,9 +3,9 @@ title: Visualizing Data
 teaching: 60
 exercises: 20
 questions:
-- "How can I create publication-quality graphics in R?"
+- "How can I explore my data by visualization in R?"
 objectives:
-- "To be able to use ggplot2 to generate publication quality graphics."
+- "To be able to use ggplot2 to visuzlize your data"
 - "To understand the basic grammar of graphics, including the aesthetics and geometry layers, adding statistics, transforming scales, and coloring or panelling by groups."
 keypoints:
 - "Use `ggplot2` to create plots."

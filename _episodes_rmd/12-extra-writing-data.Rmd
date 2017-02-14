@@ -3,7 +3,7 @@ title: Writing Data
 teaching: 10
 exercises: 10
 questions:
-- "How can I save plots and data created in R?"
+- "Extra: How can I save plots and data created in R?"
 objectives:
 - "To be able to write out plots and data from R."
 keypoints:
