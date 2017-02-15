@@ -6,10 +6,10 @@
 carpentry: "swc"
 
 # Overall title for pages.
-title: "R for Reproducible Scientific Analysis"
+title: "R Data Skills for Bioinformatics"
 
 # Contact email address.
-email: lessons@software-carpentry.org
+email: dlavrov@iastate.edu
 
 #------------------------------------------------------------
 # Generic settings (should not need to change).
@@ -66,4 +66,4 @@ exclude:
   - bin
 
 # Turn off built-in syntax highlighting.
-highlighter: false
+highlighter: true

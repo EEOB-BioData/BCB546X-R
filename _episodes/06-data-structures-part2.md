@@ -1,7 +1,7 @@
 ---
 title: "Exploring Data Frames"
-teaching: 50
-exercises: 20
+teaching: 60
+exercises: 30
 questions:
 - "How can I manipulate a data frame?"
 - "How can I join two data frames?"
@@ -228,6 +228,7 @@ typeof(cats$weight)
 [1] "double"
 ~~~
 {: .output}
+
 > ## Subsetting lists and dataframes
 > ### Subsetting lists: three functions: `[`, `[[`, and `$`.
 >
@@ -477,6 +478,8 @@ str(cats)
 ~~~
 {: .output}
 
+We can also suppress conversion of character vectors into factors by setting stringsAsFactors=FALSE. This works for data.frame() as well as read.csv() and read.delim().
+
 ## Removing rows
 
 We now know how to add rows and columns to our data frame in R - but in our
@@ -544,13 +547,16 @@ na.omit(cats)
 ~~~
 {: .output}
 
+
 > ## What did the previous command do?
 >
 > It's important to notice that the previous command simply printed our `cats` dataframe excluding some rows
 > In order to make changes in the dataframe itself, we want to assign them to the dataset itslef:
+>
 > ~~~~~~~~
 > cats <- cats[-4,]
 > ~~~~~~~~
+>{: .source}
 {:  .callout}
 
 
@@ -609,6 +615,7 @@ cats
 ~~~
 {: .output}
 
+
 > ## Challenge 1
 >
 > Make a data frame that holds the following information for yourself:
@@ -634,28 +641,33 @@ cats
 > {: .solution}
 {: .challenge}
 
+After all this work, if you want to save your dataframe back to a file use:
+
+
+~~~
+write.csv(cats, file = "data/new_cats.csv")
+~~~
+{: .r}
+
+
 ## Realistic example
+
 With a knowledge of basic R language essentials, we’re ready to start working with real data. 
 We’ll work on a few datasets following examples in Chapter 8 of the Buffalo book. 
 All files to load these datasets into R are available in Chapter 8 directory on GitHub.
 
-The dataset we’ll use for learning data manipulation and visualization skills is from the 2006 paper “The Influence of Recombination on Human Genetic Diversity” by Spencer et al. (Dataset_S1.txt on GitHub).
-This dataset contains estimates of population genetics statistics such as nucleotide diversity 
-(e.g., the columns Pi and Theta), recombination (column Recombination), and sequence divergence 
-as estimated by percent identity between human and chimpanzee genomes (column Divergence). 
+We starts with Dataset_S1.txt on GitHub, which contains estimates of population genetics statistics such 
+as nucleotide diversity (e.g., the columns Pi and Theta), recombination (column Recombination), and sequence 
+divergence as estimated by percent identity between human and chimpanzee genomes (column Divergence). 
 Other columns contain information about the sequencing depth (depth), and GC content 
 (percent.GC). We’ll only work with a few columns in our examples; see the description 
-of Dataset_S1.txt in this paper’s supplementary information for more detail. 
+of Dataset_S1.txt in the original paper (Spencer et al.2006) for more detail. 
 Dataset_S1.txt includes these estimates for 1kb windows in human chromosome 20.
-
-We can start by copying the dataset into your data directory and by examining the file using your 
-favorite unix commands.
 
 > ## Miscellaneous Tips
 >
 >
-> * Files can be downloaded directly from the Internet into a local
-> folder of your choice onto your computer using the `download.file` function.
+> * Files can be downloaded directly from the Internet into a local folder of your choice using the `download.file` function.
 > The `read.csv` function can then be executed to read the downloaded file from the download location, for example,
 > 
 > ~~~
@@ -664,18 +676,20 @@ favorite unix commands.
 > ~~~
 > {: .r}
 >
-> * Alternatively, you can also read in files directly into R from the Internet by replacing the file paths with a web address in `read.csv`. In doing this no local copy of the csv file is first saved onto your computer. For example,
+> * Alternatively, you can read files directly from the Internet into R by replacing the file paths with a web address in `read.csv`. In doing this no local copy of the csv file is first saved onto your computer. For example,
 > 
 > ~~~
 > d <- read.csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt")
 > ~~~
 > {: .r}
 >
-> * You can read directly from excel spreadsheets without
+> * Finally, you can read directly from excel spreadsheets without
 > converting them to plain text first by using the [readxl](https://cran.r-project.org/web/packages/readxl/index.html) package.
 {: .callout}
 
-Note that R’s read.csv() and read.delim() functions have numerous arguments, many of which will need to be adjusted for certain files you’ll come across in bioinformatics. See Table 8-4 of the Buffalo book for a list of some commonly used arguments, and/or consult help(read.csv) for full documentation.
+Note that R’s read.csv() and read.delim() functions have numerous arguments, many of which will need to be adjusted for certain files you’ll come across in bioinformatics. See table below (Table 8-4 of the Buffalo book) for a list of some commonly used arguments, and/or consult help(read.csv) for full documentation.
+
+image: ![Table 8.4](../fig/table-8.4.png)
 
 Ok, let’s take a look at the dataframe we’ve loaded in `d` with `str`:
 
@@ -749,7 +763,7 @@ head(d, n=3)
 > {: .solution}
 {: .challenge}
 
-`str` shows you a lot of information. You can access specific information with functions: nrow() (number of rows), ncol() (number of columns), and dim() (returns both):
+`str` shows you a lot of information. You can access specific information with functions: `nrow()` (number of rows), `ncol()` (number of columns), and `dim()` (returns both):
 
 
 ~~~
@@ -865,9 +879,7 @@ summary(d$depth)
 {: .output}
 
 As we saw above, the dollar sign operator is a syntactic shortcut for a more general bracket operator 
-used to access rows, columns, and cells of a dataframe. Using the bracket operator is similar to accessing 
-the elements of a vector (e.g., vec[2]), except as two-dimensional data structures, dataframes use two 
-indexes separated by a comma: df[row, col].
+used to access rows, columns, and cells of a dataframe.
 
 > ## Selecting multiple rows and/or columns (reminder)
 >
@@ -885,7 +897,7 @@ indexes separated by a comma: df[row, col].
 > {: .source}
 {: .callout}
 
-When accessing a single column from a dataframe, R’s default behavior is to return this as a vector—not 
+When accessing a single column from a dataframe using [,], R’s default behavior is to return this as a vector—not 
 a dataframe with one column. Sometimes this can cause problems if downstream code expects to work with 
 a dataframe. To disable this behavior, we set the argument drop to FALSE in the bracket operator:
 
@@ -1060,6 +1072,7 @@ d[d$total.SNPs >= 85, ]
 43165   0.000500577 0.02002002          0    7 FALSE 0.0027108
 ~~~
 {: .output}
+
 We can build more elaborate queries by chaining comparison operators. For example, suppose we wanted to see all windows where Pi (nucleotide diversity) is greater than 16 and percent GC is greater than 80.We’d use:
 
 
@@ -1085,11 +1098,12 @@ d[d$Pi > 16 & d$percent.GC > 80, ]
 58642   0.000347382 0.01793722          0    0 FALSE 0.0041099
 ~~~
 {: .output}
+
 > ## Discussion time!
 > What we just did is really cool, so take a minute to talk to your neighbor to make sure that you/him/her 
 > understand how these commands work. So here are some questions to discuss:
 > * Why do we need to have d$ before column names?  
-> * Do we need a comma? 
+> * Do we need a comma? Why?
 > * Do we need the space?
 > * How can we print only some but not all columns?
 > You can try ommitting some of these elements and checking the results
@@ -1103,6 +1117,7 @@ just subset it as you would a vector:
 d$percent.GC[d$Pi > 16]
 ~~~
 {: .r}
+
 Subsetting columns can be a useful way to summarize data across two different conditions. 
 For example, we might be curious if the average depth in a window (the depth column) 
 differs between very high GC content windows (greater than 80%) and all other windows:
@@ -1205,7 +1220,8 @@ d$Pi>3
 which(d$Pi > 3)
 ~~~
 {: .r}
-Thus, `d[$Pi > 3, ]` is identical to `d[which(d$Pi > 3), ]`; subsetting operations can be expressed using either method. 
+
+Thus, `d[d$Pi > 3, ]` is identical to `d[which(d$Pi > 3), ]`; subsetting operations can be expressed using either method. 
 In general, you should omit which() when subsetting dataframes and use logical vectors, 
 as it leads to simpler and more readable code. Under other circumstances, which() is 
 necessary—for example, if we wanted to select the four first TRUE values in a vector:
@@ -1222,6 +1238,7 @@ which(d$Pi > 10)[1:4]
 [1]  2 16 21 23
 ~~~
 {: .output}
+
 which() also has two related functions that return the index of the first minimum or maximum element of a vector: 
 which.min() and which.max(). For example:
 
@@ -1261,6 +1278,7 @@ d[which.max(d$depth),]
 8718 0.01601602          0    1 FALSE 0.0014199
 ~~~
 {: .output}
+
 Sometimes subsetting expressions inside brackets can be quite redundant (because each column must be 
 specified like `d$Pi`, `d$depth`, etc). A useful convenience function (intended primarily for interactive use) 
 is the R function `subset()`. `subset()` takes two arguments: the dataframe to operate on, and then conditions 
@@ -1439,7 +1457,7 @@ match(c(3,4,-1),c(1,3,4,8))
 Note, the vector returned will always have the same length as the first argument and contains positions in the second argument.
 
 Because match() returns where it finds a particular value, match()’s output can be used to join two 
-dataframes together by a shared column. Here we’ll merge two datasets to explore recombination 
+data frames together by a shared column. Here we’ll merge two datasets to explore recombination 
 rates around a degenerate sequence motif that occurs in repeats.  The first dataset contains 
 estimates of the recombination rate for all windows within 40kb of each motif (for two motif variants).
 The second dataset (motif_repeats.txt) contains which repeat each motif occurs in. Our goal is to merge 
