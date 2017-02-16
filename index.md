@@ -45,6 +45,7 @@ programming language R, and will not teach statistical analysis.
 > * The R Project: [https://www.r-project.org/](https://www.r-project.org/)
 > * Advanced R (book): [http://adv-r.had.co.nz/](http://adv-r.had.co.nz/)
 > * Biocunductor: [http://www.bioconductor.org/](http://www.bioconductor.org/)
+> * Cookbook for R: [http://www.cookbook-r.com/](http://www.cookbook-r.com/)
 > * R for Data Science (book): [http://r4ds.had.co.nz/](http://r4ds.had.co.nz/)
 > * RStudio: [https://www.rstudio.com/](https://www.rstudio.com/)
 {: .callout}
