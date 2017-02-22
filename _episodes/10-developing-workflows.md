@@ -1,5 +1,5 @@
 ---
-title: Control Flow
+title: Developing Workflows with R Scripts
 teaching: 45
 exercises: 20
 questions:
@@ -15,30 +15,42 @@ keypoints:
 
 
 
-Often when we're coding we want to control the flow of our actions. This can be done
+## Developing Workflows with R Scripts
+
+### Control Flow: if, for, and while
+
+Often we want to control the flow of our actions. This can be done
 by setting actions to occur only if a condition or a set of conditions are met.
 Alternatively, we can also set an action to occur a particular number of times.
 
-There are several ways you can control flow in R.
-For conditional statements, the most commonly used approaches are the constructs:
+Three common control flow and looping statments are `if`, `for`, and `while`:
 
 
 ~~~
 # if
-if (condition is true) {
-  perform action
+if (x == some_value) {
+            # do some stuff in here
+} else if (x == other_value) {
+            # elseif is optional
+} else {
+            #else is optional
 }
 
-# if ... else
-if (condition is true) {
-  perform action
-} else {  # that is, if the condition is false,
-  perform alternative action
+#for
+for (element in some_vector) {
+            # iteration happens here
+}
+
+#while
+while (something_is_true) {
+            # do some stuff
 }
 ~~~
 {: .r}
 
-Say, for example, that we want R to print a message if a variable `x` has a particular value:
+You can break out of for and while loops with a `break` statement, and advance loops to the next iteration with `next`. 
+
+#### Examples:
 
 
 ~~~
@@ -50,7 +62,6 @@ x <- rpois(1, lambda=8)
 if (x >= 10) {
   print("x is greater than or equal to 10")
 }
-
 x
 ~~~
 {: .r}
@@ -61,166 +72,15 @@ x
 [1] 8
 ~~~
 {: .output}
-
-Note you may not get the same output as your neighbour because
-you may be sampling different random numbers from the same distribution.
-
-Let's set a seed so that we all generate the same 'pseudo-random'
-number, and then print more information:
-
-
-~~~
-set.seed(10)
-x <- rpois(1, lambda=8)
-
-if (x >= 10) {
-  print("x is greater than or equal to 10")
-} else if (x > 5) {
-  print("x is greater than 5")
-} else {
-  print("x is less than 5")
-}
-~~~
-{: .r}
-
-
-
-~~~
-[1] "x is greater than 5"
-~~~
-{: .output}
-
+  
 > ## Tip: pseudo-random numbers
 >
 > In the above case, the function `rpois()` generates a random number following a
-> Poisson distribution with a mean (i.e. lambda) of 8. The function `set.seed()`
+> Poisson distribution with a mean (i.e. lambda) of 8. We can use function `set.seed()`
 > guarantees that all machines will generate the exact same 'pseudo-random'
 > number ([more about pseudo-random numbers](http://en.wikibooks.org/wiki/R_Programming/Random_Number_Generation)).
-> So if we `set.seed(10)`, we see that `x` takes the value 8. You should get the
-> exact same number.
+>
 {: .callout}
-
-**Important:** when R evaluates the condition inside `if()` statements, it is
-looking for a logical element, i.e., `TRUE` or `FALSE`. This can cause some
-headaches for beginners. For example:
-
-
-~~~
-x  <-  4 == 3
-if (x) {
-  "4 equals 3"
-}
-~~~
-{: .r}
-
-As we can see, the message was not printed because the vector x is `FALSE`
-
-
-~~~
-x <- 4 == 3
-x
-~~~
-{: .r}
-
-
-
-~~~
-[1] FALSE
-~~~
-{: .output}
-
-> ## Challenge 1
->
-> Use an `if()` statement to print a suitable message
-> reporting whether there are any records from 2002 in
-> the `gapminder` dataset.
-> Now do the same for 2012.
->
-> > ## Solution to Challenge 1
-> > We will first see a solution to Challenge 1 which does not use the `any()` function.
-> > We first obtain a logical vector describing which element of `gapminder$year` is equal to `2002`:
-> > 
-> > ~~~
-> > gapminder[(gapminder$year == 2002),]
-> > ~~~
-> > {: .r}
-> > Then, we count the number of rows of the data.frame `gapminder` that correspond to the 2002:
-> > 
-> > ~~~
-> > rows2002_number <- nrow(gapminder[(gapminder$year == 2002),])
-> > ~~~
-> > {: .r}
-> > The presence of any record for the year 2002 is equivalent to the request that `rows2002_number` is one or more:
-> > 
-> > ~~~
-> > rows2002_number >= 1
-> > ~~~
-> > {: .r}
-> > Putting all together, we obtain:
-> > 
-> > ~~~
-> > if(nrow(gapminder[(gapminder$year == 2002),]) >= 1){
-> >    print("Record(s) for the year 2002 found.")
-> > }
-> > ~~~
-> > {: .r}
-> >
-> > All this can be done more quickly with `any()`. The logical condition can be expressed as:
-> > 
-> > ~~~
-> > if(any(gapminder$year == 2002)){
-> >    print("Record(s) for the year 2002 found.")
-> > }
-> > ~~~
-> > {: .r}
-> >
-> {: .solution}
-{: .challenge}
-
-
-Did anyone get a warning message like this?
-
-
-~~~
-Warning in if (gapminder$year == 2012) {: the condition has length > 1 and
-only the first element will be used
-~~~
-{: .error}
-
-If your condition evaluates to a vector with more than one logical element,
-the function `if()` will still run, but will only evaluate the condition in the first
-element. Here you need to make sure your condition is of length 1.
-
-> ## Tip: `any()` and `all()`
->
-> The `any()` function will return TRUE if at least one
-> TRUE value is found within a vector, otherwise it will return `FALSE`.
-> This can be used in a similar way to the `%in%` operator.
-> The function `all()`, as the name suggests, will only return `TRUE` if all values in
-> the vector are `TRUE`.
-{: .callout}
-
-## Repeating operations
-
-If you want to iterate over
-a set of values, when the order of iteration is important, and perform the
-same operation on each, a `for()` loop will do the job.
-We saw `for()` loops in the shell lessons earlier. This is the most
-flexible of looping operations, but therefore also the hardest to use
-correctly. Avoid using `for()` loops unless the order of iteration is important:
-i.e. the calculation at each iteration depends on the results of previous iterations.
-
-The basic structure of a `for()` loop is:
-
-
-~~~
-for(iterator in set of values){
-  do a thing
-}
-~~~
-{: .r}
-
-For example:
 
 
 ~~~
@@ -246,16 +106,10 @@ for(i in 1:10){
 ~~~
 {: .output}
 
-The `1:10` bit creates a vector on the fly; you can iterate
-over any other vector as well.
-
-We can use a `for()` loop nested within another `for()` loop to iterate over two things at
-once.
-
 
 ~~~
-for(i in 1:5){
-  for(j in c('a', 'b', 'c', 'd', 'e')){
+for(i in 1:3){
+  for(j in c('a', 'b', 'c')){
     print(paste(i,j))
   }
 }
@@ -268,334 +122,244 @@ for(i in 1:5){
 [1] "1 a"
 [1] "1 b"
 [1] "1 c"
-[1] "1 d"
-[1] "1 e"
 [1] "2 a"
 [1] "2 b"
 [1] "2 c"
-[1] "2 d"
-[1] "2 e"
 [1] "3 a"
 [1] "3 b"
 [1] "3 c"
-[1] "3 d"
-[1] "3 e"
-[1] "4 a"
-[1] "4 b"
-[1] "4 c"
-[1] "4 d"
-[1] "4 e"
-[1] "5 a"
-[1] "5 b"
-[1] "5 c"
-[1] "5 d"
-[1] "5 e"
 ~~~
 {: .output}
 
-Rather than printing the results, we could write the loop output to a new object.
-
 
 ~~~
-output_vector <- c()
-for(i in 1:5){
-  for(j in c('a', 'b', 'c', 'd', 'e')){
-    temp_output <- paste(i, j)
-    output_vector <- c(output_vector, temp_output)
-  }
+z <- 1
+while(z > 0.1){
+  z <- runif(1)
+  print(z)
 }
-output_vector
 ~~~
 {: .r}
 
 
 
 ~~~
- [1] "1 a" "1 b" "1 c" "1 d" "1 e" "2 a" "2 b" "2 c" "2 d" "2 e" "3 a"
-[12] "3 b" "3 c" "3 d" "3 e" "4 a" "4 b" "4 c" "4 d" "4 e" "5 a" "5 b"
-[23] "5 c" "5 d" "5 e"
+[1] 0.3067685
+[1] 0.4269077
+[1] 0.6931021
+[1] 0.08513597
 ~~~
 {: .output}
 
-This approach can be useful, but 'growing your results' (building
-the result object incrementally) is computationally inefficient, so avoid
-it when you are iterating through a lot of values.
+#### `ifelse`
 
-> ## Tip: don't grow your results
->
-> One of the biggest things that trips up novices and
-> experienced R users alike, is building a results object
-> (vector, list, matrix, data frame) as your for loop progresses.
-> Computers are very bad at handling this, so your calculations
-> can very quickly slow to a crawl. It's much better to define
-> an empty results object before hand of the appropriate dimensions.
-> So if you know the end result will be stored in a matrix like above,
-> create an empty matrix with 5 row and 5 columns, then at each iteration
-> store the results in the appropriate location.
-{: .callout}
-
-A better way is to define your (empty) output object before filling in the values.
-For this example, it looks more involved, but is still more efficient.
+R also has a vectorized version of if: the `ifelse` function. Rather than control program flow, ifelse(test, yes, no) 
+returns the yes value for all TRUE cases of test, and no for all FALSE cases. For example:
 
 
 ~~~
-output_matrix <- matrix(nrow=5, ncol=5)
-j_vector <- c('a', 'b', 'c', 'd', 'e')
-for(i in 1:5){
-  for(j in 1:5){
-    temp_j_value <- j_vector[j]
-    temp_output <- paste(i, temp_j_value)
-    output_matrix[i, j] <- temp_output
-  }
-}
-output_vector2 <- as.vector(output_matrix)
-output_vector2
+x <-c(-3,1,-5,2)
+ifelse(x < 0, -1, 1)
 ~~~
 {: .r}
 
 
 
 ~~~
- [1] "1 a" "2 a" "3 a" "4 a" "5 a" "1 b" "2 b" "3 b" "4 b" "5 b" "1 c"
-[12] "2 c" "3 c" "4 c" "5 c" "1 d" "2 d" "3 d" "4 d" "5 d" "1 e" "2 e"
-[23] "3 e" "4 e" "5 e"
+[1] -1  1 -1  1
 ~~~
 {: .output}
 
-> ## Tip: While loops
+Note, that although `ifelse()` is readable and clear, it can be slower than the following:
+
+
+~~~
+x <- c(-3, 1, -5, 2)
+y <- rep(1, length(x))
+y[x < 0] <- -1
+y
+~~~
+{: .r}
+
+
+
+~~~
+[1] -1  1 -1  1
+~~~
+{: .output}
+
+> ## Pre-allocating vectors
 >
->
-> Sometimes you will find yourself needing to repeat an operation until a certain
-> condition is met. You can do this with a `while()` loop.
+> One point worth mentioning is that if you do need to loop over a structure
+> with a `for` or `while` loop, always *preallocate* your results vector. You can
+> create empty numeric vectors with `numeric(len)` and empty integer vectors with
+> `integer(len)`, where `len` is the length. For example, if you were to loop
+> over too vectors to sum their values pairwise, do not use:
 >
 > 
 > ~~~
-> while(this condition is true){
->   do a thing
+> x <- rnorm(10)
+> y <- rnorm(10)
+> res <- NULL
+> for (i in 1:length(x)) {
+>     res <- c(res, x[i] + y[i])
 > }
 > ~~~
 > {: .r}
+> First, this is completely unecessary since we could calculate this with `res <-
+> x + y`. Second, this code would be needlessly slow because appending to vectors with `res <-
+> c(res, ...)` is extremely computationally expensive in R.
 >
-> As an example, here's a while loop
-> that generates random numbers from a uniform distribution (the `runif()` function)
-> between 0 and 1 until it gets one that's less than 0.1.
+> R's vectors are allocated in memory to the _exact_ length that the need to be.
+> So each iteration of the above code requires (1) allocating a new `res` vector
+> one element longer, and (2) copying all of `res`'s current elements over to
+> this new vector. 
 >
+> The correct way to do this (assuming in your real code something in the `for`
+> loop can't be parallelized!) is:
+>
+> 
 > ~~~
-> z <- 1
-> while(z > 0.1){
->   z <- runif(1)
->   print(z)
+> x <- rnorm(10)
+> y <- rnorm(10)
+> res <- numeric(10) # preallocation!
+> for (i in 1:length(x)) {
+>     res[i] <- x[i] + y[i]
 > }
 > ~~~
 > {: .r}
->
-> `while()` loops will not always be appropriate. You have to be particularly careful
-> that you don't end up in an infinite loop because your condition is never met.
 {: .callout}
 
+### Working with R Scripts
 
-> ## Challenge 2
->
-> Compare the objects output_vector and
-> output_vector2. Are they the same? If not, why not?
-> How would you change the last block of code to make output_vector2
-> the same as output_vector?
->
-> > ## Solution to Challenge 2
-> > We can check whether the two vectors are identical using the `all()` function:
-> > 
-> > ~~~
-> > all(output_vector == output_vector2)
-> > ~~~
-> > {: .r}
-> > However, all the elements of `output_vector` can be found in `output_vector2`:
-> > 
-> > ~~~
-> > all(output_vector %in% output_vector2)
-> > ~~~
-> > {: .r}
-> > and vice versa:
-> > 
-> > ~~~
-> > all(output_vector2 %in% output_vector)
-> > ~~~
-> > {: .r}
-> > therefore, the element in `output_vector` and `output_vector2` are just sorted in a different order.
-> > This is because `as.vector()` outputs the elements of an input matrix going over its column.
-> > Taking a look at `output_matrix`, we can notice that we want its elements by rows.
-> > The solution is to transpose the `output_matrix`. We can do it either by calling the transpose function
-> > `t()` or by inputing the elements in the right order.
-> > The first solution requires to change the original
-> > 
-> > ~~~
-> > output_vector2 <- as.vector(output_matrix)
-> > ~~~
-> > {: .r}
-> > into
-> > 
-> > ~~~
-> > output_vector2 <- as.vector(t(output_matrix))
-> > ~~~
-> > {: .r}
-> > The second solution requires to change
-> > 
-> > ~~~
-> > output_matrix[i, j] <- temp_output
-> > ~~~
-> > {: .r}
-> > into
-> > 
-> > ~~~
-> > output_matrix[j, i] <- temp_output
-> > ~~~
-> > {: .r}
-> {: .solution}
-{: .challenge}
+Although we’ve used R interactively, in practice your analyses should be kept in scripts that can be run 
+many times throughout development. Scripts can be organized into project directories and checked into Git 
+repositories. There’s also a host of excellent R tools (e.g., Knitr and Rmarkdown) to help in creating 
+well-documented, reproducible projects in R.
 
-> ## Challenge 3
->
-> Write a script that loops through the `gapminder` data by continent and prints out
-> whether the mean life expectancy is smaller or larger than 50
-> years.
->
-> > ## Solution to Challenge 3
-> >
-> > **Step 1**:  We want to make sure we can extract all the unique values of the continent vector
-> > 
-> > ~~~
-> > gapminder <- read.csv("data/gapminder-FiveYearData.csv")
-> > unique(gapminder$continent)
-> > ~~~
-> > {: .r}
-> >
-> > **Step 2**: We also need to loop over each of these continents and calculate the average life expectancy for each `subset` of data.
-> > We can do that as follows:
-> >
-> > 1. Loop over each of the unique values of 'continent'
-> > 2. For each value of continent, create a temporary variable storing the life exepectancy for that subset,
-> > 3. Return the calculated life expectancy to the user by printing the output:
-> >
-> > 
-> > ~~~
-> > for( iContinent in unique(gapminder$continent) ){
-> >    tmp <- mean(subset(gapminder, continent==iContinent)$lifeExp)
-> >    cat("Average Life Expectancy in", iContinent, "is", tmp, "\n")
-> >    rm(tmp)
-> > }
-> > ~~~
-> > {: .r}
-> >
-> > **Step 3**: The exercise only wants the output printed if the average life expectancy is less than 50 or greater than 50. So we need to add an `if` condition before printing.
-> > So we need to add an `if` condition before printing, which evaluates whether the calculated average life expectancy is above or below a threshold, and print an output conditional on the result.
-> > We need to amend (3) from above:
-> >
-> > 3a. If the calculated life expectancy is less than some threshold (50 years), return the continent and a statement that life expectancy is less than threshold, otherwise return the continent and   a statement that life expectancy is greater than threshold,:
-> >
-> > 
-> > ~~~
-> > thresholdValue <- 50
-> > > >
-> > for( iContinent in unique(gapminder$continent) ){
-> >    tmp <- mean(subset(gapminder, continent==iContinent)$lifeExp)
-> >    
-> >    if(tmp < thresholdValue){
-> >        cat("Average Life Expectancy in", iContinent, "is less than", thresholdValue, "\n")
-> >    }
-> >    else{
-> >        cat("Average Life Expectancy in", iContinent, "is greater than", thresholdValue, "\n")
-> >         } # end if else condition
-> >    rm(tmp)
-> >    } # end for loop
-> > > >
-> > ~~~
-> > {: .r}
-> {: .solution}
-{: .challenge}
+You can run R scripts from R using the function `source()`. For example, to execute an R script named _my_analysis.R_ 
+use:
 
-> ## Challenge 4
->
-> Modify the script from Challenge 4 to loop over each
-> country. This time print out whether the life expectancy is
-> smaller than 50, between 50 and 70, or greater than 70.
->
-> > ## Solution to Challenge 4
-> >  We modify our solution to Challenge 3 by now adding two thresholds, `lowerThreshold` and `upperThreshold` and extending our if-else statements:
-> >
-> > 
-> > ~~~
-> >  lowerThreshold <- 50
-> >  upperThreshold <- 70
-> >  
-> > for( iCountry in unique(gapminder$country) ){
-> >     tmp <- mean(subset(gapminder, country==iCountry)$lifeExp)
-> >     
-> >     if(tmp < lowerThreshold){
-> >         cat("Average Life Expectancy in", iCountry, "is less than", lowerThreshold, "\n")
-> >     }
-> >     else if(tmp > lowerThreshold && tmp < upperThreshold){
-> >         cat("Average Life Expectancy in", iCountry, "is between", lowerThreshold, "and", upperThreshold, "\n")
-> >     }
-> >     else{
-> >         cat("Average Life Expectancy in", iCountry, "is greater than", upperThreshold, "\n")
-> >     }
-> >     rm(tmp)
-> > }
-> > ~~~
-> > {: .r}
-> {: .solution}
-{: .challenge}
 
-> ## Challenge 5 - Advanced
->
-> Write a script that loops over each country in the `gapminder` dataset,
-> tests whether the country starts with a 'B', and graphs life expectancy
-> against time as a line graph if the mean life expectancy is under 50 years.
->
-> > Solution for Challenge 5
-> >
-> > We will use the `grep` command that was introduced in the Unix Shell lesson to find countries that start with "B."
-> > Lets understand how to do this first.
-> > Following from the Unix shell section we may be tempted to try the following
-> > 
-> > ~~~
-> > grep("^B", unique(gapminder$country))
-> > ~~~
-> > {: .r}
-> >
-> > But when we evaluate this command it returns the indices of the factor variable `country` that start with "B."
-> > To get the values, we must add the `value=TRUE` option to the `grep` command:
-> >
-> > 
-> > ~~~
-> > grep("^B", unique(gapminder$country), value=TRUE)
-> > ~~~
-> > {: .r}
-> >
-> > We will now store these countries in a variable called candidateCountries, and then loop over each entry in the variable.
-> > Inside the loop, we evaluate the average life expectancy for each country, and if the average life expectancy is less than 50 we use base-plot to plot the evolution of average life expectancy:
-> >
-> > 
-> > ~~~
-> > candidateCountries <- grep("^B", unique(gapminder$country), value=TRUE)
-> > > >
-> > for( iCountry in candidateCountries){
-> >     tmp <- mean(subset(gapminder, country==iCountry)$lifeExp)
-> >     
-> >     if(tmp < thresholdValue){
-> >         cat("Average Life Expectancy in", iCountry, "is less than", thresholdValue, "plotting life expectancy graph... \n")
-> >         
-> >         with(subset(gapminder, country==iCountry),
-> >                 plot(year,lifeExp,
-> >                      type="o",
-> >                      main = paste("Life Expectancy in", iCountry, "over time"),
-> >                      ylab = "Life Expectancy",
-> >                      xlab = "Year"
-> >                    ) # end plot
-> >               ) # end with
-> >     } # end for loop
-> >     rm(tmp)
-> >  }```
-> > > {: .solution}
-> > {: .challenge}
-> > ~~~
-> > {: .r}
+~~~
+source("my_analysis.R")
+~~~
+{: .r}
+
+
+
+~~~
+Warning in file(filename, "r", encoding = encoding): cannot open file
+'my_analysis.R': No such file or directory
+~~~
+{: .error}
+
+
+
+~~~
+Error in file(filename, "r", encoding = encoding): cannot open the connection
+~~~
+{: .error}
+
+Alternatively, we can execute a script in batch mode from the command line with:
+
+
+~~~
+$ Rscript --vanilla my_analysis.R
+~~~
+{: .r}
+
+This comes in handy when you need to rerun an analysis on different files or with different arguments 
+provided on the command line. It's a good practice to use --vanilla option because by default, Rscript 
+will restore any past saved environments and save its current environment after the execution completes. 
+Usually we don’t want R to restore any past state from previous runs, as this can lead to irreproducible 
+results. Additionally, saved environments can make it a nightmare to debug a script. See R --help for 
+more information.
+
+Lastly, if you want to retrieve command-line arguments passed to your script, use R’s commandArgs() 
+with trailingOnly=TRUE. For example, this simple R script just prints all arguments:
+
+
+~~~
+## args.R -- a simple script to show command line args
+args <- commandArgs(TRUE) 
+print(args)
+~~~
+{: .r}
+
+We run this with:
+
+
+~~~
+$ Rscript --vanilla args.R arg1 arg2 arg3
+~~~
+{: .r}
+  
+> ## Working directory
+> It’s important to mind R’s working directory when writing scripts. Scripts should not use setwd() to set 
+> their working directory, as this is not portable to other systems (which won’t have the same directory 
+> structure). For the same reason, use relative paths like data/achievers.txt when loading in data, and not 
+> absolute paths like /Users/jlebowski/data/achievers.txt. Also, it’s a good idea to indicate (either in comments 
+> or a README file) which directory the user should set as their working directory.
+{: .callout}
+
+### Workflows for Loading and Combining Multiple Files
+
+See pages 257-260 of the book if you need to load and combine multiple files
+
+### Exporting Data
+
+At some point during an analysis, you’ll need to export data from R. We can export dataframes to plain-text files 
+using the R function `write.table()`. Unfortunately, `write.table()` has some poorly chosen defaults that we usually 
+need to adjust. For example, if we wanted to write our dataframe mtfs to a tab-delimited file named hotspot_motifs.txt, 
+we would use:
+
+
+~~~
+write.table(mtfs, file="hotspot_motifs.txt", quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
+~~~
+{: .r}
+
+`write.table()`’s first two arguments are the dataframe (or matrix) to write to file and the file path to save it to. 
+By default, `write.table()` quotes factor and character columns and includes rownames. Qe disable these with `quote=FALSE` and `row.names=FALSE`. We also can set the column separators to tabs with the `sep` argument. A header can be included or excluded with the `col.names` argument.
+
+Given that many Unix tools work well with Gzipped files, it may be useful to write a compressed version of a 
+file directly from R. In addition to a string file path, `write.table`’s file argument also handles open file 
+connections. So to write our dataframe to a compressed file, we can open a gzipped file connect with gzfile():
+
+
+~~~
+hs_gzf <- gzfile("hotspot_motifs.txt.gz")
+write.table(mtfs, file=hs_gzf, quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
+~~~
+{: .r}
+
+While plain-text formats are the preferable way to share tabular datasets, it’s not the best way to save 
+complex R data structures like lists or special R objects. In these cases, it’s usually preferable to save R 
+objects as R objects. Encoding and saving objects to disk in a way that allows them to be restored as the original 
+object is known as serialization. R’s functions for saving and loading R objects are `save()` and `load()`. 
+
+
+~~~
+tmp <- list(vec=rnorm(4), df=data.frame(a=1:3, b=3:5))
+save(tmp, file="example.Rdata")
+rm(tmp) # remove the original 'tmp' list
+load("example.Rdata") # this fully restores the 'tmp' list from file
+str(tmp)
+~~~
+{: .r}
+
+
+
+~~~
+List of 2
+ $ vec: num [1:4] -2.061 -0.6 -0.954 0.558
+ $ df :'data.frame':	3 obs. of  2 variables:
+  ..$ a: int [1:3] 1 2 3
+  ..$ b: int [1:3] 3 4 5
+~~~
+{: .output}
+
+The function `save()` has an analogous function called `save.image()` that saves all objects in your workspace 
+rather than just the objects you specify. Combined with savehistory(), save.image() can be a quick way to store 
+your past work in R in a rush.
