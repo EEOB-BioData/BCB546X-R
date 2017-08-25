@@ -28,6 +28,7 @@ keypoints:
 ```{r, include=FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("01-")
+# good alternative: http://tryr.codeschool.com/
 ```
 
 
@@ -44,7 +45,7 @@ Senegal? Can you calculate the average income for countries on continent of Asia
 By the end of these lessons you will be able to do things like plot the populations
 for all of these countries in under a minute!
 
-## Before Starting The Workshop
+## Before Starting This Lesson
 
 Please ensure you have the latest version of R and RStudio installed on your machine. This is important, as some packages used in the workshop may not install correctly (or at all) if R is not up to date.
 
@@ -398,7 +399,7 @@ There are a few useful commands you can use to interact with the R session.
 (your working R session):
 
 ```{r}
-ls()
+ls() # to list files use list.files() function
 ```
 
 > ## Tip: hidden objects
@@ -470,6 +471,21 @@ network). R and RStudio have functionality for managing packages:
 * You can update installed packages by typing `update.packages()`
 * You can remove a package with `remove.packages("packagename")`
 * You can make a package available for use with `library(packagename)`
+
+## Writing your own code
+
+Good coding style is like using correct punctuation. You can manage without it, 
+but it sure makes things easier to read. As with styles of punctuation, there 
+are many possible variations. [Google’s R style guide](https://google.github.io/styleguide/Rguide.xml) 
+is a good place to start. The [formatR](https://cran.r-project.org/web/packages/formatR/index.html) 
+package, by Yihui Xie, makes it easier to clean up poorly formatted code. 
+Make sure to read the notes on the [wiki](https://github.com/yihui/formatR/wiki) 
+before using it.
+
+## Vocabulary
+
+As with any language, it's important to work on your R vocabulary.  Here is a 
+[good place to start](http://adv-r.had.co.nz/Vocabulary.html)
 
 > ## Challenge 1
 >
