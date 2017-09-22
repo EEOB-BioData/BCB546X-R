@@ -200,6 +200,12 @@ Now we want to push the contents of this commit to GitHub, so it is also backed-
 > $ git config remote.origin.url git@github.com:[path to your directory]
 > $ git pull -u origin master
 > $ git push -u origin master
+> ```{: . shell}
+> 4. Change README.md file to indicate the changes you made
+> 5. Commit and push it from the Git tab on the Environment/history panel of Rstudio.
+> {: .challenge}
+> 
+> We will lern more about RStudio in the next lesson.
 > ~~~
 > {: .r}
 > 
@@ -211,9 +217,3 @@ Now we want to push the contents of this commit to GitHub, so it is also backed-
 >     ^
 > ~~~
 > {: .error}
-> {: . shell}
-> 4. Change README.md file to indicate the changes you made
-> 5. Commit and push it from the Git tab on the Environment/history panel of Rstudio.
-{: .challenge}
-
-We will lern more about RStudio in the next lesson.
