@@ -66,4 +66,4 @@ exclude:
   - bin
 
 # Turn off built-in syntax highlighting.
-highlighter: true
+highlighter: rouge

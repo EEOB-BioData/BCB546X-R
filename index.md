@@ -24,9 +24,9 @@ to the S language and environment which was developed at Bell Laboratories (form
 by John Chambers and colleagues. R can be considered as a different implementation of S. There are some important 
 differences, but much code written for S runs unaltered under R.
 
-R provides a wide variety of statistical and graphical techniques, and is highly extensible. 
-The S language is often the vehicle of choice for research in statistical methodology, and R 
-provides an Open Source route to participation in that activity.
+R provides a wide variety of statistical and machine-learning methods, and is highly extensible. 
+In addition, R is a data programming language that can be used to explore and understand data 
+in an open-ended, interactive, and iterative way. 
 
 One of Râ€™s strengths is the ease with which well-designed publication-quality plots can be produced, 
 including mathematical symbols and formulae where needed. Great care has been taken over the defaults 
@@ -36,8 +36,9 @@ R is available as Free Software under the terms of the Free Software Foundationâ
 License in source code form. It compiles and runs on a wide variety of UNIX platforms and similar 
 systems (including FreeBSD and Linux), Windows and MacOS.
 
-Note that our lessons will focus on teaching the fundamentals of the
-programming language R, and will not teach statistical analysis.
+Note that in this course we will focus on the subset of the R language that allows you 
+to conduct _exploratory data analysis (EDA)_. There are many resources on campus and elsewhere 
+to explore the aother aspects of R.
 
 > ## Additional resources  
 >

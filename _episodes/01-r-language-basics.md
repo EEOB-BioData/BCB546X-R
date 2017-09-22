@@ -1,25 +1,21 @@
 ---
-title: "Introduction to R and RStudio"
-teaching: 50
-exercises: 30
+title: "R Language Basics"
+teaching: 30
+exercises: 20
 questions:
-- "How to find your way around RStudio?"
-- "How to interact with R?"
-- "How to manage your environment?"
+- "How to do simple calculations in R"
+- "How to assign values to variables and call functions?"
+- "What are R's vectors, vector data types, and vectorization?"
 - "How to install packages?"
 - "How can I get help in R?"
 objectives:
-- "To gain familiarity with the various panes in the RStudio IDE"
-- "To gain familiarity with the buttons, short cuts and options in the RStudio IDE"
 - "To understand variables and how to assign to them"
-- "To be able to manage your workspace in an interactive R session"
 - "To be able to use mathematical and comparison operations"
 - "To be able to call functions"
 - "To be able to find and use packages"
 - "To be able to read R help files for functions and special operators."
 - "To be able to seek help from your peers."
 keypoints:
-- "Use RStudio to write and run R programs."
 - "R has the usual arithmetic operators and mathematical functions."
 - "Use `<-` to assign values to variables."
 - "Use `ls()` to list the variables in a program."
@@ -29,50 +25,32 @@ keypoints:
 - "Use `help()` to get online help in R."
 ---
 
-```{r, include=FALSE}
-source("../bin/chunk-options.R")
-knitr_fig_path("01-")
-# good alternative: http://tryr.codeschool.com/
-```
 
 
-## Motivation
+## Introduction to R
 
-Science is a multi-step process: once you've designed an experiment and collected
-data, the real fun begins **(but remember R.A.Fisher)**! Here we will explore R as
-a tool to organize raw data, perform exploratory analyses, and learn how to plot 
-results graphically. But to start, we will review how to interact with R and use the RStudio.
+R is a system for statistical computation and graphics. It provides, 
+among other things, a programming language, high level graphics, 
+interfaces to other languages and debugging facilities.  
 
-## Before Starting This Lesson
+As a programming language, R adopts syntax and grammar that differ from 
+many other languages: objects in R are ‘vectors’, and functions are 
+‘vectorized’ to operate on all elements of the object; R objects have 
+‘copy-on-modify’ and ‘call-by-value’ semantics; common paradigms in other 
+languages, such as the ‘for’ loop, are encountered less commonly in R.
 
-Please ensure you have the latest version of R and RStudio installed on your machine. This is 
-important, as some packages may not install correctly (or at all) if R is not up to date.
+Much of your time in R will be spent in the R interactive
+console. This is where you will run all of your code, and can be a
+useful environment to try out ideas before adding them to an R script
+file. This console in RStudio is the same as the one you would get if
+you typed in `R` in your command-line environment.
 
-[Download and install the latest version of R here](https://www.r-project.org/)
-[Download and install RStudio here](https://www.rstudio.com/)
-
-## Introduction to RStudio
-
-Throughout this lesson, we'll be using RStudio: a free, open source R integrated development
-environment. It provides a built in editor, works on all platforms (including
-on servers) and provides many advantages such as integration with version
-control and project management.
-
-**Basic layout**
-
-When you first open RStudio, you will be greeted by three panels:
-
-  * The interactive R console (entire left)
-  * Environment/History (tabbed in upper right)
-  * Files/Plots/Packages/Help/Viewer (tabbed in lower right)
-
-![RStudio layout](../fig/01-rstudio.png)
-
-Once you open files, such as R scripts, an editor panel will also open
-in the top left.
-
-![RStudio layout with .R file open](../fig/01-rstudio-script.png)
-
+The first thing you will see in the R interactive session is a bunch
+of information, followed by a ">" and a blinking cursor. In many ways
+this is similar to the shell environment you learned about during the
+unix lessons: it operates on the same idea of a "Read, evaluate,
+print loop": you type in commands, R tries to execute them, and then
+returns a result.
 
 ## Work flow within RStudio
 There are three main ways one can work within RStudio.
@@ -115,38 +93,23 @@ results. You can use multiple languages including R, Python, and SQL.
 > 3. hit Ctrl-Enter in Windows or Linux or Command-Enter on OS X.   
 {: .callout}
 
-## Introduction to R
-
-R is a system for statistical computation and graphics. It provides, 
-among other things, a programming language, high level graphics, 
-interfaces to other languages and debugging facilities.  
-
-As a programming language, R adopts syntax and grammar that differ from 
-many other languages: objects in R are ‘vectors’, and functions are 
-‘vectorized’ to operate on all elements of the object; R objects have 
-‘copy-on-modify’ and ‘call-by-value’ semantics; common paradigms in other 
-languages, such as the ‘for’ loop, are encountered less commonly in R.
-
-Much of your time in R will be spent in the R interactive
-console. This is where you will run all of your code, and can be a
-useful environment to try out ideas before adding them to an R script
-file. This console in RStudio is the same as the one you would get if
-you typed in `R` in your command-line environment.
-
-The first thing you will see in the R interactive session is a bunch
-of information, followed by a ">" and a blinking cursor. In many ways
-this is similar to the shell environment you learned about during the
-unix lessons: it operates on the same idea of a "Read, evaluate,
-print loop": you type in commands, R tries to execute them, and then
-returns a result.
 
 ## Using R as a calculator
 
 The simplest thing you could do with R is do arithmetic:
 
-```{r}
+
+~~~
 1 + 100
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1] 101
+~~~
+{: .output}
 
 And R will print out the answer, with a preceding "[1]". Don't worry about this
 for now, we'll explain that later. For now think of it as indicating output.
@@ -194,26 +157,46 @@ From highest to lowest precedence:
  * Add: `+`
  * Subtract: `-`
 
-```{r}
+
+~~~
 3 + 5 * 2
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1] 13
+~~~
+{: .output}
 
 Use parentheses to group operations in order to force the order of
 evaluation if it differs from the default, or to make clear what you
 intend.
 
-```{r}
+
+~~~
 (3 + 5) * 2
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1] 16
+~~~
+{: .output}
 
 This can get unwieldy when not needed, but  clarifies your intentions.
 Remember that others may later read your code.  
 
-```{r, eval=FALSE}
+
+~~~
 (3 + (5 * (2 ^ 2))) # hard to read
 3 + 5 * 2 ^ 2       # clear, if you remember the rules
 3 + 5 * (2 ^ 2)     # if you forget some rules, this might help
-```
+~~~
+{: .r}
 
 
 The text after each line of code is called a
@@ -222,18 +205,36 @@ The text after each line of code is called a
 
 Really small or large numbers get a scientific notation:
 
-```{r}
+
+~~~
 2/10000
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1] 2e-04
+~~~
+{: .output}
 
 Which is shorthand for "multiplied by `10^XX`". So `2e-4`
 is shorthand for `2 * 10^(-4)`.
 
 You can write numbers in scientific notation too:
 
-```{r}
+
+~~~
 5e3  # Note the lack of minus here
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1] 5000
+~~~
+{: .output}
 
 ## Mathematical functions
 
@@ -242,21 +243,57 @@ we simply type its name, followed by  open and closing parentheses.
 Anything we type inside the parentheses is called the function's
 arguments:
 
-```{r}
+
+~~~
 sin(1)  # trigonometry functions
-```
+~~~
+{: .r}
 
-```{r}
+
+
+~~~
+[1] 0.841471
+~~~
+{: .output}
+
+
+~~~
 log(1)  # natural logarithm
-```
+~~~
+{: .r}
 
-```{r}
+
+
+~~~
+[1] 0
+~~~
+{: .output}
+
+
+~~~
 log10(10) # base-10 logarithm
-```
+~~~
+{: .r}
 
-```{r}
+
+
+~~~
+[1] 1
+~~~
+{: .output}
+
+
+~~~
 exp(0.5) # e^(1/2)
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1] 1.648721
+~~~
+{: .output}
 
 Don't worry about trying to remember every function in R. You
 can simply look them up on Google, or if you can remember the
@@ -277,29 +314,83 @@ illustrate command usage. We'll go through an example later.
 
 We can also do comparison in R:
 
-```{r}
+
+~~~
 1 == 1  # equality (note two equals signs, read as "is equal to")
-```
+~~~
+{: .r}
 
-```{r}
+
+
+~~~
+[1] TRUE
+~~~
+{: .output}
+
+
+~~~
 1 != 2  # inequality (read as "is not equal to")
-```
+~~~
+{: .r}
 
-```{r}
+
+
+~~~
+[1] TRUE
+~~~
+{: .output}
+
+
+~~~
 1 <  2  # less than
-```
+~~~
+{: .r}
 
-```{r}
+
+
+~~~
+[1] TRUE
+~~~
+{: .output}
+
+
+~~~
 1 <= 1  # less than or equal to
-```
+~~~
+{: .r}
 
-```{r}
+
+
+~~~
+[1] TRUE
+~~~
+{: .output}
+
+
+~~~
 1 > 0  # greater than
-```
+~~~
+{: .r}
 
-```{r}
+
+
+~~~
+[1] TRUE
+~~~
+{: .output}
+
+
+~~~
 1 >= -9 # greater than or equal to
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1] TRUE
+~~~
+{: .output}
 
 > ## Tip: Comparing Numbers
 >
@@ -325,16 +416,27 @@ We can also do comparison in R:
 
 We can store values in variables using the assignment operator `<-`, like this:
 
-```{r}
+
+~~~
 x <- 1/40
-```
+~~~
+{: .r}
 
 Notice that assignment does not print a value. Instead, we stored it for later
 in something called a **variable**. `x` now contains the **value** `0.025`:
 
-```{r}
+
+~~~
 x
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1] 0.025
+~~~
+{: .output}
 
 More precisely, the stored value is a *decimal approximation* of
 this fraction called a [floating point number](http://en.wikipedia.org/wiki/Floating_point).
@@ -342,23 +444,36 @@ this fraction called a [floating point number](http://en.wikipedia.org/wiki/Floa
 Look for the `Environment` tab in one of the panes of RStudio, and you will see that `x` and its value
 have appeared. Our variable `x` can be used in place of a number in any calculation that expects a number:
 
-```{r}
+
+~~~
 log(x)
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1] -3.688879
+~~~
+{: .output}
 
 Notice also that variables can be reassigned:
 
-```{r}
+
+~~~
 x <- 100
-```
+~~~
+{: .r}
 
 `x` used to contain the value 0.025 and and now it has the value 100.
 
 Assignment values can contain the variable being assigned to:
 
-```{r}
+
+~~~
 x <- x + 1 #notice how RStudio updates its description of x on the top right tab
-```
+~~~
+{: .r}
 
 The right hand side of the assignment can be any valid R expression.
 The right hand side is *fully evaluated* before the assignment occurs.
@@ -375,14 +490,13 @@ What you use is up to you, but **be consistent**.
 
 It is also possible to use the `=` operator for assignment:
 
-```{r}
-x = 1/40
-```
 
-But this is much less common among R users.  The most important thing is to
-**be consistent** with the operator you use. There are occasionally places
-where it is less confusing to use `<-` than `=`, and it is the most common
-symbol used in the community. So the recommendation is to use `<-`.
+~~~
+x = 1/40
+~~~
+{: .r}
+
+But this is much less common among R users. So the recommendation is to use `<-`.
 
 > ## Tip: A shortcut for assignment operator
 >
@@ -396,12 +510,47 @@ symbol used in the community. So the recommendation is to use `<-`.
 One final thing to be aware of is that R is *vectorized*, meaning that
 variables and functions can have vectors as values. For example
 
-```{r}
+
+~~~
 1:5
+~~~
+{: .r}
+
+
+
+~~~
+[1] 1 2 3 4 5
+~~~
+{: .output}
+
+
+
+~~~
 2^(1:5)
+~~~
+{: .r}
+
+
+
+~~~
+[1]  2  4  8 16 32
+~~~
+{: .output}
+
+
+
+~~~
 x <- 1:5
 2^x
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1]  2  4  8 16 32
+~~~
+{: .output}
 
 This is incredibly powerful; we will discuss this further in an
 upcoming lesson.
@@ -414,9 +563,18 @@ There are a few useful commands you can use to interact with the R session.
 `ls` will list all of the variables and functions stored in the global environment
 (your working R session):
 
-```{r}
+
+~~~
 ls() # to list files use list.files() function
-```
+~~~
+{: .r}
+
+
+
+~~~
+[1] "x" "y"
+~~~
+{: .output}
 
 > ## Tip: hidden objects
 >
@@ -431,22 +589,67 @@ needed to give the parentheses to tell R to call the function.
 
 If we type `ls` by itself, R will print out the source code for that function!
 
-```{r}
+
+~~~
 ls
-```
+~~~
+{: .r}
+
+
+
+~~~
+function (name, pos = -1L, envir = as.environment(pos), all.names = FALSE, 
+    pattern, sorted = TRUE) 
+{
+    if (!missing(name)) {
+        pos <- tryCatch(name, error = function(e) e)
+        if (inherits(pos, "error")) {
+            name <- substitute(name)
+            if (!is.character(name)) 
+                name <- deparse(name)
+            warning(gettextf("%s converted to character string", 
+                sQuote(name)), domain = NA)
+            pos <- name
+        }
+    }
+    all.names <- .Internal(ls(envir, all.names, sorted))
+    if (!missing(pattern)) {
+        if ((ll <- length(grep("[", pattern, fixed = TRUE))) && 
+            ll != length(grep("]", pattern, fixed = TRUE))) {
+            if (pattern == "[") {
+                pattern <- "\\["
+                warning("replaced regular expression pattern '[' by  '\\\\['")
+            }
+            else if (length(grep("[^\\\\]\\[<-", pattern))) {
+                pattern <- sub("\\[<-", "\\\\\\[<-", pattern)
+                warning("replaced '[<-' by '\\\\[<-' in regular expression pattern")
+            }
+        }
+        grep(pattern, all.names, value = TRUE)
+    }
+    else all.names
+}
+<bytecode: 0x7ff54d8112a8>
+<environment: namespace:base>
+~~~
+{: .output}
 
 You can use `rm` to delete objects you no longer need:
 
-```{r}
+
+~~~
 rm(x)
-```
+~~~
+{: .r}
 
 If you have lots of things in your environment and want to delete all of them,
 you can pass the results of `ls` to the `rm` function:
 
-```{r}
+
+~~~
 rm(list = ls())
-```
+~~~
+{: .r}
 
 In this case we've combined the two. Like the order of operations, anything
 inside the innermost parentheses is evaluated first, and so on.
@@ -457,9 +660,18 @@ use the `=` operator!!
 
 If instead we use `<-`, there will be unintended side effects, or you may get an error message:
 
-```{r, error=TRUE}
+
+~~~
 rm(list <- ls())
-```
+~~~
+{: .r}
+
+
+
+~~~
+Error in rm(list <- ls()): ... must contain names or character strings
+~~~
+{: .error}
 
 > ## Tip: Warnings vs. Errors
 >
@@ -504,10 +716,12 @@ before using it.
 
 R, and every package, provide help files for functions. To search for help use:
 
-```{r, eval=FALSE}
+
+~~~
 ?function_name
 help(function_name)
-```
+~~~
+{: .r}
 
 This will load up a help page in RStudio (or as plain text in R by itself).
 
@@ -518,9 +732,11 @@ Description, Usage, Arguments, Examples, etc.
 
 To seek help on special operators, use quotes:
 
-```{r, eval=FALSE}
+
+~~~
 ?"+"
-```
+~~~
+{: .r}
 
 ### Getting help on packages
 
@@ -532,13 +748,15 @@ Without any arguments, `vignette()` will list all vignettes for all installed pa
 If a package doesn't have any vignettes, you can usually find help by typing
 `help("package-name")`.
 
-##3 When you kind of remember the function
+### When you kind of remember the function
 
 If you're not sure what package a function is in, or how it's specifically spelled you can do a fuzzy search:
 
-```{r, eval=FALSE}
+
+~~~
 ??function_name
-```
+~~~
+{: .r}
 
 ### When you have no idea where to begin
 
@@ -557,16 +775,41 @@ the `[r]` tag.
 If you can't find the answer, there are two useful functions to
 help you ask a question from your peers:
 
-```{r, eval=FALSE}
+
+~~~
 ?dput
-```
+~~~
+{: .r}
 
 Will dump the data you're working with into a format so that it can
 be copy and pasted by anyone else into their R session.
 
-```{r}
+
+~~~
 sessionInfo()
-```
+~~~
+{: .r}
+
+
+
+~~~
+R version 3.3.2 (2016-10-31)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X El Capitan 10.11.6
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  base     
+
+other attached packages:
+[1] checkpoint_0.3.18 stringr_1.2.0     knitr_1.15.1     
+
+loaded via a namespace (and not attached):
+[1] magrittr_1.5  tools_3.3.2   stringi_1.1.2 methods_3.3.2 evaluate_0.10
+~~~
+{: .output}
 
 Will print out your current version of R, as well as any packages you
 have loaded.
@@ -579,7 +822,8 @@ As with any language, it's important to work on your R vocabulary.  Here is a
 > ## Challenge 1
 >
 > Which of the following are valid R variable names?
-> ```{r, eval=FALSE}
+> 
+> ~~~
 > min_height
 > max.height
 > _age
@@ -588,29 +832,36 @@ As with any language, it's important to work on your R vocabulary.  Here is a
 > min-length
 > 2widths
 > celsius2kelvin
-> ```
+> ~~~
+> {: .r}
 >
 > > ## Solution to challenge 1
 > >
 > > The following can be used as R variables:
-> > ```{r ch1pt1-sol, eval=FALSE}
+> > 
+> > ~~~
 > > min_height
 > > max.height
 > > MaxLength
 > > celsius2kelvin
-> > ```
+> > ~~~
+> > {: .r}
 > >
 > > The following creates a hidden variable:
-> > ```{r ch1pt2-sol, eval=FALSE}
+> > 
+> > ~~~
 > > .mass
-> > ```
+> > ~~~
+> > {: .r}
 > >
 > > The following will not be able to be used to create a variable
-> > ```{r ch1pt3-sol, eval=FALSE}
+> > 
+> > ~~~
 > > _age
 > > min-length
 > > 2widths
-> > ```
+> > ~~~
+> > {: .r}
 > {: .solution}
 {: .challenge}
 
@@ -619,36 +870,46 @@ As with any language, it's important to work on your R vocabulary.  Here is a
 > What will be the value of each  variable  after each
 > statement in the following program?
 >
-> ```{r, eval=FALSE}
+> 
+> ~~~
 > mass <- 47.5
 > age <- 122
 > mass <- mass * 2.3
 > age <- age - 20
-> ```
+> ~~~
+> {: .r}
 >
 > > ## Solution to challenge 2
 > >
-> > ```{r ch2pt1-sol}
+> > 
+> > ~~~
 > > mass <- 47.5
-> > ```
-> > This will give a value of `r mass` for the variable mass
+> > ~~~
+> > {: .r}
+> > This will give a value of 47.5 for the variable mass
 > >
-> > ```{r ch2pt2-sol}
+> > 
+> > ~~~
 > > age <- 122
-> > ```
-> > This will give a value of `r age` for the variable age
+> > ~~~
+> > {: .r}
+> > This will give a value of 122 for the variable age
 > >
-> > ```{r ch2pt3-sol}
+> > 
+> > ~~~
 > > mass <- mass * 2.3
-> > ```
-> > This will multiply the existing value of `r mass/2.3` by 2.3 to give a new value of
-> > `r mass` to the variable mass.
+> > ~~~
+> > {: .r}
+> > This will multiply the existing value of 47.5 by 2.3 to give a new value of
+> > 109.25 to the variable mass.
 > >
-> > ```{r ch2pt4-sol}
+> > 
+> > ~~~
 > > age <- age - 20
-> > ```
-> > This will subtract 20 from the existing value of `r age + 20 ` to give a new value
-> > of `r age` to the variable age.
+> > ~~~
+> > {: .r}
+> > This will subtract 20 from the existing value of 122 to give a new value
+> > of 102 to the variable age.
 > {: .solution}
 {: .challenge}
 
@@ -661,10 +922,19 @@ As with any language, it's important to work on your R vocabulary.  Here is a
 > > ## Solution to challenge 3
 > >
 > > One way of answering this question in R is to use the `>` to set up the following:
-> > ```{r ch3-sol}
+> > 
+> > ~~~
 > > mass > age
-> >```
-> > This should yield a boolean value of TRUE since `r mass` is greater than `r age`.
+> > ~~~
+> > {: .r}
+> > 
+> > 
+> > 
+> > ~~~
+> > [1] TRUE
+> > ~~~
+> > {: .output}
+> > This should yield a boolean value of TRUE since 109.25 is greater than 102.
 > {: .solution}
 {: .challenge}
 
@@ -677,24 +947,27 @@ As with any language, it's important to work on your R vocabulary.  Here is a
 > > ## Solution to challenge 4
 > >
 > > We can use the `rm` command to accomplish this task
-> > ```{r ch4-sol}
+> > 
+> > ~~~
 > > rm(age, mass)
-> > ```
+> > ~~~
+> > {: .r}
 > {: .solution}
 {: .challenge}
 
 > ## Challenge 5
 >
-> Install the following packages: `ggplot2`, `plyr`, `gapminder`
+> Install the following packages: `ggplot2`, `plyr`
 >
 > > ## Solution to challenge 5
 > >
 > > We can use the `install.packages()` command to install the required packages.
-> > ```{r ch5-sol, eval=FALSE}
+> > 
+> > ~~~
 > > install.packages("ggplot2")
 > > install.packages("plyr")
-> > install.packages("gapminder")
-> >```
+> > ~~~
+> > {: .r}
 > {: .solution}
 {: .challenge}
 
