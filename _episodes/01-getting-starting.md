@@ -38,8 +38,8 @@ results graphically. But to start, we will review how to interact with R and use
 Please ensure you have the latest version of R and RStudio installed on your machine. This is 
 important, as some packages may not install correctly (or at all) if R is not up to date.
 
-[Download and install the latest version of R here](https://www.r-project.org/)
-[Download and install RStudio here](https://www.rstudio.com/)
+[Download and install the latest version of R here](https://www.r-project.org/)  
+[Download and install RStudio here](https://www.rstudio.com/)  
 
 ## Introduction to RStudio
 
