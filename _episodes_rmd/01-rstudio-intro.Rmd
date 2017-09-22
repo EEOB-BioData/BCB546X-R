@@ -91,24 +91,27 @@ interactive R console.
 3. Better yet, you can write your code in R markdown file. 
 An [R Markdown file](http://rmarkdown.rstudio.com/) allows you to incorporate your
 code in a narration that a reader needs to understand it, run it, and display your 
-results. You can use multiple languages including R, Python, and SQL.
+results. You can use multiple languages including R, Python, and SQL.  
 
 > ## Tip: Creating an R Markdown document
 >
 > You can create a new R Markdown document in RStudio with the menu command 
 > _File -> New File -> RMarkdown_ A new windows opens and asks you to enter 
 > title, author, and default output format for your R Markdown document. After 
-> you enter this information, a new tab opens with a new R Markdown file. 
-> Notice that the file contains three types of content: An (optional) YAML header 
-> surrounded by ---s; R code chunks surrounded by ```s; and text mixed with simple 
-> text formatting. You can use the “Knit” button in the RStudio IDE to render the 
+> you enter this information, a new R Markdown file opens in a new tab.  
+> Notice that the file contains three types of content: 
+> * An (optional) YAML header surrounded by ---s; 
+> * R code chunks surrounded by ```s; 
+> * text mixed with simple text formatting.  
+> You can use the “Knit” button in the RStudio IDE to render the 
 > file and preview the output with a single click or keyboard shortcut (⇧⌘K).
 > Note that you can quickly insert chunks of code into your file with the keyboard 
 > shortcut Ctrl + Alt + I (OS X: Cmd + Option + I) or the Add Chunk  command in the 
 > editor toolbar. You can run the code in a chunk by pressing the green triangle on 
-> the right. To run the current line, you can 1. click on the `Run` button above the 
-> editor panel, or 2. select "Run Lines" from the "Code" menu, or 3. hit Ctrl-Enter 
-> in Windows or Linux or Command-Enter on OS X. 
+> the right. To run the current line, you can 
+> 1. click on the `Run` button above the editor panel, or  
+> 2. select "Run Lines" from the "Code" menu, or  
+> 3. hit Ctrl-Enter in Windows or Linux or Command-Enter on OS X.   
 {: .callout}
 
 ## Introduction to R
