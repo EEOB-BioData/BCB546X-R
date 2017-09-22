@@ -1,12 +1,13 @@
 ---
 title: "Introduction to R and RStudio"
-teaching: 45
-exercises: 10
+teaching: 50
+exercises: 30
 questions:
 - "How to find your way around RStudio?"
 - "How to interact with R?"
 - "How to manage your environment?"
 - "How to install packages?"
+- "How can I get help in R?"
 objectives:
 - "To gain familiarity with the various panes in the RStudio IDE"
 - "To gain familiarity with the buttons, short cuts and options in the RStudio IDE"
@@ -14,7 +15,9 @@ objectives:
 - "To be able to manage your workspace in an interactive R session"
 - "To be able to use mathematical and comparison operations"
 - "To be able to call functions"
-- "Introduction to package management"
+- "To be able to find and use packages"
+- "To be able to read R help files for functions and special operators."
+- "To be able to seek help from your peers."
 keypoints:
 - "Use RStudio to write and run R programs."
 - "R has the usual arithmetic operators and mathematical functions."
@@ -23,6 +26,7 @@ keypoints:
 - "Use `rm()` to delete objects in a program."
 - "Use `install.packages()` to install packages (libraries)."
 - "Use `library(packagename)`to make a package available for use"
+- "Use `help()` to get online help in R."
 ---
 
 ```{r, include=FALSE}
@@ -35,35 +39,24 @@ knitr_fig_path("01-")
 ## Motivation
 
 Science is a multi-step process: once you've designed an experiment and collected
-data, the real fun begins **(but remember R.A.Fisher)**! 
-This lesson will teach you how to start this process using
-R and RStudio. We will begin with raw data, perform exploratory analyses, and learn
-how to plot results graphically. This example starts with a dataset from
-[gapminder.org](https://www.gapminder.org) containing population information for many
-countries through time. Can you read the data into R? Can you plot the population for
-Senegal? Can you calculate the average income for countries on continent of Asia?
-By the end of these lessons you will be able to do things like plot the populations
-for all of these countries in under a minute!
+data, the real fun begins **(but remember R.A.Fisher)**! Here we will explore R as
+a tool to organize raw data, perform exploratory analyses, and learn how to plot 
+results graphically. But to start, we will review how to interact with R and use the RStudio.
 
 ## Before Starting This Lesson
 
-Please ensure you have the latest version of R and RStudio installed on your machine. This is important, as some packages used in the workshop may not install correctly (or at all) if R is not up to date.
+Please ensure you have the latest version of R and RStudio installed on your machine. This is 
+important, as some packages may not install correctly (or at all) if R is not up to date.
 
 [Download and install the latest version of R here](https://www.r-project.org/)
 [Download and install RStudio here](https://www.rstudio.com/)
 
 ## Introduction to RStudio
 
-Throughout this lesson, you're going to learn some of the fundamentals of
-the R language as well as some best practices for organizing code for
-scientific projects that will make your life easier.
-
-We'll be using RStudio: a free, open source R integrated development
+Throughout this lesson, we'll be using RStudio: a free, open source R integrated development
 environment. It provides a built in editor, works on all platforms (including
 on servers) and provides many advantages such as integration with version
 control and project management.
-
-
 
 **Basic layout**
 
@@ -82,34 +75,53 @@ in the top left.
 
 
 ## Work flow within RStudio
-There are two main ways one can work within RStudio.
+There are three main ways one can work within RStudio.
 
 1. Test and play within the interactive R console then copy code into
 a .R file to run later.
    *  This works well when doing small tests and initially starting off.
-   *  It quickly becomes laborious
+   *  You can use the history panel to copy all the commands to the source file.
 2. Start writing in an .R file and use RStudio's command / short cut
 to push current line, selected lines or modified lines to the
 interactive R console.
-   * This is a great way to start; all your code is saved for later
+   * This works well if you are more advanced in writing R code; 
+   * All your code is saved for later
    * You will be able to run the file you create from within RStudio
-   or using R's `source()`  function.
+     or using R's `source()`  function.
+3. Better yet, you can write your code in R markdown file. 
+An [R Markdown file](http://rmarkdown.rstudio.com/) allows you to incorporate your
+code in a narration that a reader needs to understand it, run it, and display your 
+results. You can use multiple languages including R, Python, and SQL.
 
-> ## Tip: Running segments of your code
+> ## Tip: Creating an R Markdown document
 >
-> RStudio offers you great flexibility in running code from within the editor
-> window. There are buttons, menu choices, and keyboard shortcuts. To run the
-> current line, you can 1. click on the `Run` button above the editor panel,
-> or 2. select "Run Lines" from the "Code" menu, or 3. hit Ctrl-Enter in Windows
-> or Linux or Command-Enter on OS X. (This shortcut can also be seen by hovering
-> the mouse over the button). To run a block of code, select it and then `Run`.
-> If you have modified a line of code within a block of code you have just run,
-> there is no need to reselct the section and `Run`, you can use the next button
-> along, `Re-run the previous region`. This will run the previous code block
-> including the modifications you have made.
+> You can create a new R Markdown document in RStudio with the menu command 
+> _File -> New File -> RMarkdown_ A new windows opens and asks you to enter 
+> title, author, and default output format for your R Markdown document. After 
+> you enter this information, a new tab opens with a new R Markdown file. 
+> Notice that the file contains three types of content: An (optional) YAML header 
+> surrounded by ---s; R code chunks surrounded by ```s; and text mixed with simple 
+> text formatting. You can use the “Knit” button in the RStudio IDE to render the 
+> file and preview the output with a single click or keyboard shortcut (⇧⌘K).
+> Note that you can quickly insert chunks of code into your file with the keyboard 
+> shortcut Ctrl + Alt + I (OS X: Cmd + Option + I) or the Add Chunk  command in the 
+> editor toolbar. You can run the code in a chunk by pressing the green triangle on 
+> the right. To run the current line, you can 1. click on the `Run` button above the 
+> editor panel, or 2. select "Run Lines" from the "Code" menu, or 3. hit Ctrl-Enter 
+> in Windows or Linux or Command-Enter on OS X. 
 {: .callout}
 
 ## Introduction to R
+
+R is a system for statistical computation and graphics. It provides, 
+among other things, a programming language, high level graphics, 
+interfaces to other languages and debugging facilities.  
+
+As a programming language, R adopts syntax and grammar that differ from 
+many other languages: objects in R are ‘vectors’, and functions are 
+‘vectorized’ to operate on all elements of the object; R objects have 
+‘copy-on-modify’ and ‘call-by-value’ semantics; common paradigms in other 
+languages, such as the ‘for’ loop, are encountered less commonly in R.
 
 Much of your time in R will be spent in the R interactive
 console. This is where you will run all of your code, and can be a
@@ -146,7 +158,7 @@ complete it:
 ~~~
 +
 ~~~
-{: .output}
+{: .output}  
 
 Any time you hit return and the R session shows a "+" instead of a ">", it
 means it's waiting for you to complete the command. If you want to cancel
@@ -191,7 +203,7 @@ intend.
 ```
 
 This can get unwieldy when not needed, but  clarifies your intentions.
-Remember that others may later read your code.
+Remember that others may later read your code.  
 
 ```{r, eval=FALSE}
 (3 + (5 * (2 ^ 2))) # hard to read
@@ -482,6 +494,79 @@ package, by Yihui Xie, makes it easier to clean up poorly formatted code.
 Make sure to read the notes on the [wiki](https://github.com/yihui/formatR/wiki) 
 before using it.
 
+## Looking for help
+
+### Reading Help files
+
+R, and every package, provide help files for functions. To search for help use:
+
+```{r, eval=FALSE}
+?function_name
+help(function_name)
+```
+
+This will load up a help page in RStudio (or as plain text in R by itself).
+
+Note that each help page is broken down into several sections, including
+Description, Usage, Arguments, Examples, etc.
+
+### Special Operators
+
+To seek help on special operators, use quotes:
+
+```{r, eval=FALSE}
+?"+"
+```
+
+### Getting help on packages
+
+Many packages come with "vignettes": tutorials and extended example documentation.
+Without any arguments, `vignette()` will list all vignettes for all installed packages;
+`vignette(package="package-name")` will list all available vignettes for
+`package-name`, and `vignette("vignette-name")` will open the specified vignette.
+
+If a package doesn't have any vignettes, you can usually find help by typing
+`help("package-name")`.
+
+##3 When you kind of remember the function
+
+If you're not sure what package a function is in, or how it's specifically spelled you can do a fuzzy search:
+
+```{r, eval=FALSE}
+??function_name
+```
+
+### When you have no idea where to begin
+
+If you don't know what function or package you need to use
+[CRAN Task Views](http://cran.at.r-project.org/web/views)
+is a specially maintained list of packages grouped into
+fields. This can be a good starting point.
+
+### When your code doesn't work: seeking help from your peers
+
+If you're having trouble using a function, 9 times out of 10,
+the answers you are seeking have already been answered on
+[Stack Overflow](http://stackoverflow.com/). You can search using
+the `[r]` tag.
+
+If you can't find the answer, there are two useful functions to
+help you ask a question from your peers:
+
+```{r, eval=FALSE}
+?dput
+```
+
+Will dump the data you're working with into a format so that it can
+be copy and pasted by anyone else into their R session.
+
+```{r}
+sessionInfo()
+```
+
+Will print out your current version of R, as well as any packages you
+have loaded.
+
 ## Vocabulary
 
 As with any language, it's important to work on your R vocabulary.  Here is a 
@@ -607,4 +692,14 @@ As with any language, it's important to work on your R vocabulary.  Here is a
 > > install.packages("gapminder")
 > >```
 > {: .solution}
+{: .challenge}
+
+> ## Challenge 6
+> Use help to find a function (and its associated parameters) that you could
+> use to load data from a csv file in which columns are delimited with "\t"
+> (tab) and the decimal point is a "." (period). This check for decimal
+> separator is important, especially if you are working with international
+> colleagues, because different countries have different conventions for the
+> decimal point (i.e. comma vs period).
+> hint: use `??csv` to lookup csv related functions.
 {: .challenge}

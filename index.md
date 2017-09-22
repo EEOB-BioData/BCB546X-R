@@ -6,10 +6,11 @@ root: .
 ## Welcome to the R part of the BCB546 course!
 
 Our goal here is to teach you the basics of R and best practices of using R for data analysis. 
-For some of these lessons we are using a modified version of the Software Carpentry workshop 
-[R for Reproducible Scientific Analysis](http://swcarpentry.github.io/r-novice-gapminder/). 
-Other lessons follow Chapter 8 of the [Bioinformatics Data Skills](http://shop.oreilly.com/product/0636920030157.do) 
-book by [Vince Buffalo](https://github.com/vsbuffalo).
+Although we are using the template of the Software Carpentry workshop 
+[R for Reproducible Scientific Analysis](http://swcarpentry.github.io/r-novice-gapminder/), most 
+lessons are based on the [Bioinformatics Data Skills](http://shop.oreilly.com/product/0636920030157.do) 
+book by [Vince Buffalo](https://github.com/vsbuffalo) and the [Advanced R](http://adv-r.had.co.nz/) book 
+by [Hadley Wickham](http://hadley.nz/).
 
 ## Why R?
 

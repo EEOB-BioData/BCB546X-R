@@ -1,6 +1,6 @@
 ---
 title: "Exploring Data Frames"
-teaching: 60
+teaching: 50
 exercises: 30
 questions:
 - "How can I manipulate a data frame?"
