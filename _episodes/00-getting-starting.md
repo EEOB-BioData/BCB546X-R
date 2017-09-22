@@ -13,7 +13,7 @@ objectives:
 - "To gain familiarity with the buttons, short cuts and options in the RStudio IDE"
 - "To understand variables and how to assign to them"
 - "To be able to manage your workspace in an interactive R session"
-- "To be able to create self-contained projects in RStudio""
+- "To be able to create self-contained projects in RStudio"
 - "To be able to use git from within RStudio"
 keypoints:
 - "Use RStudio to create and manage projects with consistent layout."
@@ -22,6 +22,7 @@ keypoints:
 - "Separate function definition and application."
 - "Use version control."
 ---
+
 
 
 
