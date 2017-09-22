@@ -168,14 +168,14 @@ between files from different commits.
 
 > ## Challenge 2
 >
-> 1. Create a directory within your project called `data`.
-> 2. Modify the `.gitignore` file to contain `data/`
+> 1. Create a directory within your project called `graphs`.
+> 2. Modify the `.gitignore` file to contain `graphs/`
 > so that this disposable output isn't versioned.
 >
 > Add the newly created folders to version control using
 > the git interface.
 >
-> > ## Solution to Challenge 3
+> > ## Solution to Challenge 2
 > >
 > > This can be done with the command line:
 > > ```
