@@ -198,12 +198,13 @@ Now we want to push the contents of this commit to GitHub, so it is also backed-
 > Don't initialize it with a README file because we'll be importing an existing repository...
 > 2. Make sure you have a proper public key in your GitHub settings
 > 3. In RStudio, again click Tools -> Shell … . Enter:
-> ```{r}
+> ```
 > $ git remote add origin git@github.com/[path to your directory]
 > $ git config remote.origin.url git@github.com:[path to your directory]
 > $ git pull -u origin master
 > $ git push -u origin master
-> ```{: . shell}
+> ```
+> {: . shell}
 > 4. Change README.md file to indicate the changes you made
 > 5. Commit and push it from the Git tab on the Environment/history panel of Rstudio.
 {: .challenge}
