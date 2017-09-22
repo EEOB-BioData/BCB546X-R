@@ -4,10 +4,8 @@ teaching: 20
 exercises: 10
 questions:
 - "How to find your way around RStudio?"
-- "How to interact with R?"
-- "How to manage your environment?"
-- "How to install packages?"
-- "How can I get help in R?"
+- "How to start and organize a new project from RStudio"
+- "How to put the new project under version control and integrate with GitHub?"
 objectives:
 - "To gain familiarity with the various panes in the RStudio IDE"
 - "To gain familiarity with the buttons, short cuts and options in the RStudio IDE"
@@ -43,6 +41,7 @@ Please ensure you have the latest version of R and RStudio installed on your mac
 important, as some packages may not install correctly (or at all) if R is not up to date.
 
 [Download and install the latest version of R here](https://www.r-project.org/)  
+
 [Download and install RStudio here](https://www.rstudio.com/)  
 
 ## Introduction to RStudio
