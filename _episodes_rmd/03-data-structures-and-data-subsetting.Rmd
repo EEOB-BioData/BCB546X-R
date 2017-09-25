@@ -57,7 +57,7 @@ Note that R has no 0-dimensional, or scalar types. Individual numbers or strings
 
 Given an object, the best way to understand what data structures it's composed of is to use `str()`. `str()` is short for structure and it gives a compact, human readable description of any R data structure.
 
-## Vectors {#vectors}
+### Vectors {#vectors}
 
 The basic data structure in R is the vector. Vectors come in two flavours: atomic vectors and lists. They have three common properties:
 
@@ -67,7 +67,7 @@ The basic data structure in R is the vector. Vectors come in two flavours: atomi
 
 They differ in the types of their elements: all elements of an atomic vector must be the same type, whereas the elements of a list can have different types.
 
-### Atomic vectors
+#### Atomic vectors
 
 There are four common types of atomic vectors : logical, integer, double (often called numeric), and character.
 
@@ -86,7 +86,7 @@ Atomic vectors are always flat, even if you nest `c()`'s: Try `c(1, c(2, c(3, 4)
 
 Missing values are specified with `NA`, which is a logical vector of length 1. `NA` will always be coerced to the correct type if used inside `c()`.
 
-#### Coercion
+##### Coercion
 
 All elements of an atomic vector must be the same type, so when you attempt to combine different types they will be __coerced__ to the most flexible type. The coercion rules go: `logical` -> `integer` -> `double` -> `complex` -> `character`, where -> can be read as *are transformed into*. You can try to force coercion against this flow using the `as.` functions:
 
@@ -122,7 +122,7 @@ mean(x)
 
 Coercion often happens automatically. Most mathematical functions (`+`, `log`, `abs`, etc.) will coerce to a double or integer, and most logical operations (`&`, `|`, `any`, etc) will coerce to a logical. You will usually get a warning message if the coercion might lose information. If confusion is likely, explicitly coerce with `as.character()`, `as.double()`, `as.integer()`, or `as.logical()`. 
 
-### Lists
+#### Lists
 
 Lists are different from atomic vectors because their elements can be of any type, including lists. You construct lists by using `list()` instead of `c()`:
 
@@ -191,7 +191,7 @@ is.list(mod)
 >    about logical vectors? (Hint: think about `c(FALSE, NA_character_)`.)
 {: .discussion}
 
-## Attributes {#attributes}
+### Attributes {#attributes}
 
 All objects can have arbitrary additional attributes, used to store metadata about the object. Attributes can be thought of as a named list (with unique names). Attributes can be accessed individually with `attr()` or all at once (as a list) with `attributes()`.
 
@@ -207,7 +207,7 @@ The three most important attributes:
  
 Each of these attributes has a specific accessor function to get and set values. When working with these attributes, use `names(x)`, `dim(x)`, and `class(x)`, not `attr(x, "names")`, `attr(x, "dim")`, and `attr(x, "class")`.
 
-#### Names {#vector-names}
+##### Names {#vector-names}
 
 You can name elements in a vector in three ways:
 
@@ -226,7 +226,7 @@ x <- 1:3; names(x) <- c("a", "b", "c")
 * By creating a modified copy of a vector: 
 ```{r}
 x <- 1:3
-y <- setNames(x, c("a", "b", "c"))
+x <- setNames(x, c("a", "b", "c"))
 ```
 
 Names don't have to be uniqueand not all elements of a vector need to have a name. If some names are missing, `names()` will return an empty string for those elements. If all names are missing, `names()` will return `NULL`.
@@ -241,7 +241,7 @@ names(z)
 
 You can create a new vector without names using `unname(x)`, or remove names in place with `names(x) <- NULL`.
 
-### Factors
+#### Factors
 
 One important use of attributes is to define factors. A factor is a vector that can contain only predefined values, and is used to store categorical data. Factors are built on top of integer vectors using two attributes: the `class()`, "factor", which makes them behave differently from regular integer vectors, and the `levels()`, which defines the set of allowed values.
 
@@ -272,7 +272,7 @@ table(sex_factor)
 
 Factors crip up all over R, and occasionally cause headaches for new R users. We'll discuss why in the next lesson.
 
-## Matrices and arrays {#matrices-and-arrays}
+### Matrices and arrays {#matrices-and-arrays}
 
 Adding a `dim()` attribute to an atomic vector allows it to behave like a multi-dimensional __array__. A special case of the array is the __matrix__, which has two dimensions. Matrices are used commonly as part of the mathematical machinery of statistics. Arrays are much rarer, but worth being aware of.
 
@@ -331,6 +331,7 @@ These are relatively esoteric data structures, but can be useful if you want to 
 >    ```
 {: .discussion}
 
+## Subsetting  
 R has many powerful subset operators and mastering them will allow you to
 easily perform complex operations on any kind of dataset.
 
@@ -348,7 +349,7 @@ x
 So now that we've created a dummy vector to play with, how do we get at its
 contents?
 
-## Accessing elements using their indices
+### Accessing elements using their indices
 
 To extract elements of a vector we can give their corresponding index, starting
 from one:
@@ -402,7 +403,7 @@ x[0]
 > element of a vector has an index of 0. In R, the first element is 1.
 {: .callout}
 
-## Skipping and removing elements
+### Skipping and removing elements
 
 If we use a negative number as the index of a vector, R will return
 every element *except* for the one specified:
@@ -453,43 +454,7 @@ x <- x[-4]
 x
 ```
 
-> ## Challenge 1
->
-> Given the following code:
->
-> ```{r}
-> x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
-> names(x) <- c('a', 'b', 'c', 'd', 'e')
-> print(x)
-> ```
->
-> Come up with at least 3 different commands that will produce the following output:
->
-> ```{r, echo=FALSE}
-> x[2:4]
-> ```
->
-> After you find 3 different commands, compare notes with your neighbour. Did you have different strategies?
->
-> > ## Solution to challenge 1
-> >
-> > ```{r}
-> > x[2:4]
-> > ```
-> > ```{r}
-> > x[-c(1,5)]
-> > ```
-> > ```{r}
-> > x[c("b", "c", "d")]
-> > ```
-> > ```{r}
-> > x[c(2,3,4)]
-> > ```
-> >
-> {: .solution}
-{: .challenge}
-
-## Subsetting by name
+### Subsetting by name
 
 We can extract elements by using their name, instead of index:
 
@@ -542,6 +507,42 @@ x[-which(names(x) %in% c("a", "c"))]
 
 The `%in%` goes through each element of its left argument, in this case the
 names of `x`, and asks, "Does this element occur in the second argument?".
+
+> ## Challenge 1
+>
+> Given the following code:
+>
+> ```{r}
+> x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
+> names(x) <- c('a', 'b', 'c', 'd', 'e')
+> print(x)
+> ```
+>
+> Come up with at least 3 different commands that will produce the following output:
+>
+> ```{r, echo=FALSE}
+> x[2:4]
+> ```
+>
+> After you find 3 different commands, compare notes with your neighbour. Did you have different strategies?
+>
+> > ## Solution to challenge 1
+> >
+> > ```{r}
+> > x[2:4]
+> > ```
+> > ```{r}
+> > x[-c(1,5)]
+> > ```
+> > ```{r}
+> > x[c("b", "c", "d")]
+> > ```
+> > ```{r}
+> > x[c(2,3,4)]
+> > ```
+> >
+> {: .solution}
+{: .challenge}
 
 > ## Challenge 2
 >
@@ -649,7 +650,7 @@ names(x) == c('a', 'c', 'e')
 This difference between `==` and `%in%` is important to remember,
 because it can introduce hard to find and subtle bugs!
 
-## Subsetting through other logical operations
+### Subsetting through other logical operations
 
 We can also more simply subset through logical operations:
 
@@ -724,7 +725,7 @@ x[x > 7]
 > {: .solution}
 {: .challenge}
 
-## Handling special values
+### Handling special values
 
 At some point you will encounter functions in R which cannot handle missing, infinite,
 or undefined data.
