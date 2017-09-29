@@ -48,8 +48,8 @@ cats <- data.frame(coat = c("calico", "black", "tabby"), weight = c(2.1, 5.0, 3.
 str(df)
 ```
 
-Note that the `data.frame()`'s default behaviour which turns strings into factors. 
-Use `stringAsFactors = FALSE` to suppress this behaviour! 
+*Note that the `data.frame()`'s default behaviour which turns strings into factors. 
+Use `stringAsFactors = FALSE` to suppress this behaviour!* 
 
 ### Testing and coercion
 
@@ -63,13 +63,9 @@ is.data.frame(cats)
 
 You can coerce an object to a data frame with `as.data.frame()`:
 
-* A vector will create a one-column data frame.
-
-* A list will create one column for each element; it's an error if they're 
-  not all the same length.
-  
-* A matrix will create a data frame with the same number of columns and rows as the matrix.
-
+* A vector will create a one-column data frame.  
+* A list will create one column for each element; it's an error if they're not all the same length.  
+* A matrix will create a data frame with the same number of columns and rows as the matrix.  
 
 ## Reading data into a dataframe
 
@@ -115,14 +111,13 @@ cats$weight + 2
 paste("My cat is", cats$coat)
 ```
 
-We can ask what type of
-data something is:
+We can ask what type of data something is:
 
 ```{r}
 typeof(cats$weight)
 ```
 
-> ## Subsetting lists and dataframes
+> ## IMPORTANT: Subsetting lists and dataframes
 > ### Subsetting lists: three functions: `[`, `[[`, and `$`.
 >
 > Using `[` will always return a list. If you want to *subset* a list, but not
@@ -204,7 +199,7 @@ typeof(cats$weight)
 {: .callout}
 
 
-## Adding columns and rows in data frame
+## Adding columns and rows in data frame with `cbind` and `rbind`
 
 We learned last time that the columns in a list (and data frame) were vectors, so that our
 data are consistent in type throughout the column. As such, if we want to add a
@@ -221,8 +216,8 @@ We can then add this as a column with the `cbind` function:
 cats <- cbind(cats, age)
 ```
 
-Why didn't this work? Of course, R wants to see one element in our new column
-for every row in the table:
+OOPS! Why didn't this work? 
+Let's try again:
 
 ```{r}
 cats
@@ -267,7 +262,7 @@ cats$coat <- as.character(cats$coat)
 str(cats)
 ```
 
-We can also suppress conversion of character vectors into factors by setting stringsAsFactors=FALSE. This works for data.frame() as well as read.csv() and read.delim().
+We can also suppress conversion of character vectors into factors by setting stringsAsFactors=FALSE. This works for `data.frame()` as well as `read.csv()` and `read.delim()`.
 
 ## Removing rows
 
@@ -356,7 +351,6 @@ After all this work, if you want to save your dataframe back to a file use:
 write.csv(cats, file = "data/new_cats.csv")
 ```
 
-
 ## Realistic example
 
 With a knowledge of basic R language essentials, we’re ready to start working with real data. 
@@ -440,6 +434,7 @@ Note that R’s read.csv() function has automatically renamed some of these colu
 ```{r}
 colnames(d)[12] # original name
 colnames(d)[12] <- "percent.GC"
+colnames(d)[12] # new name
 ```
 
 Because the `dataframe$column` command returns a vector, we can pass it to R functions like mean() or summary() to get an idea of what depth looks like across this dataset:
@@ -602,8 +597,15 @@ For example, we might be curious if the average depth in a window (the depth col
 differs between very high GC content windows (greater than 80%) and all other windows:
 
 ```{r}
+for (i in (seq(10, 100, 10))) {
+  print(summary(d$Recombination[d$percent.GC <= i & d$percent.GC > i-10])*100)
+}
+
 summary(d$depth[d$percent.GC >= 80])
 summary(d$depth[d$percent.GC < 80])
+summary(d$depth[d$percent.GC <= i])
+sum(d$SNPs[d$start >= 37492472 & d$end <= 37527931])
+d$SNPs
 ```
 
 This is a fairly large difference, but it’s important to consider how many windows this includes. 

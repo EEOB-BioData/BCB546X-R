@@ -45,7 +45,7 @@ Note that R has no 0-dimensional, or scalar types. Individual numbers or strings
 
 Given an object, the best way to understand what data structures it's composed of is to use `str()`. `str()` is short for structure and it gives a compact, human readable description of any R data structure.
 
-## Vectors {#vectors}
+### Vectors {#vectors}
 
 The basic data structure in R is the vector. Vectors come in two flavours: atomic vectors and lists. They have three common properties:
 
@@ -55,7 +55,7 @@ The basic data structure in R is the vector. Vectors come in two flavours: atomi
 
 They differ in the types of their elements: all elements of an atomic vector must be the same type, whereas the elements of a list can have different types.
 
-### Atomic vectors
+#### Atomic vectors
 
 There are four common types of atomic vectors : logical, integer, double (often called numeric), and character.
 
@@ -76,7 +76,7 @@ Atomic vectors are always flat, even if you nest `c()`'s: Try `c(1, c(2, c(3, 4)
 
 Missing values are specified with `NA`, which is a logical vector of length 1. `NA` will always be coerced to the correct type if used inside `c()`.
 
-#### Coercion
+##### Coercion
 
 All elements of an atomic vector must be the same type, so when you attempt to combine different types they will be __coerced__ to the most flexible type. The coercion rules go: `logical` -> `integer` -> `double` -> `complex` -> `character`, where -> can be read as *are transformed into*. You can try to force coercion against this flow using the `as.` functions:
 
@@ -179,7 +179,7 @@ mean(x)
 
 Coercion often happens automatically. Most mathematical functions (`+`, `log`, `abs`, etc.) will coerce to a double or integer, and most logical operations (`&`, `|`, `any`, etc) will coerce to a logical. You will usually get a warning message if the coercion might lose information. If confusion is likely, explicitly coerce with `as.character()`, `as.double()`, `as.integer()`, or `as.logical()`. 
 
-### Lists
+#### Lists
 
 Lists are different from atomic vectors because their elements can be of any type, including lists. You construct lists by using `list()` instead of `c()`:
 
@@ -404,7 +404,7 @@ is.list(mod)
 >    about logical vectors? (Hint: think about `c(FALSE, NA_character_)`.)
 {: .discussion}
 
-## Attributes {#attributes}
+### Attributes {#attributes}
 
 All objects can have arbitrary additional attributes, used to store metadata about the object. Attributes can be thought of as a named list (with unique names). Attributes can be accessed individually with `attr()` or all at once (as a list) with `attributes()`.
 
@@ -420,7 +420,7 @@ The three most important attributes:
  
 Each of these attributes has a specific accessor function to get and set values. When working with these attributes, use `names(x)`, `dim(x)`, and `class(x)`, not `attr(x, "names")`, `attr(x, "dim")`, and `attr(x, "class")`.
 
-#### Names {#vector-names}
+##### Names {#vector-names}
 
 You can name elements in a vector in three ways:
 
@@ -465,7 +465,7 @@ x <- 1:3; names(x) <- c("a", "b", "c")
 
 ~~~
 x <- 1:3
-y <- setNames(x, c("a", "b", "c"))
+x <- setNames(x, c("a", "b", "c"))
 ~~~
 {: .r}
 
@@ -502,7 +502,7 @@ NULL
 
 You can create a new vector without names using `unname(x)`, or remove names in place with `names(x) <- NULL`.
 
-### Factors
+#### Factors
 
 One important use of attributes is to define factors. A factor is a vector that can contain only predefined values, and is used to store categorical data. Factors are built on top of integer vectors using two attributes: the `class()`, "factor", which makes them behave differently from regular integer vectors, and the `levels()`, which defines the set of allowed values.
 
@@ -662,7 +662,7 @@ m f
 
 Factors crip up all over R, and occasionally cause headaches for new R users. We'll discuss why in the next lesson.
 
-## Matrices and arrays {#matrices-and-arrays}
+### Matrices and arrays {#matrices-and-arrays}
 
 Adding a `dim()` attribute to an atomic vector allows it to behave like a multi-dimensional __array__. A special case of the array is the __matrix__, which has two dimensions. Matrices are used commonly as part of the mathematical machinery of statistics. Arrays are much rarer, but worth being aware of.
 
@@ -834,6 +834,7 @@ These are relatively esoteric data structures, but can be useful if you want to 
 >    {: .r}
 {: .discussion}
 
+## Subsetting  
 R has many powerful subset operators and mastering them will allow you to
 easily perform complex operations on any kind of dataset.
 
@@ -861,7 +862,7 @@ x
 So now that we've created a dummy vector to play with, how do we get at its
 contents?
 
-## Accessing elements using their indices
+### Accessing elements using their indices
 
 To extract elements of a vector we can give their corresponding index, starting
 from one:
@@ -984,7 +985,7 @@ named numeric(0)
 > element of a vector has an index of 0. In R, the first element is 1.
 {: .callout}
 
-## Skipping and removing elements
+### Skipping and removing elements
 
 If we use a negative number as the index of a vector, R will return
 every element *except* for the one specified:
@@ -1079,6 +1080,108 @@ x
 ~~~
 {: .output}
 
+### Subsetting by name
+
+We can extract elements by using their name, instead of index:
+
+
+~~~
+x[c("a", "c")]
+~~~
+{: .r}
+
+
+
+~~~
+  a   c 
+5.4 7.1 
+~~~
+{: .output}
+
+This is usually a much more reliable way to subset objects: the
+position of various elements can often change when chaining together
+subsetting operations, but the names will always remain the same!
+
+Unfortunately we can't skip or remove elements so easily.
+
+To skip (or remove) a single named element:
+
+
+~~~
+x[-which(names(x) == "a")]
+~~~
+{: .r}
+
+
+
+~~~
+  b   c   e 
+6.2 7.1 7.5 
+~~~
+{: .output}
+
+The `which` function returns the indices of all `TRUE` elements of its argument.
+Remember that expressions evaluate before being passed to functions. Let's break
+this down so that its clearer what's happening.
+
+First this happens:
+
+
+~~~
+names(x) == "a"
+~~~
+{: .r}
+
+
+
+~~~
+[1]  TRUE FALSE FALSE FALSE
+~~~
+{: .output}
+
+The condition operator is applied to every name of the vector `x`. Only the
+first name is "a" so that element is TRUE.
+
+`which` then converts this to an index:
+
+
+~~~
+which(names(x) == "a")
+~~~
+{: .r}
+
+
+
+~~~
+[1] 1
+~~~
+{: .output}
+
+
+
+Only the first element is `TRUE`, so `which` returns 1. Now that we have indices
+the skipping works because we have a negative index!
+
+Skipping multiple named indices is similar, but uses a different comparison
+operator:
+
+
+~~~
+x[-which(names(x) %in% c("a", "c"))]
+~~~
+{: .r}
+
+
+
+~~~
+  b   e 
+6.2 7.5 
+~~~
+{: .output}
+
+The `%in%` goes through each element of its left argument, in this case the
+names of `x`, and asks, "Does this element occur in the second argument?".
+
 > ## Challenge 1
 >
 > Given the following code:
@@ -1167,108 +1270,6 @@ x
 > >
 > {: .solution}
 {: .challenge}
-
-## Subsetting by name
-
-We can extract elements by using their name, instead of index:
-
-
-~~~
-x[c("a", "c")]
-~~~
-{: .r}
-
-
-
-~~~
-  a   c 
-5.4 7.1 
-~~~
-{: .output}
-
-This is usually a much more reliable way to subset objects: the
-position of various elements can often change when chaining together
-subsetting operations, but the names will always remain the same!
-
-Unfortunately we can't skip or remove elements so easily.
-
-To skip (or remove) a single named element:
-
-
-~~~
-x[-which(names(x) == "a")]
-~~~
-{: .r}
-
-
-
-~~~
-  b   c   d   e 
-6.2 7.1 4.8 7.5 
-~~~
-{: .output}
-
-The `which` function returns the indices of all `TRUE` elements of its argument.
-Remember that expressions evaluate before being passed to functions. Let's break
-this down so that its clearer what's happening.
-
-First this happens:
-
-
-~~~
-names(x) == "a"
-~~~
-{: .r}
-
-
-
-~~~
-[1]  TRUE FALSE FALSE FALSE FALSE
-~~~
-{: .output}
-
-The condition operator is applied to every name of the vector `x`. Only the
-first name is "a" so that element is TRUE.
-
-`which` then converts this to an index:
-
-
-~~~
-which(names(x) == "a")
-~~~
-{: .r}
-
-
-
-~~~
-[1] 1
-~~~
-{: .output}
-
-
-
-Only the first element is `TRUE`, so `which` returns 1. Now that we have indices
-the skipping works because we have a negative index!
-
-Skipping multiple named indices is similar, but uses a different comparison
-operator:
-
-
-~~~
-x[-which(names(x) %in% c("a", "c"))]
-~~~
-{: .r}
-
-
-
-~~~
-  b   d   e 
-6.2 4.8 7.5 
-~~~
-{: .output}
-
-The `%in%` goes through each element of its left argument, in this case the
-names of `x`, and asks, "Does this element occur in the second argument?".
 
 > ## Challenge 2
 >
@@ -1469,7 +1470,7 @@ names(x) == c('a', 'c', 'e')
 This difference between `==` and `%in%` is important to remember,
 because it can introduce hard to find and subtle bugs!
 
-## Subsetting through other logical operations
+### Subsetting through other logical operations
 
 We can also more simply subset through logical operations:
 
@@ -1593,7 +1594,7 @@ named integer(0)
 > {: .solution}
 {: .challenge}
 
-## Handling special values
+### Handling special values
 
 At some point you will encounter functions in R which cannot handle missing, infinite,
 or undefined data.
