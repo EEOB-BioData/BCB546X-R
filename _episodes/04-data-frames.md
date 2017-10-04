@@ -1,6 +1,6 @@
 ---
 title: "Exploring Data Frames"
-teaching: 50
+teaching: 80
 exercises: 30
 questions:
 - "How can I manipulate a data frame?"
@@ -1348,7 +1348,7 @@ estimates of the recombination rate for all windows within 40kb of each motif (f
 The second dataset (motif_repeats.txt) contains which repeat each motif occurs in. Our goal is to merge 
 these two datasets so that we can look at the local effect of recombination of each motif on specific repeat backgrounds.
 
-Let’s start by loading in both files and peeking at them with head():
+Let’s start by loading in both files and peeking at them with `head()`:
 
 
 ~~~
@@ -1399,7 +1399,8 @@ head(rpts, 3)
 > * What is our goal, again?
 {: .discussion}
 
-We will be using the  R’s %in% operator, which returns a logical vector indicating which of the values of x are in y. E.g.,:
+We will be using two new functions in R to merge the datasets: `%in%` and `match`
+R’s `%in%` operator returns a logical vector indicating which of the values of x are in y. E.g.,:
 
 
 ~~~
@@ -1414,20 +1415,18 @@ c(3,4,-1)%in%c(1,3,4,8)
 ~~~
 {: .output}
 
-The `%in%` operator is a simplified version of another function, `match()`. `x %in% y` returns TRUE/FALSE for 
-each value in x depending on whether it’s in y. In contrast, `match(x, y)` returns the first occurrence of 
-each of x’s values in y:
+`match(x, y)` returns the first occurrence of each of x’s values in y:
 
 
 ~~~
-match(c(3,4,-1),c(1,3,4,8))
+match(c(3,4,-1),c(1,3,3,4,8))
 ~~~
 {: .r}
 
 
 
 ~~~
-[1]  2  3 NA
+[1]  2  4 NA
 ~~~
 {: .output}
 
@@ -1436,7 +1435,7 @@ Note, the vector returned will always have the same length as the first argument
 Because `match()` returns where it finds a particular value, `match()`’s output can be used to join two 
 data frames together by a shared column. 
 
-OK, so what we are trying to do is to add the colun "name" from the second dataset to the first one, 
+OK, so what we are trying to do is to add the column "name" from the second dataset to the first one, 
 to see whether and in which repeat each motif is contained.
 
 Because we are dealing with multiple chromosomes, we start by merging two column, `chr` and `motif_start`:
@@ -1466,14 +1465,26 @@ FALSE  TRUE
 ~~~
 {: .output}
 
-Now, we use match() to find where each of the `mtfs$pos` keys occur in the `rpts$pos`. 
+Now, we use `match()` to find where each of the `mtfs$pos` keys occur in the `rpts$pos`. 
 We’ll create this indexing vector first before doing the merge:
 
 
 ~~~
 i <- match(mtfs$pos, rpts$pos)
+head(i,100)
 ~~~
 {: .r}
+
+
+
+~~~
+  [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA
+ [24] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA
+ [47] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA
+ [70] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA
+ [93] NA NA NA NA NA NA  1  1
+~~~
+{: .output}
 
 All motif positions without a corresponding entry in rpts are NA; our number of NAs
 is exactly the number of `mts$pos` elements not in `rpts$pos`:
@@ -1550,8 +1561,8 @@ nrow(mtfs_inner)
 
 In this case, only motifs in mtfs contained in a repeat in rpts are kept (technically, this type of join is called an inner join). Inner joins are the most common way to merge data. 
 
-We’ve learned match() first because it’s a general, extensible way to merge data in R. 
-However, R does have a more user-friendly merging function: merge(). 
+We’ve learned `match()` first because it’s a general, extensible way to merge data in R. 
+However, R does have a more user-friendly merging function: `merge()`. 
 Merge can directly merge two datasets:
 
 
