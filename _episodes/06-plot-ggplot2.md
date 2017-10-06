@@ -28,9 +28,8 @@ package, and the [ggplot2][ggplot2] package.
 
 Every R user should be acquainted with base graphics (at some point, you’ll encounter 
 a base graphics plot you need to modify), but we’re going to skip base graphics to 
-focus entirely on learning visualization with ggplot2. The reason for this is simple: 
-you’ll be able to create more informative plots with less time and effort invested with 
-ggplot2 than possible with base graphics. 
+focus entirely on learning visualization with ggplot2, which allows you to create more 
+informative plots with less time and effort.
 
 Note, ggplot2 works exclusively with dataframes, 
 so you’ll need to get your data tidy and into a dataframe before visualizing it with ggplot2.
@@ -50,7 +49,8 @@ Inkscape.
 
 ## Exploring Data Visually with ggplot2 I: Scatterplots and Densities
 
-First, we need to load the ggplot2 package with R’s library() function. We'll use a different function to check whether ggplot2 is installed.
+First, we need to load the ggplot2 package with R’s `library()` function. 
+We'll use the `require()` function to check whether ggplot2 is already installed.
 
 
 ~~~
@@ -72,8 +72,8 @@ library(ggplot2)
 ~~~
 {: .r}
 
-Let’s look at how we’d use ggplot2 to create a scatterplot of nucleotide diversity along the chromosome 
-in the diversity column in our d dataframe. Because our data is window-based, we’ll first add a column 
+First, we'll use ggplot2 to create a scatterplot of nucleotide diversity along the chromosome. 
+Because our data is window-based, we’ll first add a column 
 called position to our dataframe that’s the midpoint between each window:
 
 
@@ -87,17 +87,16 @@ ggplot(d) + geom_point(aes(x=position, y=diversity))
 
 There are two components of this ggplot2 graphic: the call to the function `ggplot()`, 
 and the call to the function `geom_point()`. First, we use `ggplot(d)` to supply this plot with our d dataframe. 
-Second, with our data specified, we then add layers to our plot (remember: ggplot2 is layer-based). 
-To add a layer, we use the same `+` operator that we use for addition in R.
+Second, we add layers to our plot. Note, that to add a layer, we use the same `+` operator that we use for addition in R.
 
 We add `geom_point()` as a layer because we want points to create a scatterplot. `geom_point()` is a type of 
 geometric object (or geom in ggplot2 lingo). ggplot2 has many geoms (e.g., `geom_line()`, `geom_bar()`, 
-`geom_density()`, `geom_boxplot()`, etc.). RStudio provides areally useful [cheat sheet][cheat], which, among other things, 
+`geom_density()`, `geom_boxplot()`, etc.). RStudio provides a really useful [cheat sheet][cheat], which, among other things, 
 shows different geometric objects.
 
 Geometric objects have many aesthetic attributes (e.g., x and y positions, color, shape, size, etc.). 
 The beauty of ggplot2s grammar is that it allows you to map geometric objects’ aesthetics to columns in your dataframe. 
-In our diversity by position scatterplot, we mapped the x position aesthetic to the position column, and the y position to the diversity column. We specify the mapping of aesthetic attributes to columns in our dataframe using the function aes().
+In our diversity by position scatterplot, we mapped the x position aesthetic to the position column, and the y position to the diversity column. We specify the mapping of aesthetic attributes to columns in our dataframe using the function `aes()`.
 
 Note, that aesthetic mappings can also be specified in the call to ggplot()—geoms will then use this mapping:
 
@@ -109,7 +108,7 @@ ggplot(d, aes(x=position, y=diversity)) + geom_point()
 > ## Challenge 1
 >
 > While ggplot2 chooses smart labels based on your column names, you might want to change this down the road. 
-> ggplot2 makes specifying labels easy: simply use the xlab(), ylab(), and ggtitle() functions to specify 
+> ggplot2 makes specifying labels easy: simply use the `xlab()`, `ylab()`, and `ggtitle()` functions to specify 
 > the x-axis label, y-axis label, and plot title. Change x- and y-axis labels when plotting the diversity data with 
 > x label "chromosome position (basepairs)" and y label "nucleotide diversity". 
 >
@@ -159,7 +158,7 @@ ggplot(d) + geom_point(aes(x=position, y=diversity), alpha=0.01)
 {: .callout}
 
 Let’s now look at the density of diversity across all positions. We’ll use a different geometric object, 
-geom_density(), which is slightly different than geom_point() in that it takes the data and calculates 
+`geom_density()`, which is slightly different than `geom_point()` in that it takes the data and calculates 
 a density from it for us:
 
 
@@ -170,8 +169,8 @@ ggplot(d) + geom_density(aes(x=diversity), fill="black")
 
 <img src="../fig/rmd-08-unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" />
 
-We can also map the color aesthetic of geom_density() to a discrete-valued column in our dataframe, 
-just as we did with geom_point(). geom_density() will create separate density plots, grouping data 
+We can also map the color aesthetic of `geom_density()` to a discrete-valued column in our dataframe, 
+just as we did with `geom_point()`. `geom_density()` will create separate density plots, grouping data 
 by the column mapped to the color aesthetic and using colors to indicate the different densities. 
 To see both overlapping densities, we use alpha to set the transparency to 0.4:
 
@@ -197,7 +196,7 @@ to it; batch effects; etc.). Often with large and high-dimension datasets, visua
 is the easiest and best way to spot these potential issues.
 
 Earlier, we used transparency to give us a sense of the most dense regions. Another 
-strategy is to use ggplot2’s geom_smooth() to add a smoothing line to plots and look 
+strategy is to use ggplot2’s `geom_smooth()` to add a smoothing line to plots and look 
 for an unexpected trend. Let’s use a scatterplot and smoothing curve to look at the 
 relationship between the sequencing depth (the depth column) and the total number of 
 SNPs in a window (the total.SNPs column):
@@ -217,8 +216,8 @@ ggplot(d, aes(x=depth, y=total.SNPs)) + geom_point() + geom_smooth()
 
 <img src="../fig/rmd-08-unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
 
-Notice that because both geom_point() and geom_smooth() use the same x and y mapping, we can specify 
-the aesthetic in ggplot() function.
+Notice that because both `geom_point()` and `geom_smooth()` use the same x and y mapping, we can specify 
+the aesthetic in `ggplot()` function.
 
 > ## Discussion
 >
@@ -249,14 +248,9 @@ the aesthetic in ggplot() function.
 > {: .solution}
 {: .challenge}
 
-## Binning Data with cut() and Bar Plots with ggplot2
+## Binning Data with `cut(`) and Bar Plots with ggplot2
 
-Another way we can extract information from complex datasets is by reducing the resolution of 
-the data through binning (or discretization). Binning takes continuous numeric values and places 
-them into a discrete number of ranged bins. The benefit is that discrete bins facilitate 
-conditioning on a variable. Conditioning is an incredibly powerful way to reveal patterns in data. 
-
-In R, we bin data through the cut() function:
+We laready saw how to bin data through the `cut()` function:
 
 ~~~
 d$GC.binned <- cut(d$percent.GC, 5)
@@ -272,36 +266,18 @@ head(d$GC.binned)
 ~~~
 {: .output}
 
-When cut()’s second argument breaks is a single number, cut() divides the data into that 
-number of equally sized bins. The returned object is a factor. The levels of the factor 
-returned from cut() will always have labels like (34.7,51.6], which indicate the particular 
-bin that value falls in. We can count how many items fall into a bin using table():
-
-
-~~~
-table(d$GC.binned)
-~~~
-{: .r}
-
-
-
-~~~
-
-(0.716,17.7]  (17.7,34.7]  (34.7,51.6]  (51.6,68.5]  (68.5,85.6] 
-           6         4976        45784         8122          252 
-~~~
-{: .output}
-
-We can also use prespecified ranges when binning data with cut() by setting breaks to a vector:
-
-
-~~~
-cut(d$percent.GC, c(0, 25, 50, 75, 100))
-~~~
-{: .r}
-
 Bar plots are the natural visualization tool to use when looking at count data like the number 
-of occurrences in bins created with cut():
+of occurrences in bins created with `cut()`. Last time we used the base graphics to make a bar plot:
+
+
+~~~
+plot(d$GC.binned)
+~~~
+{: .r}
+
+<img src="../fig/rmd-08-unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display: block; margin: auto;" />
+
+Here is how to make a bar plot in ggplot:
 
 
 ~~~
@@ -309,9 +285,9 @@ ggplot(d) + geom_bar(aes(x=GC.binned))
 ~~~
 {: .r}
 
-<img src="../fig/rmd-08-unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" />
+<img src="../fig/rmd-08-unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" />
 
-When geom_bar()’s x aesthetic is a factor (e.g., d$binned.GC), ggplot2 will create a bar plot of counts. 
+When `geom_bar()`’s x aesthetic is a factor (e.g., d$binned.GC), ggplot2 will create a bar plot of counts. 
 However, if geom_bar()’s x aesthetic is mapped to a continuous column (e.g., percent.GC) geom_bar() 
 will automatically bin the data itself, creating a histogram:
 
@@ -321,9 +297,9 @@ ggplot(d) + geom_bar(aes(x=percent.GC))
 ~~~
 {: .r}
 
-<img src="../fig/rmd-08-unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" style="display: block; margin: auto;" />
+<img src="../fig/rmd-08-unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" />
 
-The bins created from cut() are useful in grouping data (a concept we often use in data analysis). 
+The bins created from `cut()` are useful in grouping data (a concept we often use in data analysis). 
 For example, we can use the GC.binned column to group data by %GC content bins to see how GC content 
 has an impact on other variables. To do this, we map aesthetics like color, fill, or linetype to our GC.binned column:
 
@@ -333,7 +309,7 @@ ggplot(d) + geom_density(aes(x=depth, linetype=GC.binned), alpha=0.5)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-08-unnamed-chunk-17-1.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" style="display: block; margin: auto;" />
+<img src="../fig/rmd-08-unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" style="display: block; margin: auto;" />
 
 > ## Challenge 3: Finding the Right Bin Width
 > 
@@ -354,6 +330,166 @@ ggplot(d) + geom_density(aes(x=depth, linetype=GC.binned), alpha=0.5)
 > {: .solution}
 {: .challenge}
 
+## Using ggplot2 Facets
+
+Now we'll return to the dataset we created (by mergin) in one of our previous lessons.
+Here is what what we did:
+
+
+~~~
+mtfs <- read.delim("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_recombrates.txt", header=TRUE)
+rpts <- read.delim("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_repeats.txt", header=TRUE)
+mtfs$pos <- paste(mtfs$chr, mtfs$motif_start, sep="-")
+rpts$pos <- paste(rpts$chr, rpts$motif_start, sep="-")
+mtfs$repeat_name <- rpts$name[match(mtfs$pos, rpts$pos)]
+~~~
+{: .r}
+
+We will now explore these data using visualization technique known as facets. 
+Facets allow us to visualize grouped data by creating a series of separate 
+adjacent plots for each group. Let’s first glimpse at the relationship between 
+recombination rate and distance to a motif. We’ll construct this graphic in steps:
+
+
+~~~
+p <- ggplot(mtfs, aes(x=dist, y=recom)) + geom_point(size=1)
+p <- p + geom_smooth(method="loess", se=FALSE, span=1/10)
+print(p)
+~~~
+{: .r}
+
+<img src="../fig/rmd-08-unnamed-chunk-18-1.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" style="display: block; margin: auto;" />
+
+Note that we’ve turned off `geom_smooth()`’s standard error estimates, 
+adjusted the smoothing with `span`, and set the smoothing method to "loess".  
+
+From this data, we only see a slight bump in the smoothing curve where 
+the motifs reside. However, this data is a convolution of two different 
+motif sequences on many different genomic backgrounds. In other words, 
+there’s a large amount of heterogeneity we’re not accounting for, and 
+this could be washing out our signal. Let’s use faceting to pick apart this data.
+
+First, if you’ve explored the mtfs dataframe, you’ll notice that the 
+`mtfs$motif` column contains two variations of the sequence motif:
+
+
+~~~
+unique(mtfs$motif)
+~~~
+{: .r}
+
+
+
+~~~
+[1] CCTCCCTGACCAC CCTCCCTAGCCAC
+Levels: CCTCCCTAGCCAC CCTCCCTGACCAC
+~~~
+{: .output}
+
+One way to compare these is by grouping and coloring the loess curves by motif sequence:
+
+
+~~~
+ggplot(mtfs, aes(x=dist, y=recom)) + geom_point(size=1) + geom_smooth(aes(color=motif), method="loess", se=FALSE, span=1/10)
+~~~
+{: .r}
+
+<img src="../fig/rmd-08-unnamed-chunk-20-1.png" title="plot of chunk unnamed-chunk-20" alt="plot of chunk unnamed-chunk-20" style="display: block; margin: auto;" />
+
+Alternatively, we can split these motifs apart visually with 
+facets using ggplot2’s `facet_wrap()`:
+
+
+~~~
+p <- ggplot(mtfs, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
+p <- p + geom_smooth(method='loess', se=FALSE, span=1/10)
+p <- p + facet_wrap(~ motif)
+print(p)
+~~~
+{: .r}
+
+<img src="../fig/rmd-08-unnamed-chunk-21-1.png" title="plot of chunk unnamed-chunk-21" alt="plot of chunk unnamed-chunk-21" style="display: block; margin: auto;" />
+
+ggplot2 has two facet methods: `facet_wrap()` and `facet_grid()`. 
+`facet_wrap()` takes a factor column and creates a panel for 
+each level and wraps around horizontally. `facet_grid()` allows 
+finer control of facets by allowing you to specify the columns 
+to use for vertical and horizontal facets. For example:
+
+
+~~~
+p <- ggplot(mtfs, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
+p <- p + geom_smooth(method='loess', se=FALSE, span=1/16)
+p <- p + facet_grid(repeat_name ~ motif)
+print(p)
+~~~
+{: .r}
+
+<img src="../fig/rmd-08-unnamed-chunk-22-1.png" title="plot of chunk unnamed-chunk-22" alt="plot of chunk unnamed-chunk-22" style="display: block; margin: auto;" />
+
+We see some patterns emerging here: motif CCTCCCTAGCCAC on 
+a THE1B repeat background has a strong effect on recombination
+rate, as does CCTCCCTGACCAC on a L2 repeat background. 
+You can get a sense of the data that goes into this plot with: 
+
+
+
+~~~
+table(mtfs$repeat_name, mtfs$motif, useNA="ifany")
+~~~
+{: .r}
+
+
+
+~~~
+       
+        CCTCCCTAGCCAC CCTCCCTGACCAC
+  L2              457          4110
+  THE1B          4651             0
+  <NA>           2908          7924
+~~~
+{: .output}
+
+The tilde (~) used with `facet_wrap()` and `facet_grid()` 
+is how we specify model formula in R. If you’ve used R to 
+fit linear models, you’ve encountered ~ before. We can 
+ignore the specifics when using it in facet_wrap() (but 
+see `help(formula)` if you’re curious).
+
+One important feature of `facet_wrap()` and `facet_grid()` 
+is that by default, x- and y-scales will be the same across 
+all panels. You can set scales to be free with scales="free_x" 
+and scales="free_y", or scales="free" to free both axes. 
+For example:
+
+
+~~~
+p <- ggplot(mtfs, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
+p <- p + geom_smooth(method='loess', se=FALSE, span=1/10)
+p <- p + facet_wrap( ~ motif, scales="free_y")
+print(p)
+~~~
+{: .r}
+
+<img src="../fig/rmd-08-unnamed-chunk-24-1.png" title="plot of chunk unnamed-chunk-24" alt="plot of chunk unnamed-chunk-24" style="display: block; margin: auto;" />
+
+> ## Challenge 4: Recombination rate by chromosome
+> 
+> Try using facets to look at this data when grouped by chromosome with facet_wrap( ~ chr).  
+>
+{: .challenge}
+
+
+~~~
+p <- ggplot(mtfs, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
+p <- p + geom_smooth(method='loess', se=FALSE, span=1/10)
+p <- p + facet_wrap( ~ chr)
+print(p)
+~~~
+{: .r}
+
+<img src="../fig/rmd-08-unnamed-chunk-25-1.png" title="plot of chunk unnamed-chunk-25" alt="plot of chunk unnamed-chunk-25" style="display: block; margin: auto;" />
+
 This is a taste of what you can do with `ggplot2`. RStudio provides a
 really useful [cheat sheet][cheat] of the different layers available, and more
 extensive documentation is available on the [ggplot2 website][ggplot-doc].
@@ -361,5 +497,5 @@ Finally, if you have no idea how to change something, a quick Google search will
 usually send you to a relevant question and answer on Stack Overflow with reusable
 code to modify!
 
-[cheat]: http://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
+[cheat]: https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
 [ggplot-doc]: http://docs.ggplot2.org/current/

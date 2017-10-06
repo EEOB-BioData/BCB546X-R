@@ -7,9 +7,9 @@ questions:
 - "How can I manipulate dataframes without repeating myself?"
 objectives:
 - "To be able to use the split-apply-combine strategy for data analysis."
-- "To be able to use the six main dataframe manipulation 'verbs' with pipes in  `dplyr`."
+- "To be able to use the six main dataframe manipulation 'verbs' with pipes in `dplyr`."
 keypoints:
-- "Use `split()`, `lapply()`, and `do.call()` with `rbind()` for a basic split-apply-combine analysis"
+- "Use `cut()`, split()`, `lapply()`, and `do.call()` with `rbind()` for a basic split-apply-combine analysis"
 - "Use the `dplyr` package to manipulate dataframes."
 - "Use `select()` to choose variables from a dataframe."
 - "Use `filter()` to choose data based on values."
@@ -19,7 +19,7 @@ keypoints:
 
 ```{r, include=FALSE}
 source("../bin/chunk-options.R")
-knitr_fig_path("09-")
+knitr_fig_path("05-")
 # Silently load in the data so the rest of the lesson works
 d <- read.csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt", header=TRUE)
 mtfs <- read.delim("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_recombrates.txt", header=TRUE)
@@ -29,29 +29,105 @@ d$diversity <- d$Pi/(10*1000)
 ```
 
 ## Working with the Split-Apply-Combine Pattern
-Grouping data is a powerful method in exploratory data analysis. We’ve already used grouping implicitly with ggplot2, through coloring plots by a factor column (such as GC bins we created with cut()). In this section, we’ll learn a common data analysis pattern used to group data, apply a function to each group, and then combine the results. This pattern is split-apply-combine, a widely used strategy in data analysis:
+Grouping data is a powerful method in exploratory data analysis. In this section, we’ll learn a common data analysis pattern used to group data, apply a function to each group, and then combine the results. This pattern is **split-apply-combine**, a widely used strategy in data analysis:
 
 ![Split apply combine](../fig/splitapply.png)
 
 ### Split-Apply-Combine strategy using standard R functions
 
-Let's look again at the dataset we used in the previous lessons (recreating the GC.binned column):
+We will be using the same dataset as in the previous lessons (Dataset_S1.txt).
 
 ```{r, eval=FALSE}
 d <- read.csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt")
-d$GC.binned <- cut(d$percent.GC, 5)
 ```
 
-We saw previously that both low GC contents and high GC content windows have lower sequencing depth. Let's make some numeric summaries for the pattern we saw. We'll begin with the mean depth for the five GC bins we created for the d dataframe.  
+One way we can extract information from complex datasets is by reducing the resolution of 
+the data through _binning_ (or _discretization_). Binning takes continuous numeric values and places 
+them into a discrete number of ranged bins. The benefit is that discrete bins facilitate 
+conditioning on a variable. Conditioning is an incredibly powerful way to reveal patterns in data. 
 
-The first step is to split our data. Splitting data combines observations into groups based on the levels of the grouping factor. We split a dataframe or vector using `split(x, f)`, where x is a dataframe/vector and f is a factor. In this example, we’ll split the `d$depth` column into a list based on the factor column `d$GC.binned`:
+In R, we bin data through the `cut()` function:
+
+```{r}
+d$GC.binned <- cut(d$percent.GC, 5)
+head(d$GC.binned)
+```
+
+When `cut()`’s second argument breaks is a single number, `cut()` divides the data into that 
+number of equally sized bins. The returned object is a factor. The levels of the factor 
+returned from `cut()` will always have labels like (34.7,51.6], which indicate the particular 
+bin that value falls in. We can count how many items fall into a bin using `table()`:
+
+```{r}
+table(d$GC.binned)
+```
+
+We can also use prespecified ranges when binning data with `cut()` by setting breaks to a vector:
+
+```{r, eval=FALSE}
+cut(d$percent.GC, c(0, 25, 50, 75, 100))
+```
+
+Bar plots are the natural visualization tool to use when looking at count data like the number 
+of occurrences in bins created with `cut()`. We can use the `plot` function to quickly visualize our results:
+
+```{r}
+plot(d$GC.binned)
+```
+
+In our previous lesson we saw that both low and high GC-content windows have lower sequencing depth. 
+Let's make some numeric summaries for this pattern. We'll begin with the mean depth for the 
+five GC bins we created for the d dataframe.  
+
+The first step is to split our data. Splitting data combines observations into groups based on the 
+levels of the grouping factor. We split a dataframe or vector using `split(x, f)`, where x is a 
+dataframe/vector and f is a factor. In this example, we’ll split the `d$depth` column into a list 
+based on the factor column `d$GC.binned`:
 
 ```{r}
 d_split <- split(d$depth, d$GC.binned)
 str(d_split)
 ```
 
-With our data split into groups, we can then apply a function to each group using the lapply() function we learned earlier. Continuing our example, let’s find the mean depth of each GC bin by applying the function mean() to d_split:
+With our data split into groups, we can then apply a function to each group using the `lapply()` function. 
+
+> ## Applying Functions to Lists with `lapply()`
+> Applying functions to data rather than writing explicit loops follows 
+> from a functional-programming style of R. Although, we focus on `lapply()` 
+> the same ideas extend to other R data structures through similar “apply” functions.
+>
+> Let’s work through a simple example on artificial data first. Suppose, 
+> you have a list of numeric values (here, generated at random with `rnorm()`):
+> ```{r}
+> ll <- list(a=rnorm(6, mean=1), b=rnorm(6, mean=4), c=rnorm(6, mean=6)) 
+> ll
+> ```
+> How might we calculate the mean of each vector stored in this list? If you’re familiar 
+> with for loops in other languages, you may approach this problem using R’s for loops:
+>  ```{r}
+> # create an empty numeric vector for the means
+> ll_means <- numeric(length(ll))
+> # loop over each list element and calculate mean
+> for (i in seq_along(ll)) { 
+>   ll_means[i] <- mean(ll[[i]])
+> }
+> ```
+> However, a better approach is to use an apply function that applies another 
+> function to each list element. For example, to calculate the mean of each 
+> list element, we’d want to apply the function `mean()` to each element. 
+> To do so, we can use the function lapply() (the l is for list, as `lapply()` 
+> returns the result as a list):
+>  ```{r}
+> lapply(ll, mean) $a
+> ```
+> `lapply()` has several advantages: it creates the output list for us, 
+> uses fewer lines of code, leads to clearer code, and is in some cases faster 
+> than using a for loop. While using `lapply()` rather than loops admittedly 
+> takes time getting used to, it’s worth the effort.
+>
+{: .callout}
+
+Let’s find the mean depth of each GC bin by applying the function `mean()` to d_split:
 
 ```{r}
 lapply(d_split, mean)
@@ -63,7 +139,9 @@ Finally, the last step is to combine this data together somehow (because it’s 
 unlist(lapply(d_split, mean))
 ```
 
-Equivalently, we could just replace our call to lapply() with sapply():
+Equivalently, we could just replace our call to `lapply()` with `sapply()` 
+(the `sapply()` function is similar to `lapply()`, except that it simplifies 
+the results into a vector, array, or matrix):
 
 ```{r}
 sapply(d_split, mean)
@@ -76,7 +154,7 @@ dpth_summ <- lapply(split(d$depth, d$GC.binned), summary)
 dpth_summ
 ```
 
-dpth_summ is a list of depth summary tables for each GC bin. The routine way to combine a list of vectors is by binding each element together into a matrix or dataframe using either cbind() (column bind) or rbind() (row bind). For example:
+dpth_summ is a list of depth summary tables for each GC bin. The routine way to combine a list of vectors is by binding each element together into a matrix or dataframe using either `cbind()` (column bind) or `rbind()` (row bind). For example:
 
 ```{r}
 rbind(dpth_summ[[1]], dpth_summ[[2]])
@@ -85,7 +163,9 @@ cbind(dpth_summ[[1]], dpth_summ[[2]])
 ```
 
 However, this approach won’t scale well if we needed to bind together many list elements.
-Instead, we can use R’s `do.call()` function, which takes a function and a list as arguments, and calls the function using the list as the function’s arguments. We can use do.call() with rbind() to merge the list our split-apply steps produces into a matrix:
+Instead, we can use R’s `do.call()` function, which takes a function and a list as arguments, 
+and calls the function using the list as the function’s arguments. We can use `do.call()` 
+with `rbind()` to merge the list our split-apply steps produces into a matrix:
 
 ```{r}
 do.call(rbind, dpth_summ)
@@ -97,7 +177,18 @@ We can also combine all our split-apply-combine operations in a single command:
 do.call(rbind, lapply(split(d$depth, d$GC.binned), summary))
 ```
 
-Combining this data such that the quantiles and means are columns is the natural way to represent it. Replacing `rbind` with `cbind` in `do.call()` would swap the rows and columns.
+Combining this data such that the quantiles and means are columns is the natural way to represent it. 
+Replacing `rbind` with `cbind` in `do.call()` would swap the rows and columns.
+
+> ## Confused about `lapply` and `do.call`?
+> * `lapply` applies a function to all elements of a list,  
+> * `do.call calls a function where all the function arguments are in a list. 
+> So for a n element list, lapply has n function calls, and do.call has just one function call.
+> ```{r}
+> do.call(sum, list(1,2,4,1,2))
+> lapply(list(1,2,4,1,2), sum)
+> ```
+{: .callout}
 
 > ## More useful tricks
 >
@@ -173,7 +264,7 @@ filter(d_df, Pi > 16, percent.GC > 80) #equivalent to d[d$Pi > 16 & d$percent.GC
 
 #### Arrange rows with `arrange()`
 
-Arrange rows = sort columns with the function arrange():
+Arrange rows = sort columns with the function `arrange()`:
 
 ```{r}
 arrange(d_df, depth) #equivalent to `d[order(d$depth), ]`
@@ -188,7 +279,7 @@ arrange(d_df, desc(total.SNPs), desc(depth))
 
 #### Add new columns with `mutate()`
 
-Using dplyr’s mutate() function, we can add new columns to our dataframe: For example, we added a rescaled version of the Pi column as `d$diversity`—let’s drop d $diversity using select() and then recalculate it:
+Using dplyr’s `mutate()` function, we can add new columns to our dataframe: For example, we added a rescaled version of the Pi column as `d$diversity`—let’s drop d $diversity using `select()` and then recalculate it:
 
 ```{r}
 d_df <- select(d_df, -diversity) # remove our earlier diversity column
@@ -212,7 +303,7 @@ d_df %>%  mutate(GC.scaled = scale(percent.GC)) %>%
           arrange(desc(depth))
 ```
 
-You can learn more about magrittr’s pipes in help('%>%').
+You can learn more about magrittr’s pipes with `help('%>%')`.
 
 #### Grouped operations
 
@@ -238,7 +329,7 @@ mtfs_df %>% group_by(chr)
 
 Note that dplyr’s output now includes a line indicating which column(s) the dataset is grouped by. Now dplyr’s 
 functions will be applied per group rather than on all data (where applicable). The most common use case is 
-to create summaries as we did with tapply() and aggregate() using the summarize() function:
+to create summaries as we did with `tapply()` and `aggregate()` using the `summarize()` function:
 
 ```{r}
 mtfs_df %>% 
@@ -246,8 +337,8 @@ mtfs_df %>%
         summarize(max_recom = max(recom), mean_recom = mean(recom), num=n())
 ```
 
-dplyr’s summarize() handles passing the relevant column to each function and automatically creates columns 
-with the supplied argument names. Because we’ve grouped this data by chromosome, summarize() computes 
+dplyr’s `summarize()` handles passing the relevant column to each function and automatically creates columns 
+with the supplied argument names. Because we’ve grouped this data by chromosome, `summarize()` computes 
 per-group summaries. Try this same expression without `group_by()`.
 
 We can chain additional operations on these grouped and summarized results; for example, if we wanted to sort 
@@ -268,4 +359,7 @@ database with all of the same verbs we’ve used here.
 
 * [Data Wrangling Cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
 * [Introduction to dplyr](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html)
+* [The tidyverse collection of R packages designed for data science (includes dplyr)](https://www.tidyverse.org/)
+* [R for Data Science book by Garrett Grolemund and Hadley Wickham](http://r4ds.had.co.nz/)
 * [Data wrangling with R and RStudio](https://www.rstudio.com/resources/webinars/data-wrangling-with-r-and-rstudio/)
+

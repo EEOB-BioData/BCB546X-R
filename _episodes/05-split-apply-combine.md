@@ -143,13 +143,13 @@ With our data split into groups, we can then apply a function to each group usin
 > 
 > ~~~
 > $a
-> [1] 1.9703665 0.7728467 0.4154154 1.3574780 1.4238419 1.6150247
+> [1] 1.2121051 1.3408063 1.2320410 0.7777741 1.3469677 0.2738824
 > 
 > $b
-> [1] 5.389855 5.183046 4.240434 4.838287 4.527266 3.696328
+> [1] 4.328980 2.886200 3.208379 2.384929 4.548746 5.073512
 > 
 > $c
-> [1] 3.829791 4.817123 5.331028 5.289690 6.178721 6.550741
+> [1] 7.090740 7.019403 7.424420 4.634426 4.365948 3.871183
 > ~~~
 > {: .output}
 > How might we calculate the mean of each vector stored in this list? If you’re familiar 
@@ -593,7 +593,7 @@ filter(d_df, Pi > 16, percent.GC > 80) #equivalent to d[d$Pi > 16 & d$percent.GC
 
 #### Arrange rows with `arrange()`
 
-Arrange rows = sort columns with the function arrange():
+Arrange rows = sort columns with the function `arrange()`:
 
 
 ~~~
