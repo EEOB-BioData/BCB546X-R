@@ -479,17 +479,6 @@ print(p)
 >
 {: .challenge}
 
-
-~~~
-p <- ggplot(mtfs, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
-p <- p + geom_smooth(method='loess', se=FALSE, span=1/10)
-p <- p + facet_wrap( ~ chr)
-print(p)
-~~~
-{: .r}
-
-<img src="../fig/rmd-08-unnamed-chunk-25-1.png" title="plot of chunk unnamed-chunk-25" alt="plot of chunk unnamed-chunk-25" style="display: block; margin: auto;" />
-
 This is a taste of what you can do with `ggplot2`. RStudio provides a
 really useful [cheat sheet][cheat] of the different layers available, and more
 extensive documentation is available on the [ggplot2 website][ggplot-doc].
