@@ -194,7 +194,7 @@ functions is such a common operation in R.
 
 The general syntax for R functions is:  
 
-```{r}
+```{r, eval=FALSE}
 fun_name <- function(args) {
 # body, containing R expressions 
 return(value)
@@ -203,7 +203,7 @@ return(value)
 
 In some cases you can use a simplified format:
 
-```{r}
+```{r, eval=FALSE}
 fun_name <- function(args) #body
 ```
 
@@ -226,8 +226,8 @@ without a name). Anonymous functions are useful when we only
 need a function once for a specific task. For example, if we 
 wrote meanRemoveNA() to use with lapply, we could write:
 
-```{r}
-lapply(ll, function(x) mean(x, na.rm=TRUE))
+```{r, eval=FALSE}
+lapply(mydata, function(x) mean(x, na.rm=TRUE))
 ```
 
 > ## Illustration of the importance of preallocation
@@ -236,13 +236,13 @@ lapply(ll, function(x) mean(x, na.rm=TRUE))
 > the importance of preallocation.  Let's start by converting 
 > our previous code into functions:
 > ```{r}
-> sum-no-preallocation <- function(x,y) {
+> sumNoPreallocation <- function(x,y) {
 >   res <- NULL
 >   for (i in 1:length(x)) {
 >       res <- c(res, x[i] + y[i])
 >   }
 > }
-> sum-with-preallocation <- function(x,y) {
+> sumWithPreallocation <- function(x,y) {
 >   res <- numeric(length(x)) # preallocation!
 >   for (i in 1:length(x)) {
 >       res[i] <- x[i] + y[i]
@@ -252,7 +252,7 @@ lapply(ll, function(x) mean(x, na.rm=TRUE))
 > x <- rnorm(100)
 > y <- rnorm(100)
 > library(microbenchmark)
-> microbenchmark(sum-no_preallocation(x,y), sum-with-preallocation(x,y), x+y)
+> microbenchmark(sumNoPreallocation(x,y), sumWithPreallocation(x,y), x+y)
 > ```
 {: .callout}
 

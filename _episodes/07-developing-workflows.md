@@ -283,15 +283,6 @@ fun_name <- function(args) #body
 ~~~
 {: .r}
 
-
-
-~~~
-Error: <text>:2:0: unexpected end of input
-1: fun_name <- function(args) #body
-   ^
-~~~
-{: .error}
-
 For example, 
 
 
@@ -315,16 +306,9 @@ wrote meanRemoveNA() to use with lapply, we could write:
 
 
 ~~~
-lapply(ll, function(x) mean(x, na.rm=TRUE))
+lapply(mydata, function(x) mean(x, na.rm=TRUE))
 ~~~
 {: .r}
-
-
-
-~~~
-Error in lapply(ll, function(x) mean(x, na.rm = TRUE)): object 'll' not found
-~~~
-{: .error}
 
 > ## Illustration of the importance of preallocation
 >
@@ -333,58 +317,40 @@ Error in lapply(ll, function(x) mean(x, na.rm = TRUE)): object 'll' not found
 > our previous code into functions:
 > 
 > ~~~
-> sum-no-preallocation <- function(x,y) {
+> sumNoPreallocation <- function(x,y) {
 >   res <- NULL
 >   for (i in 1:length(x)) {
 >       res <- c(res, x[i] + y[i])
 >   }
 > }
-> ~~~
-> {: .r}
-> 
-> 
-> 
-> ~~~
-> Error in sum - no - preallocation <- function(x, y) {: object 'no' not found
-> ~~~
-> {: .error}
-> 
-> 
-> 
-> ~~~
-> sum-with-preallocation <- function(x,y) {
+> sumWithPreallocation <- function(x,y) {
 >   res <- numeric(length(x)) # preallocation!
 >   for (i in 1:length(x)) {
 >       res[i] <- x[i] + y[i]
 >   }
 > }
-> ~~~
-> {: .r}
-> 
-> 
-> 
-> ~~~
-> Error in `*tmp*` - with: non-numeric argument to binary operator
-> ~~~
-> {: .error}
-> 
-> 
-> 
-> ~~~
 > # Let's test these functions!
 > x <- rnorm(100)
 > y <- rnorm(100)
 > library(microbenchmark)
-> microbenchmark(sum-no_preallocation(x,y), sum-with-preallocation(x,y), x+y)
+> microbenchmark(sumNoPreallocation(x,y), sumWithPreallocation(x,y), x+y)
 > ~~~
 > {: .r}
 > 
 > 
 > 
 > ~~~
-> Error in microbenchmark(sum - no_preallocation(x, y), sum - with - preallocation(x, : could not find function "no_preallocation"
+> Unit: nanoseconds
+>                        expr    min     lq      mean   median       uq
+>    sumNoPreallocation(x, y) 134360 163055 186950.12 182164.5 194357.0
+>  sumWithPreallocation(x, y) 147577 164910 185155.81 175149.5 186353.5
+>                       x + y    444    849   2036.19   1251.0   2592.5
+>     max neval
+>  330437   100
+>  338550   100
+>   32186   100
 > ~~~
-> {: .error}
+> {: .output}
 {: .callout}
 
 
