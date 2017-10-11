@@ -19,6 +19,15 @@ keypoints:
 
 ### Control Flow: if, for, and while
 
+> ## Before we start
+> If you programmed before in other languages, you'll be happy 
+> to finally see a section on control flow. However, before you 
+> start writing loops in R, I encourage you to look back at some 
+> of the functions we used already, particularly `split` and 
+> `lapply`. These functions can replace many of the loops with 
+> a cleaner and faster code. 
+> {: .callout}
+
 Often we want to control the flow of our actions. This can be done
 by setting actions to occur only if a condition or a set of conditions are met.
 Alternatively, we can also set an action to occur a particular number of times.
@@ -230,6 +239,153 @@ y
 > {: .r}
 {: .callout}
 
+### Writing functions
+R, at its heart, is a functional programming (FP) language. 
+This means that it provides many tools for the creation and 
+manipulation of functions. 
+
+The most important thing to understand about functions in R  
+is that they are objects in their own right. You can work 
+with them exactly the same way you work with any other type 
+of object.
+
+All R functions have three parts:  
+* the `body()`, the code inside the function.
+* the `formals()`, the list of arguments which controls how you can call the function.
+* the `environment()`, the “map” of the location of the function’s variables.
+
+When you print a function in R, it shows you these three components. 
+If the environment isn’t displayed, it means that the function was 
+created in the global environment.
+
+R makes writing functions very easy, both because you should 
+be writing lots of them to organize your code and applying 
+functions is such a common operation in R.
+
+The general syntax for R functions is:  
+
+
+~~~
+fun_name <- function(args) {
+# body, containing R expressions 
+return(value)
+}
+~~~
+{: .r}
+
+In some cases you can use a simplified format:
+
+
+~~~
+fun_name <- function(args) #body
+~~~
+{: .r}
+
+
+
+~~~
+Error: <text>:2:0: unexpected end of input
+1: fun_name <- function(args) #body
+   ^
+~~~
+{: .error}
+
+For example, 
+
+
+~~~
+meanRemoveNA <- function(x) mean(x, na.rm=TRUE)
+~~~
+{: .r}
+
+Functions that contain only one line in their body can omit 
+the braces (as the meanRemoveNA() function does). Similarly, 
+using `return()` to specify the return value is optional; 
+R’s functions will automatically return the last evaluated 
+expression in the body.
+
+We could forgo creating a function named `meanRemoveNA()` in 
+our global environment altogether and instead use an anonymous 
+function (named so because anonymous functions are functions 
+without a name). Anonymous functions are useful when we only 
+need a function once for a specific task. For example, if we 
+wrote meanRemoveNA() to use with lapply, we could write:
+
+
+~~~
+lapply(ll, function(x) mean(x, na.rm=TRUE))
+~~~
+{: .r}
+
+
+
+~~~
+Error in lapply(ll, function(x) mean(x, na.rm = TRUE)): object 'll' not found
+~~~
+{: .error}
+
+> ## Illustration of the importance of preallocation
+>
+> Now that we know how to write functions, I can illustrate 
+> the importance of preallocation.  Let's start by converting 
+> our previous code into functions:
+> 
+> ~~~
+> sum-no-preallocation <- function(x,y) {
+>   res <- NULL
+>   for (i in 1:length(x)) {
+>       res <- c(res, x[i] + y[i])
+>   }
+> }
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+> Error in sum - no - preallocation <- function(x, y) {: object 'no' not found
+> ~~~
+> {: .error}
+> 
+> 
+> 
+> ~~~
+> sum-with-preallocation <- function(x,y) {
+>   res <- numeric(length(x)) # preallocation!
+>   for (i in 1:length(x)) {
+>       res[i] <- x[i] + y[i]
+>   }
+> }
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+> Error in `*tmp*` - with: non-numeric argument to binary operator
+> ~~~
+> {: .error}
+> 
+> 
+> 
+> ~~~
+> # Let's test these functions!
+> x <- rnorm(100)
+> y <- rnorm(100)
+> library(microbenchmark)
+> microbenchmark(sum-no_preallocation(x,y), sum-with-preallocation(x,y), x+y)
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+> Error in microbenchmark(sum - no_preallocation(x, y), sum - with - preallocation(x, : could not find function "no_preallocation"
+> ~~~
+> {: .error}
+{: .callout}
+
+
 ### Working with R Scripts
 
 Although we’ve used R interactively, in practice your analyses should be kept in scripts that can be run 
@@ -353,7 +509,7 @@ str(tmp)
 
 ~~~
 List of 2
- $ vec: num [1:4] -2.061 -0.6 -0.954 0.558
+ $ vec: num [1:4] 0.807 -0.525 0.034 0.529
  $ df :'data.frame':	3 obs. of  2 variables:
   ..$ a: int [1:3] 1 2 3
   ..$ b: int [1:3] 3 4 5

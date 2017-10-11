@@ -14,8 +14,9 @@ keypoints:
 ---
 
 ```{r, include=FALSE}
+if (!require("microbenchmark")) install.packages("microbenchmark")
 source("../bin/chunk-options.R")
-knitr_fig_path("10-")
+knitr_fig_path("07-")
 # Silently load in the data so the rest of the lesson works
 mtfs <- read.delim("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_recombrates.txt", header=TRUE)
 # Silently set seed for random number generation, so we don't have to explain it
@@ -25,6 +26,15 @@ set.seed(10)
 ## Developing Workflows with R Scripts
 
 ### Control Flow: if, for, and while
+
+> ## Before we start
+> If you programmed before in other languages, you'll be happy 
+> to finally see a section on control flow. However, before you 
+> start writing loops in R, I encourage you to look back at some 
+> of the functions we used already, particularly `split` and 
+> `lapply`. These functions can replace many of the loops with 
+> a cleaner and faster code. 
+> {: .callout}
 
 Often we want to control the flow of our actions. This can be done
 by setting actions to occur only if a condition or a set of conditions are met.
@@ -156,6 +166,94 @@ y
 > }
 > ```
 {: .callout}
+
+### Writing functions
+R, at its heart, is a functional programming (FP) language. 
+This means that it provides many tools for the creation and 
+manipulation of functions. 
+
+The most important thing to understand about functions in R  
+is that they are objects in their own right. You can work 
+with them exactly the same way you work with any other type 
+of object.
+
+All R functions have three parts:  
+* the `body()`, the code inside the function.
+* the `formals()`, the list of arguments which controls how you can call the function.
+* the `environment()`, the “map” of the location of the function’s variables.
+
+When you print a function in R, it shows you these three components. 
+If the environment isn’t displayed, it means that the function was 
+created in the global environment.
+
+R makes writing functions very easy, both because you should 
+be writing lots of them to organize your code and applying 
+functions is such a common operation in R.
+
+The general syntax for R functions is:  
+
+```{r}
+fun_name <- function(args) {
+# body, containing R expressions 
+return(value)
+}
+```
+
+In some cases you can use a simplified format:
+
+```{r}
+fun_name <- function(args) #body
+```
+
+For example, 
+
+```{r}
+meanRemoveNA <- function(x) mean(x, na.rm=TRUE)
+```
+
+Functions that contain only one line in their body can omit 
+the braces (as the meanRemoveNA() function does). Similarly, 
+using `return()` to specify the return value is optional; 
+R’s functions will automatically return the last evaluated 
+expression in the body.
+
+We could forgo creating a function named `meanRemoveNA()` in 
+our global environment altogether and instead use an anonymous 
+function (named so because anonymous functions are functions 
+without a name). Anonymous functions are useful when we only 
+need a function once for a specific task. For example, if we 
+wrote meanRemoveNA() to use with lapply, we could write:
+
+```{r}
+lapply(ll, function(x) mean(x, na.rm=TRUE))
+```
+
+> ## Illustration of the importance of preallocation
+>
+> Now that we know how to write functions, I can illustrate 
+> the importance of preallocation.  Let's start by converting 
+> our previous code into functions:
+> ```{r}
+> sum-no-preallocation <- function(x,y) {
+>   res <- NULL
+>   for (i in 1:length(x)) {
+>       res <- c(res, x[i] + y[i])
+>   }
+> }
+> sum-with-preallocation <- function(x,y) {
+>   res <- numeric(length(x)) # preallocation!
+>   for (i in 1:length(x)) {
+>       res[i] <- x[i] + y[i]
+>   }
+> }
+> # Let's test these functions!
+> x <- rnorm(100)
+> y <- rnorm(100)
+> library(microbenchmark)
+> microbenchmark(sum-no_preallocation(x,y), sum-with-preallocation(x,y), x+y)
+> ```
+{: .callout}
+
 
 ### Working with R Scripts
 
