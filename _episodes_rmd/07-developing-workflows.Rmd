@@ -36,7 +36,7 @@ set.seed(10)
 > of the functions we used already, particularly `split` and 
 > `lapply`. These functions can replace many of the loops with 
 > a cleaner and faster code. 
-> {: .callout}
+{: .callout}
 
 Often we want to control the flow of our actions. This can be done
 by setting actions to occur only if a condition or a set of conditions are met.
@@ -214,25 +214,25 @@ meanRemoveNA <- function(x) mean(x, na.rm=TRUE)
 ```
 
 Functions that contain only one line in their body can omit 
-the braces (as the meanRemoveNA() function does). Similarly, 
+the braces (as the `meanRemoveNA()` function does). Similarly, 
 using `return()` to specify the return value is optional; 
 R’s functions will automatically return the last evaluated 
 expression in the body.
 
 We could forgo creating a function named `meanRemoveNA()` in 
 our global environment altogether and instead use an anonymous 
-function (named so because anonymous functions are functions 
-without a name). Anonymous functions are useful when we only 
+function. Anonymous functions are useful when we only 
 need a function once for a specific task. For example, if we 
-wrote meanRemoveNA() to use with lapply, we could write:
+wrote `meanRemoveNA()` to use with lapply, we could write:
 
 ```{r, eval=FALSE}
 lapply(mydata, function(x) mean(x, na.rm=TRUE))
+# lapply(mydata, mean, na.rm=TRUE) should also work!
 ```
 
-> ## Illustration of the importance of preallocation
+> ## The importance of preallocation
 >
-> Now that we know how to write functions, I can illustrate 
+> Now that we know how to write functions, we can look at 
 > the importance of preallocation.  Let's start by converting 
 > our previous code into functions:
 > ```{r}
@@ -248,7 +248,7 @@ lapply(mydata, function(x) mean(x, na.rm=TRUE))
 >       res[i] <- x[i] + y[i]
 >   }
 > }
-> # Let's test these functions!
+> # Let's test these functions using the microbenchmark package!
 > x <- rnorm(1000)
 > y <- rnorm(1000)
 > library(microbenchmark)
@@ -273,19 +273,19 @@ source("my_analysis.R")
 
 Alternatively, we can execute a script in batch mode from the command line with:
 
-```{r, eval=FALSE}
+```{bash, eval=FALSE}
 $ Rscript --vanilla my_analysis.R
 ```
 
 This comes in handy when you need to rerun an analysis on different files or with different arguments 
-provided on the command line. It's a good practice to use --vanilla option because by default, Rscript 
+provided on the command line. It's a good practice to use `--vanilla` option because by default, Rscript 
 will restore any past saved environments and save its current environment after the execution completes. 
 Usually we don’t want R to restore any past state from previous runs, as this can lead to irreproducible 
-results. Additionally, saved environments can make it a nightmare to debug a script. See R --help for 
+results. Additionally, saved environments can make it a nightmare to debug a script. See `R --help` for 
 more information.
 
 Lastly, if you want to retrieve command-line arguments passed to your script, use R’s `commandArgs()` 
-with trailingOnly=TRUE. For example, this simple R script just prints all arguments:
+with `trailingOnly=TRUE`. For example, this simple R script just prints all arguments:
 
 ```{r, eval=FALSE}
 ## args.R -- a simple script to show command line args
@@ -295,7 +295,7 @@ print(args)
 
 We run this with:
 
-```{r, eval=FALSE}
+```{bash, eval=FALSE}
 $ Rscript --vanilla args.R arg1 arg2 arg3
 ```
   

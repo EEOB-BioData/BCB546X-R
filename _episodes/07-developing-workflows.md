@@ -28,7 +28,7 @@ keypoints:
 > of the functions we used already, particularly `split` and 
 > `lapply`. These functions can replace many of the loops with 
 > a cleaner and faster code. 
-> {: .callout}
+{: .callout}
 
 Often we want to control the flow of our actions. This can be done
 by setting actions to occur only if a condition or a set of conditions are met.
@@ -292,27 +292,27 @@ meanRemoveNA <- function(x) mean(x, na.rm=TRUE)
 {: .r}
 
 Functions that contain only one line in their body can omit 
-the braces (as the meanRemoveNA() function does). Similarly, 
+the braces (as the `meanRemoveNA()` function does). Similarly, 
 using `return()` to specify the return value is optional; 
 R’s functions will automatically return the last evaluated 
 expression in the body.
 
 We could forgo creating a function named `meanRemoveNA()` in 
 our global environment altogether and instead use an anonymous 
-function (named so because anonymous functions are functions 
-without a name). Anonymous functions are useful when we only 
+function. Anonymous functions are useful when we only 
 need a function once for a specific task. For example, if we 
-wrote meanRemoveNA() to use with lapply, we could write:
+wrote `meanRemoveNA()` to use with lapply, we could write:
 
 
 ~~~
 lapply(mydata, function(x) mean(x, na.rm=TRUE))
+# lapply(mydata, mean, na.rm=TRUE) should also work!
 ~~~
 {: .r}
 
-> ## Illustration of the importance of preallocation
+> ## The importance of preallocation
 >
-> Now that we know how to write functions, I can illustrate 
+> Now that we know how to write functions, we can look at 
 > the importance of preallocation.  Let's start by converting 
 > our previous code into functions:
 > 
@@ -329,7 +329,7 @@ lapply(mydata, function(x) mean(x, na.rm=TRUE))
 >       res[i] <- x[i] + y[i]
 >   }
 > }
-> # Let's test these functions!
+> # Let's test these functions using the microbenchmark package!
 > x <- rnorm(1000)
 > y <- rnorm(1000)
 > library(microbenchmark)
@@ -341,14 +341,14 @@ lapply(mydata, function(x) mean(x, na.rm=TRUE))
 > 
 > ~~~
 > Unit: microseconds
->                        expr      min        lq       mean   median
->    sumNoPreallocation(x, y) 2396.271 2841.2260 4203.94121 3294.019
->  sumWithPreallocation(x, y) 1225.576 1304.7915 1432.82086 1384.298
->                       x + y    1.455    2.2935    4.81649    5.016
->         uq       max neval
->  3666.7205 19742.301   100
->  1497.2520  2888.757   100
->     5.9565    26.967   100
+>                        expr      min       lq       mean   median       uq
+>    sumNoPreallocation(x, y) 2368.230 2643.744 3998.80823 3086.970 3555.788
+>  sumWithPreallocation(x, y) 1135.581 1222.821 1390.45093 1287.870 1391.619
+>                       x + y    1.386    2.245    4.05743    4.441    5.200
+>        max neval
+>  20102.300   100
+>   2180.758   100
+>     14.239   100
 > ~~~
 > {: .output}
 {: .callout}
@@ -379,14 +379,14 @@ $ Rscript --vanilla my_analysis.R
 {: .r}
 
 This comes in handy when you need to rerun an analysis on different files or with different arguments 
-provided on the command line. It's a good practice to use --vanilla option because by default, Rscript 
+provided on the command line. It's a good practice to use `--vanilla` option because by default, Rscript 
 will restore any past saved environments and save its current environment after the execution completes. 
 Usually we don’t want R to restore any past state from previous runs, as this can lead to irreproducible 
-results. Additionally, saved environments can make it a nightmare to debug a script. See R --help for 
+results. Additionally, saved environments can make it a nightmare to debug a script. See `R --help` for 
 more information.
 
 Lastly, if you want to retrieve command-line arguments passed to your script, use R’s `commandArgs()` 
-with trailingOnly=TRUE. For example, this simple R script just prints all arguments:
+with `trailingOnly=TRUE`. For example, this simple R script just prints all arguments:
 
 
 ~~~

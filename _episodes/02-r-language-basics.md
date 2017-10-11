@@ -632,7 +632,7 @@ function (name, pos = -1L, envir = as.environment(pos), all.names = FALSE,
     }
     else all.names
 }
-<bytecode: 0x7fe42d8c7aa8>
+<bytecode: 0x7fb4969108a8>
 <environment: namespace:base>
 ~~~
 {: .output}
