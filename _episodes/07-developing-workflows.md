@@ -5,9 +5,11 @@ exercises: 20
 questions:
 - "How can I make data-dependent choices in R?"
 - "How can I repeat operations in R?"
+- "How do I write functions in R?"
 objectives:
 - "Write conditional statements with `if()` and `else()`."
 - "Write and understand `for()` loops."
+- "Be able to write functions and test their speed"
 keypoints:
 - "Use `if` and `else` to make choices."
 - "Use `for` to repeat operations."
