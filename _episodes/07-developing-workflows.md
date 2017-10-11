@@ -330,8 +330,8 @@ lapply(mydata, function(x) mean(x, na.rm=TRUE))
 >   }
 > }
 > # Let's test these functions!
-> x <- rnorm(100)
-> y <- rnorm(100)
+> x <- rnorm(1000)
+> y <- rnorm(1000)
 > library(microbenchmark)
 > microbenchmark(sumNoPreallocation(x,y), sumWithPreallocation(x,y), x+y)
 > ~~~
@@ -340,15 +340,15 @@ lapply(mydata, function(x) mean(x, na.rm=TRUE))
 > 
 > 
 > ~~~
-> Unit: nanoseconds
->                        expr    min     lq      mean   median       uq
->    sumNoPreallocation(x, y) 134360 163055 186950.12 182164.5 194357.0
->  sumWithPreallocation(x, y) 147577 164910 185155.81 175149.5 186353.5
->                       x + y    444    849   2036.19   1251.0   2592.5
->     max neval
->  330437   100
->  338550   100
->   32186   100
+> Unit: microseconds
+>                        expr      min        lq       mean   median
+>    sumNoPreallocation(x, y) 2396.271 2841.2260 4203.94121 3294.019
+>  sumWithPreallocation(x, y) 1225.576 1304.7915 1432.82086 1384.298
+>                       x + y    1.455    2.2935    4.81649    5.016
+>         uq       max neval
+>  3666.7205 19742.301   100
+>  1497.2520  2888.757   100
+>     5.9565    26.967   100
 > ~~~
 > {: .output}
 {: .callout}
@@ -370,21 +370,6 @@ source("my_analysis.R")
 ~~~
 {: .r}
 
-
-
-~~~
-Warning in file(filename, "r", encoding = encoding): cannot open file
-'my_analysis.R': No such file or directory
-~~~
-{: .error}
-
-
-
-~~~
-Error in file(filename, "r", encoding = encoding): cannot open the connection
-~~~
-{: .error}
-
 Alternatively, we can execute a script in batch mode from the command line with:
 
 
@@ -400,7 +385,7 @@ Usually we don’t want R to restore any past state from previous runs, as this 
 results. Additionally, saved environments can make it a nightmare to debug a script. See R --help for 
 more information.
 
-Lastly, if you want to retrieve command-line arguments passed to your script, use R’s commandArgs() 
+Lastly, if you want to retrieve command-line arguments passed to your script, use R’s `commandArgs()` 
 with trailingOnly=TRUE. For example, this simple R script just prints all arguments:
 
 
@@ -420,7 +405,7 @@ $ Rscript --vanilla args.R arg1 arg2 arg3
 {: .r}
   
 > ## Working directory
-> It’s important to mind R’s working directory when writing scripts. Scripts should not use setwd() to set 
+> It’s important to mind R’s working directory when writing scripts. Scripts should not use `setwd()` to set 
 > their working directory, as this is not portable to other systems (which won’t have the same directory 
 > structure). For the same reason, use relative paths like data/achievers.txt when loading in data, and not 
 > absolute paths like /Users/jlebowski/data/achievers.txt. Also, it’s a good idea to indicate (either in comments 
@@ -477,7 +462,7 @@ str(tmp)
 
 ~~~
 List of 2
- $ vec: num [1:4] 0.807 -0.525 0.034 0.529
+ $ vec: num [1:4] -0.639 0.173 1.229 -0.24
  $ df :'data.frame':	3 obs. of  2 variables:
   ..$ a: int [1:3] 1 2 3
   ..$ b: int [1:3] 3 4 5
