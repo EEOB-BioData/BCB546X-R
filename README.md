@@ -25,7 +25,6 @@ usability.
 Maintainer:
 
 * [Dennis Lavrov][dennis_lavrov]
-* [Naupaka Zimmerman][zimmerman_naupaka]
 
 [lesson-example]: https://swcarpentry.github.io/lesson-example
 [dennis_lavrov]: http://www.eeob.iastate.edu/people/dennis-lavrov

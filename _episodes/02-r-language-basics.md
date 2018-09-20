@@ -632,7 +632,7 @@ function (name, pos = -1L, envir = as.environment(pos), all.names = FALSE,
     }
     else all.names
 }
-<bytecode: 0x7fb4969108a8>
+<bytecode: 0x7fbc4a84e360>
 <environment: namespace:base>
 ~~~
 {: .output}
@@ -796,21 +796,26 @@ sessionInfo()
 
 
 ~~~
-R version 3.3.2 (2016-10-31)
-Platform: x86_64-apple-darwin13.4.0 (64-bit)
+R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
 Running under: OS X El Capitan 10.11.6
+
+Matrix products: default
+BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  base     
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] checkpoint_0.3.18 stringr_1.2.0     knitr_1.15.1     
+[1] checkpoint_0.4.5 stringr_1.3.1    knitr_1.20      
 
 loaded via a namespace (and not attached):
-[1] magrittr_1.5  tools_3.3.2   stringi_1.1.2 methods_3.3.2 evaluate_0.10
+[1] compiler_3.5.1 magrittr_1.5   tools_3.5.1    stringi_1.2.4 
+[5] evaluate_0.11 
 ~~~
 {: .output}
 
