@@ -3,11 +3,12 @@ title: "R Language Basics"
 teaching: 30
 exercises: 20
 questions:
-- "How to do simple calculations in R"
+- "How to do simple calculations in R?"
 - "How to assign values to variables and call functions?"
 - "What are R's vectors, vector data types, and vectorization?"
 - "How to install packages?"
 - "How can I get help in R?"
+- "What is an R Markdown file and how can I create one?"
 objectives:
 - "To understand variables and how to assign to them"
 - "To be able to use mathematical and comparison operations"
@@ -15,6 +16,7 @@ objectives:
 - "To be able to find and use packages"
 - "To be able to read R help files for functions and special operators."
 - "To be able to seek help from your peers."
+- "To be able to create and use R Markdown files"
 keypoints:
 - "R has the usual arithmetic operators and mathematical functions."
 - "Use `<-` to assign values to variables."
@@ -197,7 +199,6 @@ Remember that others may later read your code.
 3 + 5 * (2 ^ 2)     # if you forget some rules, this might help
 ~~~
 {: .r}
-
 
 The text after each line of code is called a
 "comment". Anything that follows after the hash (or octothorpe) symbol
@@ -478,16 +479,10 @@ x <- x + 1 #notice how RStudio updates its description of x on the top right tab
 The right hand side of the assignment can be any valid R expression.
 The right hand side is *fully evaluated* before the assignment occurs.
 
-> ## Tip: Naming variables
-> Variable names can contain letters, numbers, underscores and periods. They
-> cannot start with a number nor contain spaces at all. Different people use
-> different conventions for long variable names, these include
+> ## Tip: A shortcut for assignment operator
 >
->  * periods.between.words
->  * underscores\_between_words
->  * camelCaseToSeparateWords
->
-> What you use is up to you, but **be consistent**.
+> IN RStudio, you can create the <- assignment operator in one keystroke 
+> using `Option -` (that's a dash) on OS X or `Alt -` on Windows/Linux.
 >
 {: .callout}
 
@@ -501,12 +496,27 @@ x = 1/40
 
 But this is much less common among R users. So the recommendation is to use `<-`.
 
-> ## Tip: A shortcut for assignment operator
+> ## Tip: Naming variables
+> Variable names can contain letters, numbers, underscores and periods. They
+> cannot start with a number nor contain spaces at all. Different people use
+> different conventions for long variable names, these include
 >
-> IN RStudio, you can create the <- assignment operator in one keystroke 
-> using `Option -` (that's a dash) on OS X or `Alt -` on Windows/Linux.
+>  * periods.between.words
+>  * underscores\_between_words
+>  * camelCaseToSeparateWords
+>
+> What you use is up to you, but **be consistent**.
 >
 {: .callout}
+
+> ## Warning: Naming variables
+> Notice, that R does not use a special symbol to distinguish between variable
+> and simple text. Instead, the text is placed in double quotes "text".
+> If R complains that the object *text* does not exist, you probably forgot to 
+> use the quotes!
+>
+{: .callout}
+
 
 ## Vectorization
 
@@ -632,7 +642,7 @@ function (name, pos = -1L, envir = as.environment(pos), all.names = FALSE,
     }
     else all.names
 }
-<bytecode: 0x7fbc4a84e360>
+<bytecode: 0x7f90558c5f60>
 <environment: namespace:base>
 ~~~
 {: .output}

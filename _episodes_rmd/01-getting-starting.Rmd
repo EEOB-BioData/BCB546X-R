@@ -82,7 +82,7 @@ project.
 > 2. Click "New Directory".
 > 3. Click "Empty Project".
 > 4. Type in the name of the directory to store your project, e.g. "EEOB546_R_lesson".
-> 5. Make sure that the checkbox for "Create a git repository" is selected.
+> 5. **Make sure that the checkbox for "Create a git repository" is selected**.
 > 6. Click the "Create Project" button.
 {: .challenge}
 
@@ -105,7 +105,7 @@ It is therefore a good idea to treat your data as "read-only".
 
 In many cases your data will be "dirty": it will need significant preprocessing
 to get into a format R (or any other programming language) will find useful. This
-task is sometimes called "data munging". I find it useful to store these scripts
+task is sometimes called "data munging". It can be useful to store these scripts
 in a separate folder, and create a second "read-only" data folder to hold the
 "cleaned" data sets.
 
@@ -140,7 +140,7 @@ one to store the analysis scripts.
 > Typically you want to avoid duplication to save space and avoid having to
 > make updates to code in multiple places.
 >
-> In this case I find it useful to make "symbolic links", which are essentially
+> For this, you can use "symbolic links", which are essentially
 > shortcuts to files somewhere else on a filesystem. On Linux and OS X you can
 > use the `ln -s` command, and on Windows you can either create a shortcut or
 > use the `mklink` command from the windows terminal.
@@ -183,8 +183,8 @@ between files from different commits.
 > >
 > > This can be done with the command line:
 > > ```
-> > $ mkdir data
-> > $ echo "data/" >> .gitignore
+> > $ mkdir graphs
+> > $ echo "graphs/" >> .gitignore
 > > ```
 > > {: . shell}
 > {: .solution}
@@ -201,8 +201,8 @@ Now we want to push the contents of this commit to GitHub, so it is also backed-
 > ```
 > $ git remote add origin git@github.com/[path to your directory]
 > $ git config remote.origin.url git@github.com:[path to your directory]
-> $ git pull -u origin master
-> $ git push -u origin master
+> $ git pull origin master
+> $ git push origin master
 > ```
 > {: . shell}
 > 4. Change README.md file to indicate the changes you made

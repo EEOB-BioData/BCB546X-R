@@ -9,8 +9,9 @@ Our goal here is to teach you the basics of R and best practices of using R for 
 Although we are using the template of the Software Carpentry workshop 
 [R for Reproducible Scientific Analysis](http://swcarpentry.github.io/r-novice-gapminder/), most 
 lessons are based on the [Bioinformatics Data Skills](http://shop.oreilly.com/product/0636920030157.do) 
-book by [Vince Buffalo](https://github.com/vsbuffalo) and the [Advanced R](http://adv-r.had.co.nz/) book 
-by [Hadley Wickham](http://hadley.nz/).
+book by [Vince Buffalo](https://github.com/vsbuffalo), the [Advanced R](http://adv-r.had.co.nz/) book 
+by [Hadley Wickham](http://hadley.nz/), and the [R for Data Science](http://r4ds.had.co.nz/) book by 
+[Garrett Grolemund](https://github.com/garrettgman) and [Hadley Wickham](http://hadley.nz/).
 
 ## Why R?
 
@@ -38,7 +39,7 @@ systems (including FreeBSD and Linux), Windows and MacOS.
 
 Note that in this course we will focus on the subset of the R language that allows you 
 to conduct _exploratory data analysis (EDA)_. There are many resources on campus and elsewhere 
-to explore the aother aspects of R.
+to explore the other aspects of R.
 
 > ## Additional resources  
 >
@@ -51,10 +52,3 @@ to explore the aother aspects of R.
 > * R for Data Science (book): [http://r4ds.had.co.nz/](http://r4ds.had.co.nz/)
 > * RStudio: [https://www.rstudio.com/](https://www.rstudio.com/)
 {: .callout}
-
-> ## Prerequisites
->
-> Understand that computers store data and instructions (programs, scripts etc.) in files.
-> Files are organised in directories (folders).
-> Know how to access files not in the working directory by specifying the path.
-{: .prereq}
