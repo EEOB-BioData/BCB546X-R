@@ -57,7 +57,7 @@ They differ in the types of their elements: all elements of an atomic vector mus
 
 #### Atomic vectors
 
-There are four common types of atomic vectors : logical, integer, double (often called numeric), and character.
+There are four common types of atomic vectors : **logical**, **integer**, **double** (often called numeric), and **character**.
 
 Atomic vectors are usually created with `c()`, short for combine.
 
@@ -372,7 +372,7 @@ is.list(mod)
 {: .output}
 > ## Callout
 >
-> Where does these data come from?
+> Where do these data come from?
 >
 {: .callout}
 
@@ -660,7 +660,7 @@ m f
 ~~~
 {: .output}
 
-Factors crip up all over R, and occasionally cause headaches for new R users. We'll discuss why in the next lesson.
+Factors crip up all over R, and occasionally cause headaches for new R users (see below).
 
 ### Matrices and arrays {#matrices-and-arrays}
 
@@ -738,84 +738,6 @@ c
 
 You can test if an object is a matrix or array using `is.matrix()` and `is.array()`, or by looking at the length of the `dim()`. `as.matrix()` and `as.array()` make it easy to turn an existing vector into a matrix or array.
 
-Vectors are not the only 1-dimensional data structure. You can have matrices with a single row or single column, or arrays with a single dimension. They may print similarly, but will behave differently. The differences aren't too important, but it's useful to know they exist in case you get strange output from a function (`tapply()` is a frequent offender). As always, use `str()` to reveal the differences.
-
-
-~~~
-str(1:3)                   # 1d vector
-~~~
-{: .r}
-
-
-
-~~~
- int [1:3] 1 2 3
-~~~
-{: .output}
-
-
-
-~~~
-str(matrix(1:3, ncol = 1)) # column vector
-~~~
-{: .r}
-
-
-
-~~~
- int [1:3, 1] 1 2 3
-~~~
-{: .output}
-
-
-
-~~~
-str(matrix(1:3, nrow = 1)) # row vector
-~~~
-{: .r}
-
-
-
-~~~
- int [1, 1:3] 1 2 3
-~~~
-{: .output}
-
-
-
-~~~
-str(array(1:3, 3))         # "array" vector
-~~~
-{: .r}
-
-
-
-~~~
- int [1:3(1d)] 1 2 3
-~~~
-{: .output}
-
-While atomic vectors are most commonly turned into matrices, the dimension attribute can also be set on lists to make list-matrices or list-arrays:
-
-
-~~~
-l <- list(1:3, "a", TRUE, 1.0)
-dim(l) <- c(2, 2)
-l
-~~~
-{: .r}
-
-
-
-~~~
-     [,1]      [,2]
-[1,] Integer,3 TRUE
-[2,] "a"       1   
-~~~
-{: .output}
-
-These are relatively esoteric data structures, but can be useful if you want to arrange objects into a grid-like structure. For example, if you're running models on a spatio-temporal grid, it might be natural to preserve the grid structure by storing the models in a 3d array.
-
 > ## Discussion 2
 >
 > 1.  What does `dim()` return when applied to a vector?
@@ -859,9 +781,6 @@ x
 ~~~
 {: .output}
 
-So now that we've created a dummy vector to play with, how do we get at its
-contents?
-
 ### Accessing elements using their indices
 
 To extract elements of a vector we can give their corresponding index, starting
@@ -895,14 +814,13 @@ x[4]
 ~~~
 {: .output}
 
-It may look different, but the square brackets operator is a function. For atomic vectors
-(and matrices), it means "get me the nth element".
+It may look different, but the square brackets operator is a function. For atomic vectors (and matrices), it means "get me the nth element".
 
 We can ask for multiple elements at once:
 
 
 ~~~
-x[c(1, 3)]
+x[c(1, 3)] #note c() function and try x[1,3]!
 ~~~
 {: .r}
 
@@ -1156,8 +1074,6 @@ which(names(x) == "a")
 [1] 1
 ~~~
 {: .output}
-
-
 
 Only the first element is `TRUE`, so `which` returns 1. Now that we have indices
 the skipping works because we have a negative index!
@@ -1730,6 +1646,96 @@ You can coerce an object to a data frame with `as.data.frame()`:
   not all the same length.
   
 * A matrix will create a data frame with the same number of columns and rows as the matrix.
+
+
+> ## Subsetting lists and dataframes
+> ### Subsetting lists: three functions: `[`, `[[`, and `$`.
+>
+> Using `[` will always return a list. If you want to *subset* a list, but not
+> *extract* an element, then you will likely use `[`.
+> 
+> ~~~~~~~~~~
+> lst <- list(1:3, "a", c(TRUE, FALSE, TRUE), c(2.3, 5.9))
+> names(lst) <- c("A","B","C","D")
+> lst[1]
+> ~~~~~~~~~~
+> {: .source}
+>
+> To *extract* individual elements of a list, you need to use the double-square
+> bracket function: `[[`.
+> 
+> ~~~~~~~~~~
+> lst[[1]]
+> ~~~~~~~~~~
+> {: .source}
+> 
+> You **can't** extract more than one element at once:
+> 
+> ~~~~~~~~~~
+> lst[[1:3]]
+> ~~~~~~~~~~
+> {: .source}
+> 
+> **Nor** use it to skip elements:
+> 
+> ~~~~~~~~~~
+> lst[[-1]]
+> ~~~~~~~~~~
+> {: .source}
+> 
+> But you can use names to both subset and extract elements:
+> 
+> ~~~~~~~~~~
+> lst[["C"]]
+> ~~~~~~~~~~
+> {: .source}
+>
+> The `$` function is a shorthand way for extracting elements by name:
+> 
+> ~~~~~~~~~~
+> df$coat
+> ~~~~~~~~~~
+> {: .source}
+>
+> ### Subsetting dataframes
+>
+> Remember the data frames are lists underneath the hood, so similar rules
+> apply. However they are also two dimensional objects:
+> 
+> `[` with one argument will act the same was as for lists, where each list
+> element corresponds to a column. The resulting object will be a data frame:
+>
+> ~~~~~~~~~~
+> df[1]
+> ~~~~~~~~~~
+> {: .source}
+>
+> With two arguments, `[` behaves the same way as for matrices, 
+> exctracting rows (first argument) and columns (second argument):
+> 
+> ~~~~~~~~~~
+> df[1:3,]
+> ~~~~~~~~~~
+> {: .source}
+>
+> If we subset a single row, the result will be a data frame (because
+> the elements are mixed types):
+> 
+> ~~~~~~~~~~
+> df[3,]
+> ~~~~~~~~~~
+> {: .source}
+>
+> But for a single column the result will be a vector (this can
+> be changed with the third argument, `drop = FALSE`).
+> 
+> ~~~~~~~~~~
+> df[,3]
+> ~~~~~~~~~~
+> {: .source}
+>
+{: .callout}
+
 
 > ## Discussion 3
 >

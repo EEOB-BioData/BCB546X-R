@@ -195,10 +195,11 @@ Now we want to push the contents of this commit to GitHub, so it is also backed-
 > 2. Make sure you have a proper public key in your GitHub settings
 > 3. In RStudio, again click Tools -> Shell … . Enter:
 > ```
+> $ echo "# BCB546-R-Exercise" >> README.md
+> $ git add README.md
+> $ git commit -m "first commit"
 > $ git remote add origin git@github.com/[path to your directory]
-> $ git config remote.origin.url git@github.com:[path to your directory]
-> $ git pull origin master
-> $ git push origin master
+> $ git push -u origin master
 > ```
 > {: . shell}
 > 4. Change README.md file to indicate the changes you made

@@ -32,6 +32,7 @@ source("../bin/chunk-options.R")
 knitr_fig_path("01-")
 # good alternative: http://tryr.codeschool.com/
 ```
+<img src="../img/R.png" align="right" hspace="10">
 
 ## Introduction to R
 
@@ -444,7 +445,7 @@ rm(list <- ls())
 ## R Packages
 
 It is possible to add functions to R by writing a package, or by
-obtaining a package written by someone else. As of this writing, there
+obtaining a package written by someone else. There
 are over 7,000 packages available on CRAN (the comprehensive R archive
 network). R and RStudio have functionality for managing packages:
 
@@ -653,14 +654,13 @@ As with any language, it's important to work on your R vocabulary.  Here is a
 
 > ## Challenge 5
 >
-> Install the following packages: `ggplot2`, `plyr`
+> Install packages in the `tidyverse` collection
 >
 > > ## Solution to challenge 5
 > >
 > > We can use the `install.packages()` command to install the required packages.
 > > ```{r ch5-sol, eval=FALSE}
-> > install.packages("ggplot2")
-> > install.packages("plyr")
+> > install.packages("tidyverse")
 > >```
 > {: .solution}
 {: .challenge}

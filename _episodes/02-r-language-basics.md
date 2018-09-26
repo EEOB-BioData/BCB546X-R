@@ -28,6 +28,7 @@ keypoints:
 ---
 
 
+<img src="../img/R.png" align="right" hspace="10">
 
 ## Introduction to R
 
@@ -642,7 +643,7 @@ function (name, pos = -1L, envir = as.environment(pos), all.names = FALSE,
     }
     else all.names
 }
-<bytecode: 0x7f90558c5f60>
+<bytecode: 0x7fce6caa3ae0>
 <environment: namespace:base>
 ~~~
 {: .output}
@@ -701,7 +702,7 @@ Error in rm(list <- ls()): ... must contain names or character strings
 ## R Packages
 
 It is possible to add functions to R by writing a package, or by
-obtaining a package written by someone else. As of this writing, there
+obtaining a package written by someone else. There
 are over 7,000 packages available on CRAN (the comprehensive R archive
 network). R and RStudio have functionality for managing packages:
 
@@ -808,7 +809,7 @@ sessionInfo()
 ~~~
 R version 3.5.1 (2018-07-02)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: OS X El Capitan 10.11.6
+Running under: macOS  10.14
 
 Matrix products: default
 BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
@@ -975,15 +976,14 @@ As with any language, it's important to work on your R vocabulary.  Here is a
 
 > ## Challenge 5
 >
-> Install the following packages: `ggplot2`, `plyr`
+> Install packages in the `tidyverse` collection
 >
 > > ## Solution to challenge 5
 > >
 > > We can use the `install.packages()` command to install the required packages.
 > > 
 > > ~~~
-> > install.packages("ggplot2")
-> > install.packages("plyr")
+> > install.packages("tidyverse")
 > > ~~~
 > > {: .r}
 > {: .solution}
