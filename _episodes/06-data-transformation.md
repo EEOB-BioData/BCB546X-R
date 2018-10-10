@@ -252,6 +252,20 @@ summary(select(dvst,`total SNPs`)) #this does not look simpler, but wait...
 ~~~
 {: .output}
 
+
+
+~~~
+summarize(dvst)
+~~~
+{: .r}
+
+
+
+~~~
+data frame with 0 columns and 0 rows
+~~~
+{: .output}
+
 We see that this number varies considerably across all windows on chromosome 20 and the data are right-skewed: 
 the third quartile is 12 SNPs, but the maximum is 93 SNPs. Often we want to investigate such outliers more 
 closely. We can use `filter()` to extract the rows of our dataframe based on their values. The first argument 

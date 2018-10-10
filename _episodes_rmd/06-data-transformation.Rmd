@@ -165,6 +165,7 @@ Let's say we used `summary` to get an idea about the total number of SNPs in dif
 summary(dvst$`total SNPs`)
 # or with dplyr
 summary(select(dvst,`total SNPs`)) #this does not look simpler, but wait...
+summarize(dvst)
 ```
 
 We see that this number varies considerably across all windows on chromosome 20 and the data are right-skewed: 

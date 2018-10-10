@@ -1065,6 +1065,16 @@ that are occasionally helpful.
     
     <img src="../fig/rmd-07-unnamed-chunk-45-2.png" title="plot of chunk unnamed-chunk-45" alt="plot of chunk unnamed-chunk-45" style="display: block; margin: auto;" />
 
+## Saving the plot
+`ggsave()` is a convenient function for saving a plot. It defaults to saving the last plot that you displayed, using the size of the current graphics device. It also guesses the type of graphics device from the extension.
+
+
+~~~
+ggsave("myplot.pdf")
+ggsave("myplot.png")
+~~~
+{: .r}
+
 
 ## The layered grammar of graphics
 
