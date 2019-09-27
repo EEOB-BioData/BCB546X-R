@@ -15,7 +15,7 @@ by [Hadley Wickham](http://hadley.nz/), and the [R for Data Science](http://r4ds
 
 ## Why R?
 
-![IEEE Spectrum ranking](./fig/ranking.png)
+![IEEE Spectrum ranking](./fig/ranking18.jpg)
 
 ## Brief Introduction to R 
 #### (from [www.r-project.org](www.r-project.org))
