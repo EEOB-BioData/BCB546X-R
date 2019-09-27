@@ -62,6 +62,13 @@ in the top left.
 
 ![RStudio layout with .R file open](../fig/01-rstudio-script.png)
 
+> ## Tip: Do not save your working directory
+>
+> When you exit R/RStudio, you probably get a prompt about saving your workspace image - don’t do this!
+> In fact, it is recommended that you turn this feature off so you are not tempted:
+> Go to Tools > Global Options and click “Never” in the dropdown next to “Save workspace to .RData on exit”
+>
+{: .callout}
 
 ## Creating a new project
 
