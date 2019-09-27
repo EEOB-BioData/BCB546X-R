@@ -70,6 +70,7 @@ in the top left.
 >
 {: .callout}
 
+
 ## Creating a new project
 
 One of the most powerful and useful aspects of RStudio is its project management
@@ -157,7 +158,7 @@ one to store the analysis scripts.
 ### Version Control
 
 We also set up our project to integrate with git, putting it under version control.
-RStudio has a nicer interface to git than shell, but is somewhat in what it can
+RStudio has a nicer interface to git than shell, but is somewhat limited in what it can
 do, so you will find yourself occasionally needing to use the shell. Let's go
 through and make an initial commit of our template files.
 

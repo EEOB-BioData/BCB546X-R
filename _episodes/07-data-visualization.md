@@ -120,13 +120,13 @@ cols(
  1 55001 56000          0        1894  3.41             0      0
  2 56001 57000          5        6683  6.68             2      2
  3 57001 58000          1        9063  9.06             1      0
- 4 58001 59000          7       10256 10.3              3      2
+ 4 58001 59000          7       10256 10.26             3      2
  5 59001 60000          4        8057  8.06             4      0
  6 60001 61000          6        7051  7.05             2      1
  7 61001 62000          7        6950  6.95             2      1
  8 62001 63000          1        8834  8.83             1      0
  9 63001 64000          1        9629  9.63             1      0
-10 64001 65000          3        7999  8                1      1
+10 64001 65000          3        7999  8.00             1      1
 # ... with 59,130 more rows, and 11 more variables: reference.Bases <int>,
 #   Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>,
 #   Recombination <dbl>, Divergence <dbl>, Constraint <int>, SNPs <int>,
@@ -391,7 +391,7 @@ ggplot(data = dvst, mapping = aes(x=depth, y=total.SNPs)) + geom_point(alpha=0.1
 
 
 ~~~
-`geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+`geom_smooth()` using method = 'gam'
 ~~~
 {: .output}
 
@@ -421,7 +421,7 @@ the aesthetic in `ggplot()` function.
 > > 
 > > 
 > > ~~~
-> > `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+> > `geom_smooth()` using method = 'gam'
 > > ~~~
 > > {: .output}
 > > 
@@ -555,8 +555,8 @@ select(dvst, GC.binned)
 
 ~~~
 # A tibble: 59,140 x 1
-   GC.binned  
-   <fct>      
+     GC.binned
+        <fctr>
  1 (51.6,68.5]
  2 (34.7,51.6]
  3 (34.7,51.6]
@@ -809,8 +809,8 @@ distinct(rpts, motif)
 
 ~~~
 # A tibble: 2 x 1
-  motif        
-  <chr>        
+          motif
+          <chr>
 1 CCTCCCTGACCAC
 2 CCTCCCTAGCCAC
 ~~~
@@ -867,19 +867,20 @@ rpts
 
 ~~~
 # A tibble: 9,218 x 10
-   name  pos   chr   motif_start motif_end    dist recomb_start recomb_end
-   <chr> <chr> <chr>       <int>     <int>   <dbl>        <int>      <int>
- 1 L2    chrX… chrX     63005830  63005843  37772      62965644   62970485
- 2 L2    chrX… chrX     63005830  63005843  34673      62970484   62971843
- 3 L2    chrX… chrX     63005830  63005843  30084.     62971842   62979662
- 4 L2    chrX… chrX     63005830  63005843  21750.     62979661   62988511
- 5 L2    chrX… chrX     63005830  63005843  10682.     62988510   63001800
- 6 L2    chrX… chrX     63005830  63005843   2210.     63001799   63005455
- 7 L2    chrX… chrX     63005830  63005843   -384.     63005454   63006988
- 8 L2    chrX… chrX     63005830  63005843  -3530.     63006987   63011745
- 9 L2    chrX… chrX     63005830  63005843  -6024.     63011744   63011976
-10 L2    chrX… chrX     63005830  63005843 -12691      63011975   63025080
-# ... with 9,208 more rows, and 2 more variables: recom <dbl>, motif <chr>
+    name           pos   chr motif_start motif_end     dist recomb_start
+   <chr>         <chr> <chr>       <int>     <int>    <dbl>        <int>
+ 1    L2 chrX-63005830  chrX    63005830  63005843  37772.0     62965644
+ 2    L2 chrX-63005830  chrX    63005830  63005843  34673.0     62970484
+ 3    L2 chrX-63005830  chrX    63005830  63005843  30084.5     62971842
+ 4    L2 chrX-63005830  chrX    63005830  63005843  21750.5     62979661
+ 5    L2 chrX-63005830  chrX    63005830  63005843  10681.5     62988510
+ 6    L2 chrX-63005830  chrX    63005830  63005843   2209.5     63001799
+ 7    L2 chrX-63005830  chrX    63005830  63005843   -384.5     63005454
+ 8    L2 chrX-63005830  chrX    63005830  63005843  -3529.5     63006987
+ 9    L2 chrX-63005830  chrX    63005830  63005843  -6023.5     63011744
+10    L2 chrX-63005830  chrX    63005830  63005843 -12691.0     63011975
+# ... with 9,208 more rows, and 3 more variables: recomb_end <int>,
+#   recom <dbl>, motif <chr>
 ~~~
 {: .output}
 
@@ -929,10 +930,10 @@ rpts %>%
 
 ~~~
 # A tibble: 3 x 3
-  name  motif             n
-  <chr> <chr>         <int>
-1 L2    CCTCCCTAGCCAC   457
-2 L2    CCTCCCTGACCAC  4110
+   name         motif     n
+  <chr>         <chr> <int>
+1    L2 CCTCCCTAGCCAC   457
+2    L2 CCTCCCTGACCAC  4110
 3 THE1B CCTCCCTAGCCAC  4651
 ~~~
 {: .output}
