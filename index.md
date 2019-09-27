@@ -20,9 +20,9 @@ by [Hadley Wickham](http://hadley.nz/), and the [R for Data Science](http://r4ds
 ## Brief Introduction to R 
 #### (from [www.r-project.org](www.r-project.org))
 
-R is a language and environment for statistical computing and graphics. It is a GNU project which is similar 
-to the S language and environment which was developed at Bell Laboratories (formerly AT&T, now Lucent Technologies) 
-by John Chambers and colleagues. R can be considered as a different implementation of S. There are some important 
+R is a language and environment for statistical computing and graphics. It is similar 
+to the S language and environment, which was developed at Bell Laboratories (formerly AT&T, now Lucent Technologies) 
+by John Chambers and colleagues. R can be considered as a different (GNU) implementation of S. There are some important 
 differences, but much code written for S runs unaltered under R.
 
 R provides a wide variety of statistical and machine-learning methods, and is highly extensible. 
