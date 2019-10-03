@@ -394,25 +394,47 @@ We can also do comparison in R:
 ~~~
 {: .output}
 
+
 > ## Tip: Comparing Numbers
 >
-> A word of warning about comparing numbers: you should
-> never use `==` to compare two numbers unless they are
-> integers (a data type which can specifically represent
-> only whole numbers).
->
+> Let's compare `0.1 + 0.2` and `0.3`. What do you think?
+> 
+> ~~~
+> 0.1 + 0.2 == 0.3
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+> [1] FALSE
+> ~~~
+> {: .output}
+> What's happened?   
 > Computers may only represent decimal numbers with a
 > certain degree of precision, so two numbers which look
 > the same when printed out by R, may actually have
 > different underlying representations and therefore be
 > different by a small margin of error (called Machine
 > numeric tolerance).
->
-> Instead you should use the `all.equal` function.
+> So, unless you compare two integers, you should use the `all.equal` function:
+> 
+> ~~~
+> all.equal(0.1 + 0.2, 0.3)
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+> [1] TRUE
+> ~~~
+> {: .output}
 >
 > Further reading: [http://floating-point-gui.de/](http://floating-point-gui.de/)
 >
 {: .callout}
+
 
 ## Variables and assignment
 
@@ -643,7 +665,7 @@ function (name, pos = -1L, envir = as.environment(pos), all.names = FALSE,
     }
     else all.names
 }
-<bytecode: 0x7fb5ca20c0a8>
+<bytecode: 0x7f91f919cff0>
 <environment: namespace:base>
 ~~~
 {: .output}
@@ -809,7 +831,7 @@ sessionInfo()
 ~~~
 R version 3.3.2 (2016-10-31)
 Platform: x86_64-apple-darwin13.4.0 (64-bit)
-Running under: macOS  10.14.6
+Running under: macOS  10.13.6
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -818,10 +840,11 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  base     
 
 other attached packages:
-[1] checkpoint_0.4.3 stringr_1.2.0    knitr_1.15.1    
+[1] checkpoint_0.4.3 stringr_1.2.0    knitr_1.19      
 
 loaded via a namespace (and not attached):
-[1] magrittr_1.5  tools_3.3.2   stringi_1.1.3 methods_3.3.2 evaluate_0.10
+[1] magrittr_1.5    tools_3.3.2     stringi_1.1.6   methods_3.3.2  
+[5] evaluate_0.10.1
 ~~~
 {: .output}
 

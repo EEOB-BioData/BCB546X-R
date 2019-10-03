@@ -42,45 +42,6 @@ an "an opinionated collection of R packages designed for data science".
 
 ~~~
 if (!require("tidyverse")) install.packages("tidyverse")
-~~~
-{: .r}
-
-
-
-~~~
-Loading required package: tidyverse
-~~~
-{: .output}
-
-
-
-~~~
-── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──
-~~~
-{: .output}
-
-
-
-~~~
-✔ ggplot2 2.2.1     ✔ readr   1.1.1
-✔ tibble  1.3.4     ✔ purrr   0.2.4
-✔ tidyr   0.7.2     ✔ dplyr   0.7.4
-✔ ggplot2 2.2.1     ✔ forcats 0.2.0
-~~~
-{: .output}
-
-
-
-~~~
-── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-~~~
-{: .output}
-
-
-
-~~~
 library(tidyverse)
 ~~~
 {: .r}
@@ -222,9 +183,9 @@ read_csv("a,b,c\n1,2,.", na = ".")
 
 ~~~
 # A tibble: 1 x 3
-      a     b     c
+      a     b c    
   <int> <int> <chr>
-1     1     2  <NA>
+1     1     2 <NA> 
 ~~~
 {: .output}
 
@@ -245,7 +206,189 @@ There are a few good reasons to favour readr functions over the base equivalents
   your operating system and environment variables, so import code that works 
   on your computer might not work on someone else's.
 
-## Parsing a vector
+
+
+## Writing to a file
+
+readr also comes with two useful functions for writing data back to disk: `write_csv()` and `write_tsv()`. 
+Both functions increase the chances of the output file being read back in correctly by:
+
+* Always encoding strings in UTF-8.
+  
+* Saving dates and date-times in ISO8601 format so they are easily
+  parsed elsewhere.
+
+If you want to export a csv file to Excel, use `write_excel_csv()` --- this writes a special character 
+(a "byte order mark") at the start of the file which tells Excel that you're using the UTF-8 encoding.
+
+The most important arguments are `x` (the data frame to save), and `path` (the location to save it). 
+You can also specify how missing values are written with `na`, and if you want to `append` to an existing file.
+
+
+~~~
+write_csv(challenge, "challenge.csv")
+~~~
+{: .r}
+
+Note that the type information is lost when you save to csv:
+
+
+~~~
+challenge
+~~~
+{: .r}
+
+
+
+~~~
+# A tibble: 2,000 x 2
+        x y         
+    <dbl> <date>    
+ 1  404   NA        
+ 2 4172   NA        
+ 3 3004   NA        
+ 4  787   NA        
+ 5   37.0 NA        
+ 6 2332   NA        
+ 7 2489   NA        
+ 8 1449   NA        
+ 9 3665   NA        
+10 3863   NA        
+# ... with 1,990 more rows
+~~~
+{: .output}
+
+
+
+~~~
+write_csv(challenge, "challenge-2.csv")
+read_csv("challenge-2.csv")
+~~~
+{: .r}
+
+
+
+~~~
+Parsed with column specification:
+cols(
+  x = col_integer(),
+  y = col_character()
+)
+~~~
+{: .output}
+
+
+
+~~~
+# A tibble: 2,000 x 2
+       x y    
+   <int> <chr>
+ 1   404 <NA> 
+ 2  4172 <NA> 
+ 3  3004 <NA> 
+ 4   787 <NA> 
+ 5    37 <NA> 
+ 6  2332 <NA> 
+ 7  2489 <NA> 
+ 8  1449 <NA> 
+ 9  3665 <NA> 
+10  3863 <NA> 
+# ... with 1,990 more rows
+~~~
+{: .output}
+
+This makes CSVs a little unreliable for caching interim results---you need to recreate the column specification every time you load in. There are two alternatives:
+
+1.  `write_rds()` and `read_rds()` are uniform wrappers around the base 
+    functions `readRDS()` and `saveRDS()`. These store data in R's custom 
+    binary format called RDS:
+    
+    
+    ~~~
+    write_rds(challenge, "challenge.rds")
+    read_rds("challenge.rds")
+    ~~~
+    {: .r}
+    
+    
+    
+    ~~~
+    # A tibble: 2,000 x 2
+            x y         
+        <dbl> <date>    
+     1  404   NA        
+     2 4172   NA        
+     3 3004   NA        
+     4  787   NA        
+     5   37.0 NA        
+     6 2332   NA        
+     7 2489   NA        
+     8 1449   NA        
+     9 3665   NA        
+    10 3863   NA        
+    # ... with 1,990 more rows
+    ~~~
+    {: .output}
+  
+1.  The feather package implements a fast binary file format that can
+    be shared across programming languages:
+    
+    
+    ~~~
+    library(feather)
+    write_feather(challenge, "challenge.feather")
+    read_feather("challenge.feather")
+    #> # A tibble: 2,000 x 2
+    #>       x      y
+    #>   <dbl> <date>
+    #> 1   404   <NA>
+    #> 2  4172   <NA>
+    #> 3  3004   <NA>
+    #> 4   787   <NA>
+    #> 5    37   <NA>
+    #> 6  2332   <NA>
+    #> # ... with 1,994 more rows
+    ~~~
+    {: .r}
+
+Feather tends to be faster than RDS and is usable outside of R. However, RDS supports list-columns while feather currently does not.
+
+
+
+## Other types of data
+
+To get other types of data into R, we recommend starting with the tidyverse packages listed below. They're certainly 
+not perfect, but they are a good place to start. For rectangular data:
+
+* __haven__ reads SPSS, Stata, and SAS files.
+
+* __readxl__ reads excel files (both `.xls` and `.xlsx`).
+
+* __DBI__, along with a database specific backend (e.g. __RMySQL__, 
+  __RSQLite__, __RPostgreSQL__ etc) allows you to run SQL queries against a 
+  database and return a data frame.
+
+For hierarchical data: use __jsonlite__ (by Jeroen Ooms) for json, and __xml2__ for XML. Jenny Bryan has some excellent worked examples at <https://jennybc.github.io/purrr-tutorial/>.
+
+For other file types, try the [R data import/export manual](https://cran.r-project.org/doc/manuals/r-release/R-data.html) and the [__rio__](https://github.com/leeper/rio) package.
+
+> ## Homework
+>
+> Parse the UNIX assignment files (fang_et_al_genotypes.txt and snp_position.txt) 
+> into R.
+>
+> - What problems did you encounter?
+> - Did R guessed the data type correctly?
+> - If not, how did you fix it?
+>
+> Try to use the `t` function to transpose the first file
+>
+> - Did it work?
+> - Can you figure out how to make it work?
+>
+{: .discussion}
+
+## Parsing a vector (read if you run into problems or if like details)
 
 Before we get into the details of how readr reads files from disk, we need to take a little 
 detour to talk about the `parse_*()` functions. These functions take a character vector and 
@@ -287,7 +430,7 @@ a multiple of vector length (arg 1)
 
 ~~~
 Warning: 2 parsing failures.
-row # A tibble: 2 x 4 col     row   col               expected actual expected   <int> <int>                  <chr>  <chr> actual 1     3    NA             an integer    abc row 2     4    NA no trailing characters    .45
+row # A tibble: 2 x 4 col     row   col expected               actual expected   <int> <int> <chr>                  <chr>  actual 1     3    NA an integer             abc    row 2     4    NA no trailing characters .45   
 ~~~
 {: .error}
 
@@ -305,10 +448,10 @@ x
 [1] 123 345  NA  NA
 attr(,"problems")
 # A tibble: 2 x 4
-    row   col               expected actual
-  <int> <int>                  <chr>  <chr>
-1     3    NA             an integer    abc
-2     4    NA no trailing characters    .45
+    row   col expected               actual
+  <int> <int> <chr>                  <chr> 
+1     3    NA an integer             abc   
+2     4    NA no trailing characters .45   
 ~~~
 {: .output}
 
@@ -562,10 +705,10 @@ guess_encoding(charToRaw(x1))
 
 ~~~
 # A tibble: 2 x 2
-    encoding confidence
-       <chr>      <dbl>
-1 ISO-8859-1       0.46
-2 ISO-8859-9       0.23
+  encoding   confidence
+  <chr>           <dbl>
+1 ISO-8859-1      0.460
+2 ISO-8859-9      0.230
 ~~~
 {: .output}
 
@@ -581,8 +724,8 @@ guess_encoding(charToRaw(x2))
 ~~~
 # A tibble: 1 x 2
   encoding confidence
-     <chr>      <dbl>
-1   KOI8-R       0.42
+  <chr>         <dbl>
+1 KOI8-R        0.420
 ~~~
 {: .output}
 
@@ -676,22 +819,7 @@ str(parse_guess("2010-10-10"))
 
 
 ~~~
- Date[1:1], format: 
-~~~
-{: .output}
-
-
-
-~~~
-Warning in format.POSIXlt(as.POSIXlt(x), ...): unknown timezone 'zone/tz/
-2019b.1.0/zoneinfo/America/Chicago'
-~~~
-{: .error}
-
-
-
-~~~
-"2010-10-10"
+ Date[1:1], format: "2010-10-10"
 ~~~
 {: .output}
 
@@ -751,8 +879,8 @@ a multiple of vector length (arg 1)
 
 ~~~
 Warning: 1000 parsing failures.
-row # A tibble: 5 x 5 col     row   col               expected             actual expected   <int> <chr>                  <chr>              <chr> actual 1  1001     x no trailing characters .23837975086644292 file 2  1002     x no trailing characters .41167997173033655 row 3  1003     x no trailing characters  .7460716762579978 col 4  1004     x no trailing characters   .723450553836301 expected 5  1005     x no trailing characters   .614524137461558 actual # ... with 1 more variables: file <chr>
-... ................. ... ....................................................... ........ ....................................................... ...... ....................................................... .... ....................................................... ... ....................................................... ... ....................................................... ........ ....................................................... ...... .......................................
+row # A tibble: 5 x 5 col     row col   expected               actual             file               expected   <int> <chr> <chr>                  <chr>              <chr>              actual 1  1001 x     no trailing characters .23837975086644292 '/Users/dlavrov/L… file 2  1002 x     no trailing characters .41167997173033655 '/Users/dlavrov/L… row 3  1003 x     no trailing characters .7460716762579978  '/Users/dlavrov/L… col 4  1004 x     no trailing characters .723450553836301   '/Users/dlavrov/L… expected 5  1005 x     no trailing characters .614524137461558   '/Users/dlavrov/L…
+... ................. ... .......................................................................... ........ .......................................................................... ...... .......................................................................... .... .......................................................................... ... .......................................................................... ... .......................................................................... ........ ..........................................................................
 See problems(...) for more details.
 ~~~
 {: .error}
@@ -761,14 +889,14 @@ See problems(...) for more details.
 
 ~~~
 # A tibble: 6 x 2
-      x     y
+      x y    
   <int> <chr>
-1   404  <NA>
-2  4172  <NA>
-3  3004  <NA>
-4   787  <NA>
-5    37  <NA>
-6  2332  <NA>
+1   404 <NA> 
+2  4172 <NA> 
+3  3004 <NA> 
+4   787 <NA> 
+5    37 <NA> 
+6  2332 <NA> 
 ~~~
 {: .output}
 
@@ -795,8 +923,8 @@ cols(
 ~~~
 Warning in rbind(names(probs), probs_f): number of columns of result is not a multiple of vector length (arg 1)
 Warning in rbind(names(probs), probs_f): 1000 parsing failures.
-row # A tibble: 5 x 5 col     row   col               expected             actual expected   <int> <chr>                  <chr>              <chr> actual 1  1001     x no trailing characters .23837975086644292 file 2  1002     x no trailing characters .41167997173033655 row 3  1003     x no trailing characters  .7460716762579978 col 4  1004     x no trailing characters   .723450553836301 expected 5  1005     x no trailing characters   .614524137461558 actual # ... with 1 more variables: file <chr>
-... ................. ... ....................................................... ........ ....................................................... ...... ....................................................... .... ....................................................... ... ....................................................... ... ....................................................... ........ ....................................................... ...... .......................................
+row # A tibble: 5 x 5 col     row col   expected               actual             file               expected   <int> <chr> <chr>                  <chr>              <chr>              actual 1  1001 x     no trailing characters .23837975086644292 '/Users/dlavrov/L… file 2  1002 x     no trailing characters .41167997173033655 '/Users/dlavrov/L… row 3  1003 x     no trailing characters .7460716762579978  '/Users/dlavrov/L… col 4  1004 x     no trailing characters .723450553836301   '/Users/dlavrov/L… expected 5  1005 x     no trailing characters .614524137461558   '/Users/dlavrov/L…
+... ................. ... .......................................................................... ........ .......................................................................... ...... .......................................................................... .... .......................................................................... ... .......................................................................... ... .......................................................................... ........ ..........................................................................
 See problems(...) for more details.
 ~~~
 {: .error}
@@ -817,19 +945,19 @@ problems(challenge)
 
 ~~~
 # A tibble: 1,000 x 5
-     row   col               expected             actual
-   <int> <chr>                  <chr>              <chr>
- 1  1001     x no trailing characters .23837975086644292
- 2  1002     x no trailing characters .41167997173033655
- 3  1003     x no trailing characters  .7460716762579978
- 4  1004     x no trailing characters   .723450553836301
- 5  1005     x no trailing characters   .614524137461558
- 6  1006     x no trailing characters   .473980569280684
- 7  1007     x no trailing characters  .5784610391128808
- 8  1008     x no trailing characters  .2415937229525298
- 9  1009     x no trailing characters .11437866208143532
-10  1010     x no trailing characters  .2983446326106787
-# ... with 990 more rows, and 1 more variables: file <chr>
+     row col   expected               actual             file             
+   <int> <chr> <chr>                  <chr>              <chr>            
+ 1  1001 x     no trailing characters .23837975086644292 '/Users/dlavrov/…
+ 2  1002 x     no trailing characters .41167997173033655 '/Users/dlavrov/…
+ 3  1003 x     no trailing characters .7460716762579978  '/Users/dlavrov/…
+ 4  1004 x     no trailing characters .723450553836301   '/Users/dlavrov/…
+ 5  1005 x     no trailing characters .614524137461558   '/Users/dlavrov/…
+ 6  1006 x     no trailing characters .473980569280684   '/Users/dlavrov/…
+ 7  1007 x     no trailing characters .5784610391128808  '/Users/dlavrov/…
+ 8  1008 x     no trailing characters .2415937229525298  '/Users/dlavrov/…
+ 9  1009 x     no trailing characters .11437866208143532 '/Users/dlavrov/…
+10  1010 x     no trailing characters .2983446326106787  '/Users/dlavrov/…
+# ... with 990 more rows
 ~~~
 {: .output}
 
@@ -864,14 +992,14 @@ tail(challenge)
 
 ~~~
 # A tibble: 6 x 2
-          x          y
-      <dbl>      <chr>
-1 0.8052743 2019-11-21
-2 0.1635163 2018-03-29
-3 0.4719390 2014-08-04
-4 0.7183186 2015-08-16
-5 0.2698786 2020-02-04
-6 0.6082372 2019-01-06
+      x y         
+  <dbl> <chr>     
+1 0.805 2019-11-21
+2 0.164 2018-03-29
+3 0.472 2014-08-04
+4 0.718 2015-08-16
+5 0.270 2020-02-04
+6 0.608 2019-01-06
 ~~~
 {: .output}
 
@@ -894,14 +1022,14 @@ tail(challenge)
 
 ~~~
 # A tibble: 6 x 2
-          x          y
-      <dbl>     <date>
-1 0.8052743 2019-11-21
-2 0.1635163 2018-03-29
-3 0.4719390 2014-08-04
-4 0.7183186 2015-08-16
-5 0.2698786 2020-02-04
-6 0.6082372 2019-01-06
+      x y         
+  <dbl> <date>    
+1 0.805 2019-11-21
+2 0.164 2018-03-29
+3 0.472 2014-08-04
+4 0.718 2015-08-16
+5 0.270 2020-02-04
+6 0.608 2019-01-06
 ~~~
 {: .output}
 
@@ -911,183 +1039,4 @@ It's a good idea to supply `col_types` from the print-out provided by readr in y
 ensures that you have a consistent and reproducible data import script. If you rely on the default guesses 
 and your data changes, readr will continue to read it in. If you want to be really strict, use 
 `stop_for_problems()`: that will throw an error and stop your script if there are any parsing problems.
-
-
-## Writing to a file
-
-readr also comes with two useful functions for writing data back to disk: `write_csv()` and `write_tsv()`. Both functions increase the chances of the output file being read back in correctly by:
-
-* Always encoding strings in UTF-8.
-  
-* Saving dates and date-times in ISO8601 format so they are easily
-  parsed elsewhere.
-
-If you want to export a csv file to Excel, use `write_excel_csv()` --- this writes a special character (a "byte order mark") at the start of the file which tells Excel that you're using the UTF-8 encoding.
-
-The most important arguments are `x` (the data frame to save), and `path` (the location to save it). You can also specify how missing values are written with `na`, and if you want to `append` to an existing file.
-
-
-~~~
-write_csv(challenge, "challenge.csv")
-~~~
-{: .r}
-
-Note that the type information is lost when you save to csv:
-
-
-~~~
-challenge
-~~~
-{: .r}
-
-
-
-~~~
-# A tibble: 2,000 x 2
-       x      y
-   <dbl> <date>
- 1   404     NA
- 2  4172     NA
- 3  3004     NA
- 4   787     NA
- 5    37     NA
- 6  2332     NA
- 7  2489     NA
- 8  1449     NA
- 9  3665     NA
-10  3863     NA
-# ... with 1,990 more rows
-~~~
-{: .output}
-
-
-
-~~~
-write_csv(challenge, "challenge-2.csv")
-read_csv("challenge-2.csv")
-~~~
-{: .r}
-
-
-
-~~~
-Parsed with column specification:
-cols(
-  x = col_integer(),
-  y = col_character()
-)
-~~~
-{: .output}
-
-
-
-~~~
-# A tibble: 2,000 x 2
-       x     y
-   <int> <chr>
- 1   404  <NA>
- 2  4172  <NA>
- 3  3004  <NA>
- 4   787  <NA>
- 5    37  <NA>
- 6  2332  <NA>
- 7  2489  <NA>
- 8  1449  <NA>
- 9  3665  <NA>
-10  3863  <NA>
-# ... with 1,990 more rows
-~~~
-{: .output}
-
-This makes CSVs a little unreliable for caching interim results---you need to recreate the column specification every time you load in. There are two alternatives:
-
-1.  `write_rds()` and `read_rds()` are uniform wrappers around the base 
-    functions `readRDS()` and `saveRDS()`. These store data in R's custom 
-    binary format called RDS:
-    
-    
-    ~~~
-    write_rds(challenge, "challenge.rds")
-    read_rds("challenge.rds")
-    ~~~
-    {: .r}
-    
-    
-    
-    ~~~
-    # A tibble: 2,000 x 2
-           x      y
-       <dbl> <date>
-     1   404     NA
-     2  4172     NA
-     3  3004     NA
-     4   787     NA
-     5    37     NA
-     6  2332     NA
-     7  2489     NA
-     8  1449     NA
-     9  3665     NA
-    10  3863     NA
-    # ... with 1,990 more rows
-    ~~~
-    {: .output}
-  
-1.  The feather package implements a fast binary file format that can
-    be shared across programming languages:
-    
-    
-    ~~~
-    library(feather)
-    write_feather(challenge, "challenge.feather")
-    read_feather("challenge.feather")
-    #> # A tibble: 2,000 x 2
-    #>       x      y
-    #>   <dbl> <date>
-    #> 1   404   <NA>
-    #> 2  4172   <NA>
-    #> 3  3004   <NA>
-    #> 4   787   <NA>
-    #> 5    37   <NA>
-    #> 6  2332   <NA>
-    #> # ... with 1,994 more rows
-    ~~~
-    {: .r}
-
-Feather tends to be faster than RDS and is usable outside of R. However, RDS supports list-columns while feather currently does not.
-
-
-
-## Other types of data
-
-To get other types of data into R, we recommend starting with the tidyverse packages listed below. They're certainly 
-not perfect, but they are a good place to start. For rectangular data:
-
-* __haven__ reads SPSS, Stata, and SAS files.
-
-* __readxl__ reads excel files (both `.xls` and `.xlsx`).
-
-* __DBI__, along with a database specific backend (e.g. __RMySQL__, 
-  __RSQLite__, __RPostgreSQL__ etc) allows you to run SQL queries against a 
-  database and return a data frame.
-
-For hierarchical data: use __jsonlite__ (by Jeroen Ooms) for json, and __xml2__ for XML. Jenny Bryan has some excellent worked examples at <https://jennybc.github.io/purrr-tutorial/>.
-
-For other file types, try the [R data import/export manual](https://cran.r-project.org/doc/manuals/r-release/R-data.html) and the [__rio__](https://github.com/leeper/rio) package.
-
-> ## Homework
->
-> Parse the UNIX assignment files (fang_et_al_genotypes.txt and snp_position.txt) 
-> into R.
->
-> - What problems did you encounter?
-> - Did R guessed the data type correctly?
-> - If not, how did you fix it?
->
-> Try to use the `t` function to transpose the first file
->
-> - Did it work?
-> - Can you figure out how to make it work?
->
-{: .discussion}
-
 

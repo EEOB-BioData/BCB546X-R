@@ -261,25 +261,29 @@ We can also do comparison in R:
 1 >= -9 # greater than or equal to
 ```
 
+
 > ## Tip: Comparing Numbers
 >
-> A word of warning about comparing numbers: you should
-> never use `==` to compare two numbers unless they are
-> integers (a data type which can specifically represent
-> only whole numbers).
->
+> Let's compare `0.1 + 0.2` and `0.3`. What do you think?
+> ```{r}
+> 0.1 + 0.2 == 0.3
+> ```
+> What's happened?   
 > Computers may only represent decimal numbers with a
 > certain degree of precision, so two numbers which look
 > the same when printed out by R, may actually have
 > different underlying representations and therefore be
 > different by a small margin of error (called Machine
 > numeric tolerance).
->
-> Instead you should use the `all.equal` function.
+> So, unless you compare two integers, you should use the `all.equal` function:
+> ```{r}
+> all.equal(0.1 + 0.2, 0.3)
+> ```
 >
 > Further reading: [http://floating-point-gui.de/](http://floating-point-gui.de/)
 >
 {: .callout}
+
 
 ## Variables and assignment
 
