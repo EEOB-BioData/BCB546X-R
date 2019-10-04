@@ -266,31 +266,10 @@ lst$D # The `$` function is a shorthand way for extracting elements by name
 >    names(lst) <- c("A","B","C","D")
 >    # command 1:
 >    lst[1][2]
->    ~~~
->    {: .r}
->    
->    
->    
->    ~~~
->    $<NA>
->    NULL
->    ~~~
->    {: .output}
->    
->    
->    
->    ~~~
 >    # command 2:
 >    lst[[1]][2]
 >    ~~~
 >    {: .r}
->    
->    
->    
->    ~~~
->    [1] 2
->    ~~~
->    {: .output}
 {: .discussion}
 
 ## Subsetting dataframes
@@ -425,74 +404,18 @@ df[["x"]]
 >    
 >    ~~~
 >    df[,2]
->    ~~~
->    {: .r}
->    
->    
->    
->    ~~~
->    [1] "a" "b" "c"
->    ~~~
->    {: .output}
->    
->    
->    
->    ~~~
 >    df[2]
->    ~~~
->    {: .r}
->    
->    
->    
->    ~~~
->      y
->    1 a
->    2 b
->    3 c
->    ~~~
->    {: .output}
->    
->    
->    
->    ~~~
 >    df[[2]]
 >    ~~~
 >    {: .r}
->    
->    
->    
->    ~~~
->    [1] "a" "b" "c"
->    ~~~
->    {: .output}
 > 1. How about
 > 
 >   
 >   ~~~
 >   df[3,2] #and
->   ~~~
->   {: .r}
->   
->   
->   
->   ~~~
->   [1] "c"
->   ~~~
->   {: .output}
->   
->   
->   
->   ~~~
 >   df[[2]][3]
 >   ~~~
 >   {: .r}
->   
->   
->   
->   ~~~
->   [1] "c"
->   ~~~
->   {: .output}
 >
 {: .discussion}
 

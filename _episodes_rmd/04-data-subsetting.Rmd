@@ -164,7 +164,7 @@ lst$D # The `$` function is a shorthand way for extracting elements by name
 >
 > 1. What is the difference between these two commands?  Did you get the results you expected?
 > 
->    ```{r}
+>    ```{r, eval=FALSE}
 >    lst <- list(1:3, "a", c(TRUE, FALSE, TRUE), c(2.3, 5.9))
 >    names(lst) <- c("A","B","C","D")
 >    # command 1:
@@ -223,14 +223,14 @@ df[["x"]]
 >
 > 1. What is the difference between:
 > 
->    ```{r}
+>    ```{r, eval=FALSE}
 >    df[,2]
 >    df[2]
 >    df[[2]]
 >    ```
 > 1. How about
 > 
->   ```{r}
+>   ```{r, eval=FALSE}
 >   df[3,2] #and
 >   df[[2]][3]
 >   ```
