@@ -258,7 +258,7 @@ lst$D # The `$` function is a shorthand way for extracting elements by name
 > ## Discussion 2
 >
 >
-> 1. What the difference between these two commands?  Why did only the second work?
+> 1. What is the difference between these two commands?  Did you get the results you expected?
 > 
 >    
 >    ~~~
@@ -418,186 +418,82 @@ df[["x"]]
 ~~~
 {: .output}
 
-> ## Challenge 1
+> ## Discussion 3
 >
-> Given the following code:
->
+> 1. What is the difference between:
 > 
-> ~~~
-> x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
-> names(x) <- c('a', 'b', 'c', 'd', 'e')
-> print(x)
-> ~~~
-> {: .r}
+>    
+>    ~~~
+>    df[,2]
+>    ~~~
+>    {: .r}
+>    
+>    
+>    
+>    ~~~
+>    [1] "a" "b" "c"
+>    ~~~
+>    {: .output}
+>    
+>    
+>    
+>    ~~~
+>    df[2]
+>    ~~~
+>    {: .r}
+>    
+>    
+>    
+>    ~~~
+>      y
+>    1 a
+>    2 b
+>    3 c
+>    ~~~
+>    {: .output}
+>    
+>    
+>    
+>    ~~~
+>    df[[2]]
+>    ~~~
+>    {: .r}
+>    
+>    
+>    
+>    ~~~
+>    [1] "a" "b" "c"
+>    ~~~
+>    {: .output}
+> 1. How about
 > 
-> 
-> 
-> ~~~
->   a   b   c   d   e 
-> 5.4 6.2 7.1 4.8 7.5 
-> ~~~
-> {: .output}
+>   
+>   ~~~
+>   df[3,2] #and
+>   ~~~
+>   {: .r}
+>   
+>   
+>   
+>   ~~~
+>   [1] "c"
+>   ~~~
+>   {: .output}
+>   
+>   
+>   
+>   ~~~
+>   df[[2]][3]
+>   ~~~
+>   {: .r}
+>   
+>   
+>   
+>   ~~~
+>   [1] "c"
+>   ~~~
+>   {: .output}
 >
-> Come up with at least 3 different commands that will produce the following output:
->
-> 
-> ~~~
->   b   c   d 
-> 6.2 7.1 4.8 
-> ~~~
-> {: .output}
->
-> After you find 3 different commands, compare notes with your neighbour. Did you have different strategies?
->
-> > ## Solution to challenge 1
-> >
-> > 
-> > ~~~
-> > x[2:4]
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> >   b   c   d 
-> > 6.2 7.1 4.8 
-> > ~~~
-> > {: .output}
-> > 
-> > ~~~
-> > x[-c(1,5)]
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> >   b   c   d 
-> > 6.2 7.1 4.8 
-> > ~~~
-> > {: .output}
-> > 
-> > ~~~
-> > x[c("b", "c", "d")]
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> >   b   c   d 
-> > 6.2 7.1 4.8 
-> > ~~~
-> > {: .output}
-> > 
-> > ~~~
-> > x[c(2,3,4)]
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> >   b   c   d 
-> > 6.2 7.1 4.8 
-> > ~~~
-> > {: .output}
-> >
-> {: .solution}
-{: .challenge}
+{: .discussion}
 
-> ## Challenge 2
->
-> Run the following code to define vector `x` as above:
->
-> 
-> ~~~
-> x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
-> names(x) <- c('a', 'b', 'c', 'd', 'e')
-> print(x)
-> ~~~
-> {: .r}
-> 
-> 
-> 
-> ~~~
->   a   b   c   d   e 
-> 5.4 6.2 7.1 4.8 7.5 
-> ~~~
-> {: .output}
->
-> Given this vector `x`, what would you expect the following to do?
->
->~~~
-> x[-which(names(x) == "g")]
->~~~
->{: .r}
->
-> Try out this command and see what you get. Did this match your expectation?
-> Why did we get this result? (Tip: test out each part of the command on it's own - this is a useful debugging strategy)
->
-> Which of the following are true:
->
-> * A) if there are no `TRUE` values passed to `which`, an empty vector is returned
-> * B) if there are no `TRUE` values passed to `which`, an error message is shown
-> * C) `integer()` is an empty vector
-> * D) making an empty vector negative produces an "everything" vector
-> * E) `x[]` gives the same result as `x[integer()]`
->
-> > ## Solution to challenge 2
-> >
-> > A and C are correct.
-> >
-> > The `which` command returns the index of every `TRUE` value in its
-> > input. The `names(x) == "g"` command didn't return any `TRUE` values. Because
-> > there were no `TRUE` values passed to the `which` command, it returned an
-> > empty vector. Negating this vector with the minus sign didn't change its
-> > meaning. Because we used this empty vector to retrieve values from `x`, it
-> > produced an empty numeric vector. It was a `named numeric` empty vector
-> > because the vector type of x is "named numeric" since we assigned names to the
-> > values (try `str(x)` ).
-> {: .solution}
-{: .challenge}
-
-> ## Challenge 3
->
-> Given the following code:
->
-> 
-> ~~~
-> x <- c(5.4, 6.2, 7.1, 4.8, 7.5)
-> names(x) <- c('a', 'b', 'c', 'd', 'e')
-> print(x)
-> ~~~
-> {: .r}
-> 
-> 
-> 
-> ~~~
->   a   b   c   d   e 
-> 5.4 6.2 7.1 4.8 7.5 
-> ~~~
-> {: .output}
->
-> Write a subsetting command to return the values in x that are greater than 4 and less than 7.
->
-> > ## Solution to challenge 3
-> >
-> > 
-> > ~~~
-> > x_subset <- x[x<7 & x>4]
-> > print(x_subset)
-> > ~~~
-> > {: .r}
-> > 
-> > 
-> > 
-> > ~~~
-> >   a   b   d 
-> > 5.4 6.2 4.8 
-> > ~~~
-> > {: .output}
-> {: .solution}
-{: .challenge}
 
