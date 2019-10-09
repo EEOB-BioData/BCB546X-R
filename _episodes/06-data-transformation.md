@@ -43,29 +43,21 @@ library(tidyverse)
 {: .r}
 
 
-> ## Important!
+> ## Dataset
 >
-> Take careful note of the conflicts message that's printed when you load the tidyverse. It tells you that dplyr overwrites some 
-> functions in base R. If you want to use the base version of these functions after loading dplyr, you'll need to use their full 
-> names: `stats::filter()` and `stats::lag()`.
+> Following chapter 8 of the Buffalo's book, we will use the dataset Dataset_S1.txt from the paper 
+> "[The Influence of Recombination on Human Genetic Diversity](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0020148)".
+> The dataset contains estimates of population genetics statistics such 
+> as nucleotide diversity (e.g., the columns Pi and Theta), recombination (column Recombination), and sequence 
+> divergence as estimated by percent identity between human and chimpanzee genomes (column Divergence). 
+> Other columns contain information about the sequencing depth (depth), and GC content 
+> (percent.GC) for 1kb windows in human chromosome 20. We’ll only work with a few columns in our examples; 
+> see the description of Dataset_S1.txt in the original paper for more detail.
 >
-{: .callout}
-
-## Dataset
-
-Following chapter 8 of the book, we will use the dataset Dataset_S1.txt from the paper "[The Influence of Recombination on Human Genetic Diversity](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0020148)", 
-which contains estimates of population genetics statistics such 
-as nucleotide diversity (e.g., the columns Pi and Theta), recombination (column Recombination), and sequence 
-divergence as estimated by percent identity between human and chimpanzee genomes (column Divergence). 
-Other columns contain information about the sequencing depth (depth), and GC content 
-(percent.GC) for 1kb windows in human chromosome 20. We’ll only work with a few columns in our examples; 
-see the description of Dataset_S1.txt in the original paper for more detail.
-
-
-> ## Miscellaneous Tips
+> ### Downloading the dataset
 >
-> * Files can be downloaded directly from the Internet into a local folder of your choice using the `download.file` function.
-> The `read_csv` function can then be executed to read the downloaded file from the download location, for example,
+> * You can download the Dataset_S1.txt file into a local folder of your choice using the `download.file` function.
+> The `read_csv` function can then be executed to read the downloaded file:
 > 
 > ~~~
 > download.file("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt", destfile = "data/Dataset_S1.txt")
@@ -73,7 +65,7 @@ see the description of Dataset_S1.txt in the original paper for more detail.
 > ~~~
 > {: .r}
 >
-> * Alternatively, you can read files directly from the Internet into R by replacing the file paths with a web address in `read_csv`. In doing this no local copy of the csv file is first saved onto your computer. For example,
+> * Alternatively, you can read files directly from the Internet with the `read_csv` function:
 > 
 > ~~~
 > dvst <- read_csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt")
@@ -84,68 +76,12 @@ see the description of Dataset_S1.txt in the original paper for more detail.
 So, let's read the file directly into a `tbl_df` or `tibble`:
 
 
-~~~
-dvst <- read_csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt")
-~~~
-{: .r}
-
-
-
-~~~
-Parsed with column specification:
-cols(
-  start = col_integer(),
-  end = col_integer(),
-  `total SNPs` = col_integer(),
-  `total Bases` = col_integer(),
-  depth = col_double(),
-  `unique SNPs` = col_integer(),
-  dhSNPs = col_integer(),
-  `reference Bases` = col_integer(),
-  Theta = col_double(),
-  Pi = col_double(),
-  Heterozygosity = col_double(),
-  `%GC` = col_double(),
-  Recombination = col_double(),
-  Divergence = col_double(),
-  Constraint = col_integer(),
-  SNPs = col_integer()
-)
-~~~
-{: .output}
 
 Notice the parsing of columns in the file. Also notice that some of the columns names 
 contain spaces and special characters. We'll replace them soon to facilitate typing.
 Type `dvst` to look at the dataframe:
 
 
-~~~
-dvst
-~~~
-{: .r}
-
-
-
-~~~
-# A tibble: 59,140 x 16
-   start   end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
-   <int> <int>        <int>         <int> <dbl>         <int>  <int>
- 1 55001 56000            0          1894  3.41             0      0
- 2 56001 57000            5          6683  6.68             2      2
- 3 57001 58000            1          9063  9.06             1      0
- 4 58001 59000            7         10256 10.3              3      2
- 5 59001 60000            4          8057  8.06             4      0
- 6 60001 61000            6          7051  7.05             2      1
- 7 61001 62000            7          6950  6.95             2      1
- 8 62001 63000            1          8834  8.83             1      0
- 9 63001 64000            1          9629  9.63             1      0
-10 64001 65000            3          7999  8.00             1      1
-# ... with 59,130 more rows, and 9 more variables: `reference
-#   Bases` <int>, Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>,
-#   `%GC` <dbl>, Recombination <dbl>, Divergence <dbl>, Constraint <int>,
-#   SNPs <int>
-~~~
-{: .output}
 
 Because it’s common to work with dataframes with more rows and columns than fit in your screen, `tibble` 
 wraps dataframes so that they don’t fill your screen when you print them 
@@ -154,22 +90,16 @@ fit on one screen. Run `View(dvst)`, which will open the dataset in the RStudio 
 Also notice the row of three (or four) letter abbreviations under the column names. 
 These describe the type of each variable:
 
-* `int` stands for integers.
-
-* `dbl` stands for doubles, or real numbers.
-
-* `fctr` stands for factors, which R uses to represent categorical variables
-  with fixed possible values.
-  
-There are four other common types of variables that aren't used in this dataset:
-
-* `chr` stands for character vectors, or strings.
-
-* `dttm` stands for date-times (a date + a time).
-
-* `lgl` stands for logical, vectors that contain only `TRUE` or `FALSE`.
-
-* `date` stands for dates.
+| Abbreviation | Variable type            |
+|:------------|:----------------------------|
+| `int`       | integers                    |
+| `dbl`       | doubles (real numbers)      |
+| `fctr`      | factors (categorical)       |
+| **Variables**| **not in the dataset**   |
+| `chr`       | character vectors (strings) |
+| `dttm`      | date-time                   |
+| `lgl`       | logical                     |
+| `date`      | dates                       |
 
 Although the standard R operations work with tibbles (see below), we'll learn how to use dplyr functions instead
 
@@ -184,13 +114,15 @@ dvst$GC.binned <- cut(dvst$percent.GC, 5) # create a new column from existing da
 
 ## `dplyr` basics
 
-There are five key dplyr functions that allow you to solve the vast majority of data manipulation challenges:
+There are **five key dplyr functions** that allow you to solve the vast majority of data manipulation challenges:
 
-* Pick observations by their values (`filter()`).
-* Reorder the rows (`arrange()`).
-* Pick variables by their names (`select()`).
-* Create new variables with functions of existing variables (`mutate()`).
-* Collapse many values down to a single summary (`summarise()`).
+| Function     | Action                                               |
+|:-------------|:-----------------------------------------------------|
+| `filter()`   | Pick observations by their values                    |
+| `arrange()`  | Reorder the rows                                     |
+| `select()`   | Pick variables by their names                        |
+| `mutate()`   | Create new variables with functions of existing variables |
+| `summarise()`| Collapse many values down to a single summary        |
 
 None of these functions perform tasks you can’t accomplish with R’s base functions. 
 But dplyr’s advantage is in the added consistency, speed, and versatility of its data manipulation interface. 
@@ -249,20 +181,6 @@ summary(select(dvst,`total SNPs`)) #this does not look simpler, but wait...
  Mean   : 8.906  
  3rd Qu.:12.000  
  Max.   :93.000  
-~~~
-{: .output}
-
-
-
-~~~
-summarize(dvst)
-~~~
-{: .r}
-
-
-
-~~~
-data frame with 0 columns and 0 rows
 ~~~
 {: .output}
 
@@ -333,7 +251,7 @@ assignment in parentheses:
 > 
 > 
 > ~~~
-> (search_db <- filter(dvst, Pi > 16, percent.GC > 80))
+> (new_df <- filter(dvst, Pi > 16, percent.GC > 80))
 > ~~~
 > {: .r}
 > 
@@ -357,85 +275,33 @@ assignment in parentheses:
 
 To use filtering effectively, you have to know how to select the observations that you want using the 
 comparison operators. R provides the standard suite: `>`, `>=`, `<`, `<=`, `!=` (not equal), and `==` (equal). 
+Note, that because `==` does not work well with real numbers, use dplyr `near` function instead!
 
-> ## Common pitfalls
->
-> When you're starting out with R, the easiest mistake to make is to use `=` instead of `==` when testing for equality. When this > happens you'll get an informative error:
-> 
-> 
-> ~~~
-> filter(dvst, `total SNPs` = 0)
-> ~~~
-> {: .r}
-> 
-> 
-> 
-> ~~~
-> Error: `total SNPs` (`total SNPs = 0`) must not be named, do you need `==`?
-> ~~~
-> {: .error}
->
-> There's another common problem you might encounter when using `==`: floating point numbers. 
-> These results might surprise you!
-> 
-> 
-> ~~~
-> sqrt(2) ^ 2 == 2
-> ~~~
-> {: .r}
-> 
-> 
-> 
-> ~~~
-> [1] FALSE
-> ~~~
-> {: .output}
-> 
-> 
-> 
-> ~~~
-> 1/49 * 49 == 1
-> ~~~
-> {: .r}
-> 
-> 
-> 
-> ~~~
-> [1] FALSE
-> ~~~
-> {: .output}
-> 
-> Computers use finite precision arithmetic (they obviously can't store an infinite number of digits!) 
-> so remember that every number you see is an approximation. Instead of relying on `==`, use `near()` from the dplyr package:
-> 
-> 
-> ~~~
-> near(sqrt(2) ^ 2,  2)
-> ~~~
-> {: .r}
-> 
-> 
-> 
-> ~~~
-> [1] TRUE
-> ~~~
-> {: .output}
-> 
-> 
-> 
-> ~~~
-> near(1 / 49 * 49, 1)
-> ~~~
-> {: .r}
-> 
-> 
-> 
-> ~~~
-> [1] TRUE
-> ~~~
-> {: .output}
->
-{: .callout}
+<!-- > ## Common pitfalls -->
+<!-- > -->
+<!-- > When you're starting out with R, the easiest mistake to make is to use `=` instead of `==` when testing for equality. When this > happens you'll get an informative error: -->
+<!-- >  -->
+<!-- > ```{r, error = TRUE} -->
+<!-- > filter(dvst, `total SNPs` = 0) -->
+<!-- > ``` -->
+<!-- > -->
+<!-- > There's another common problem you might encounter when using `==`: floating point numbers.  -->
+<!-- > These results might surprise you! -->
+<!-- >  -->
+<!-- > ```{r} -->
+<!-- > sqrt(2) ^ 2 == 2 -->
+<!-- > 1/49 * 49 == 1 -->
+<!-- > ``` -->
+<!-- >  -->
+<!-- > Computers use finite precision arithmetic (they obviously can't store an infinite number of digits!)  -->
+<!-- > so remember that every number you see is an approximation. Instead of relying on `==`, use `near()` from the dplyr package: -->
+<!-- >  -->
+<!-- > ```{r} -->
+<!-- > near(sqrt(2) ^ 2,  2) -->
+<!-- > near(1 / 49 * 49, 1) -->
+<!-- > ``` -->
+<!-- > -->
+<!-- {: .callout} -->
 
 ### Logical operators
 
@@ -451,87 +317,88 @@ select every row where `x` is one of the values in `y`:
 
 
 ~~~
-filter(dvst, total.SNPs %in% c(0,2))
+filter(dvst, total.SNPs %in% c(0,1,2))
 ~~~
 {: .r}
 
 Finally, whenever you start using complicated, multipart expressions in `filter()`, consider making them explicit 
 variables instead. That makes it much easier to check your work. We'll learn how to create new variables shortly.
 
-### Missing values
-
-One important feature of R that can make comparison tricky are missing values, or `NA`s ("not availables"). 
-`NA` represents an unknown value so missing values are "contagious": almost any operation involving an unknown 
-value will also be unknown.
-
-
-~~~
-NA > 5
-~~~
-{: .r}
-
-
-
-~~~
-[1] NA
-~~~
-{: .output}
-
-
-
-~~~
-10 == NA
-~~~
-{: .r}
-
-
-
-~~~
-[1] NA
-~~~
-{: .output}
-
-
-
-~~~
-NA + 10
-~~~
-{: .r}
-
-
-
-~~~
-[1] NA
-~~~
-{: .output}
-
-
-
-~~~
-NA / 2
-~~~
-{: .r}
-
-
-
-~~~
-[1] NA
-~~~
-{: .output}
-
-
-
-~~~
-NA == NA
-~~~
-{: .r}
-
-
-
-~~~
-[1] NA
-~~~
-{: .output}
+>  ## Missing values
+>  
+>  One important feature of R that can make comparison tricky are missing values, or `NA`s ("not availables"). 
+>  `NA` represents an unknown value so missing values are "contagious": almost any operation involving an unknown 
+>  value will also be unknown.
+>  
+>  
+>  ~~~
+>  NA > 5
+>  ~~~
+>  {: .r}
+>  
+>  
+>  
+>  ~~~
+>  [1] NA
+>  ~~~
+>  {: .output}
+>  
+>  
+>  
+>  ~~~
+>  10 == NA
+>  ~~~
+>  {: .r}
+>  
+>  
+>  
+>  ~~~
+>  [1] NA
+>  ~~~
+>  {: .output}
+>  
+>  
+>  
+>  ~~~
+>  NA + 10
+>  ~~~
+>  {: .r}
+>  
+>  
+>  
+>  ~~~
+>  [1] NA
+>  ~~~
+>  {: .output}
+>  
+>  
+>  
+>  ~~~
+>  NA / 2
+>  ~~~
+>  {: .r}
+>  
+>  
+>  
+>  ~~~
+>  [1] NA
+>  ~~~
+>  {: .output}
+>  
+>  
+>  
+>  ~~~
+>  NA == NA
+>  ~~~
+>  {: .r}
+>  
+>  
+>  
+>  ~~~
+>  [1] NA
+>  ~~~
+>  {: .output}
+{: .callout}
 
 `filter()` only includes rows where the condition is `TRUE`; it excludes both `FALSE` and `NA` values. If you want 
 to preserve missing values, ask for them explicitly:
@@ -541,39 +408,6 @@ to preserve missing values, ask for them explicitly:
 filter(dvst, is.na(Divergence))
 ~~~
 {: .r}
-
-
-
-~~~
-# A tibble: 0 x 17
-# ... with 17 variables: start <int>, end <int>, `total SNPs` <int>,
-#   `total Bases` <int>, depth <dbl>, `unique SNPs` <int>, dhSNPs <int>,
-#   `reference Bases` <int>, Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>,
-#   percent.GC <dbl>, Recombination <dbl>, Divergence <dbl>,
-#   Constraint <int>, SNPs <int>, GC.binned <fct>
-~~~
-{: .output}
-
-
-
-~~~
-## compare to
-dvst %>% add_row() %>% filter(is.na(Divergence))
-~~~
-{: .r}
-
-
-
-~~~
-# A tibble: 1 x 17
-  start   end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
-  <int> <int>        <int>         <int> <dbl>         <int>  <int>
-1    NA    NA           NA            NA    NA            NA     NA
-# ... with 10 more variables: `reference Bases` <int>, Theta <dbl>,
-#   Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>, Recombination <dbl>,
-#   Divergence <dbl>, Constraint <int>, SNPs <int>, GC.binned <fct>
-~~~
-{: .output}
 
 > ## Your turn!
 >
@@ -597,7 +431,7 @@ dvst %>% add_row() %>% filter(is.na(Divergence))
 It's often useful to add new columns that are functions of existing columns (notice, how we used `dvst$GC.binned <- cut(dvst$percent.GC, 5)` above). That's the job of `mutate()`. 
 
 `mutate()` always adds new columns at the end of your dataset. Remember that when you're in RStudio, the easiest 
-way to see all the columns is `View()`.
+way to see all the columns is with `View()`.
 
 Here we'll add an additional column that indicates whether a window is in the centromere region (nucleotides 25,800,000 to 29,700,000, based on Giemsa banding; see [README](https://github.com/vsbuffalo/bds-files/blob/master/chapter-08-r/README.md) for details). 
 
@@ -955,7 +789,7 @@ select(dvst, start, end, Divergence)
 
 
 ~~~
-# Select all columns between year and day (inclusive)
+# Select all columns between depth and Pi (inclusive)
 select(dvst, depth:Pi)
 ~~~
 {: .r}
@@ -983,7 +817,7 @@ select(dvst, depth:Pi)
 
 
 ~~~
-# Select all columns except those from year to day (inclusive)
+# Select all columns except those from start to percent.GC (inclusive)
 select(dvst, -(start:percent.GC))
 ~~~
 {: .r}
