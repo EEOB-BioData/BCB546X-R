@@ -27,66 +27,49 @@ dvst <- read_csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/c
 > "The simple graph has brought more information to the data analyst’s mind 
 > than any other device." --- John Tukey
 
-In this lesson we will learn how to visualise your data using ggplot2. R has several systems for making graphs, but ggplot2 is one of the most elegant and most versatile. ggplot2 implements the [__grammar of graphics__](http://vita.had.co.nz/papers/layered-grammar.pdf), a coherent system for describing and building graphs. With ggplot2, you can do more faster by learning one system and applying it in many places.
+In this lesson we will learn how to visualise your data using [ggplot2](https://ggplot2.tidyverse.org/). 
+R has several systems for making graphs, but ggplot2 is probably the most versatile. 
+ggplot2 implements the [__grammar of graphics__](http://vita.had.co.nz/papers/layered-grammar.pdf), 
+a coherent system for describing and building graphs. 
+With ggplot2, you can do more faster by learning one system and applying it in many places.
 
-The lesson is based on Chapter 8 of the [Bioinformatics Data Skills](BDS) book by Vince Buffalo and Chapter 2 of the [R for Data Science](R for Data Science) book by Garrett Grolemund and Hadley Wickham.
+The lesson is based on Chapter 8 of the [Bioinformatics Data Skills](BDS) book by Vince Buffalo 
+and Chapter 2 of the [R for Data Science](R for Data Science) book by Garrett Grolemund and Hadley Wickham.
 
 ### Prerequisites
 
-ggplot2 is one of the core members of the tidyverse. Load the tidyverse by running this code:
+ggplot2 is one of the core members of the tidyverse. So begin by Loading it with
 
 ```{r setup}
 library(tidyverse)
+# I assume it is installed by now, but see previous episodes if you get an error message!
 ```
-
-If you run this code and get the error message "there is no package called ‘tidyverse’", you'll need to first install it, then re-run the `library()` command.
-
-```{r eval = FALSE}
-install.packages("tidyverse")
-library(tidyverse)
-```
-
-> ## Tip
-> You only need to install a package once, but you need to reload it every time you start a new session. 
-> You can also use `require()` function to check whether ggplot2 is already installed:
-> ```{r}
-> if (!require("ggplot2")) install.packages("ggplot2")
-> library(ggplot2)
-> ```
-{: .callout}
 
 ## Dataset
 
-We will use the dataset Dataset_S1.txt from the paper "[The Influence of Recombination on Human Genetic Diversity](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0020148)".  
-As a reminder, it contains estimates of population genetics statistics such 
+We will again use the dataset Dataset_S1.txt from the paper 
+"[The Influence of Recombination on Human Genetic Diversity](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0020148)".  
+See the previous lesson for its description.
+<!-- As a reminder, it contains estimates of population genetics statistics such 
 as nucleotide diversity (e.g., the columns Pi and Theta), recombination (column Recombination), 
 and sequence divergence as estimated by percent identity between human and chimpanzee genomes 
 (column Divergence). Other columns contain information about the sequencing depth (depth), 
 and GC content (percent.GC) for 1kb windows in human chromosome 20.
+-->
 
 Let's read it as a tibble and modify as we did before:
 
 ```{r}
-dvst <- read_csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt")
-```
-
-> ## Tip
->
-> Note, that we are reading the file with dplyr function `read_csv` rather than 
-> the base function `read.cvs`!
-{: .callout}
-
-```{r}
-(dvst <- dvst %>% 
+dvst <- read_csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt") %>% 
   mutate(diversity = Pi / (10*1000), cent = (start >= 25800000 & end <= 29700000)) %>% 
-  rename(percent.GC = `%GC`, total.SNPs = `total SNPs`, total.Bases = `total Bases`, reference.Bases = `reference Bases`))
+  rename(percent.GC = `%GC`, total.SNPs = `total SNPs`, total.Bases = `total Bases`, reference.Bases = `reference Bases`)
 ```
 
 ## Exploring Data Visually with ggplot2 I: Scatterplots and Densities
 
 We'll start by using ggplot2 to create a scatterplot of nucleotide diversity along the chromosome. 
 But because our data is window-based, we’ll first add a column called position that’s 
-the midpoint between each window:
+the midpoint for each window:
 
 ```{r}
 dvst <- mutate(dvst, position = (end + start) / 2)
@@ -112,12 +95,13 @@ ggplot(data = dvst) + geom_point(mapping=aes(x=position, y=diversity))
 > in your dataset are mapped to visual properties. The `mapping` argument is always 
 > paired with `aes()`, and the `x` and `y` arguments of `aes()` specify which variables 
 > to map to the x and y axes. ggplot2 looks for the mapped variable in the `data` 
-> argument, in this case, `dvrs`.
+> argument, in this case, `dvst`.
 {: .callout}
 
 ### A graphing template
 
-Let's turn this code into a reusable template for making graphs with ggplot2. To make a graph, replace the bracketed sections in the code below with a dataset, a geom function, or a collection of mappings.
+We can use the code above to make a reusable template for making graphs with ggplot2. 
+To make a graph, replace the bracketed sections in the code below with a dataset, a geom function, or a collection of mappings.
 
 ```{r eval = FALSE}
 ggplot(data = <DATA>) + 
@@ -132,11 +116,9 @@ ggplot2 has many geoms (e.g., `geom_line()`, `geom_bar()`, etc). We'll talk abou
 > never expected to see." --- John Tukey
 
 Notice the missing diversity estimates in the middle of this plot. What’s going on in this region? 
-ggplot2’s strength is that it makes answering these types of questions with exploratory data analysis 
-techniques effortless. We simply need to map a possible confounder or explanatory variable to another 
-aesthetic and see if this reveals any unexpected patterns. In this case, let’s map the color aesthetic 
-of our point geometric objects to the column cent, which indicates whether the window falls in the 
-centromeric region of this chromosome
+We can explore this question easily in ggplot by mapping a possible confounder or explanatory variable to another 
+aesthetic. In this case, let’s map the color aesthetic of our point geometric objects to the column cent, 
+which indicates whether the window falls in the centromeric region of this chromosome
 
 ```{r}
 ggplot(data = dvst) + geom_point(mapping = aes(x=position, y=diversity, color=cent))
@@ -214,44 +196,47 @@ different geoms will then use this mapping:
 ggplot(data = dvst, mapping = (aes(x=position, y=diversity))) + geom_point()
 ```
 
-### Exercises
-
-1.  What's gone wrong with this code? Why are the points not blue?
-
-    ```{r}
-    ggplot(data = dvst) + geom_point(mapping = aes(x = position, y = diversity, color = "blue"))
-    ```
-    
-1.  Map a continuous variable to `color`, `size`, and `shape`. How do
-    these aesthetics behave differently for categorical vs. continuous
-    variables? 
-    
-1.  What happens if you map the same variable to multiple aesthetics? 
-
-1.  What does the `stroke` aesthetic do? What shapes does it work with?
-    (Hint: use `?geom_point`)
-    
-1.  What happens if you map an aesthetic to something other than a variable 
-    name, like `aes(colour = percent.GC < 50)`?  
+> ## Discussion
+>
+> 
+> 1.  What's gone wrong with this code? Why are the points not blue?
+> 
+>     ```{r}
+>     ggplot(data = dvst) + geom_point(mapping = aes(x = position, y = diversity, color = "blue"))
+>     ```
+>     
+> 1.  Map a continuous variable to `color`, `size`, and `shape`. How do
+>     these aesthetics behave differently for categorical vs. continuous
+>     variables? 
+>     
+> 1.  What happens if you map the same variable to multiple aesthetics? 
+> 
+> 1.  What does the `stroke` aesthetic do? What shapes does it work with?
+>     (Hint: use `?geom_point`)
+>     
+> 1.  What happens if you map an aesthetic to something other than a variable 
+>     name, like `aes(colour = percent.GC < 50)`?  
+> 
+{: .discussion}
 
 > ## Common problems
 > 
 > As you start to run R code, you're likely to run into problems. Don't worry --- 
-> it happens to everyone! R is extremely picky, and a misplaced character can make 
-> all the difference. Make sure that every `(` is matched with a `)` and every `"` 
-> is paired with another `"`. Sometimes you'll run the code and nothing happens. 
-> Check the left-hand of your console: if it's a `+`, it means that R doesn't 
-> think you've typed a complete expression and it's waiting for you to finish it. 
-> In this case, it's usually easy to start from scratch again by pressing ESCAPE 
-> to abort processing the current command.
-> One common problem when creating ggplot2 graphics is to put the `+` in the wrong place: 
-> it has to come at the end of the line, not the start. In other words, make sure you 
-> haven't accidentally written code like this:
-> 
-> ```R
-> ggplot(data = dvst) 
-> + geom_point(mapping = aes(x = position, y = diversity))
-> ```
+> it happens to everyone! Here a a few common problems (and solutions):  
+> - Make sure that every `(` is matched with a `)` and every `"` 
+>   is paired with another `"`.  
+> - Sometimes you'll run the code and nothing happens. 
+>   Check the left-hand of your console: if it's a `+`, it means that R doesn't 
+>   think you've typed a complete expression and it's waiting for you to finish it. 
+>   In this case, it's usually easy to start from scratch again by pressing ESCAPE 
+>   to abort processing the current command. 
+> - One common problem when creating ggplot2 graphics is to put the `+` in the wrong place: 
+>   it has to come at the end of the line, not the start. In other words, make sure you 
+>   haven't accidentally written code like this:
+>   ```R
+>   ggplot(data = dvst) 
+>   + geom_point(mapping = aes(x = position, y = diversity))
+>   ```
 {: .callout}
 
 ### Overplotting
@@ -264,7 +249,8 @@ points somewhat transparent (the transparency level is known as the alpha):
 ggplot(data = dvst) + geom_point(mapping = aes(x=position, y=diversity), alpha=0.01)
 ```
 Note that we set alpha=0.01 outside of the aesthetic mapping function aes() as we did with the color in
-the previous example. This is because we’re not mapping the alpha aesthetic to a column of data in our dataframe, but rather giving it a fixed value for all data points.
+the previous example. This is because we’re not mapping the alpha aesthetic to a column of data in our dataframe, 
+but rather giving it a fixed value for all data points.
 
 Let’s now look at the density of diversity across all positions. We’ll use a different geometric object, 
 `geom_density()`, which is slightly different than `geom_point()` in that it takes the data and calculates 
