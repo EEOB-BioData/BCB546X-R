@@ -38,7 +38,7 @@ and Chapter 2 of the [R for Data Science](R for Data Science) book by Garrett Gr
 
 ### Prerequisites
 
-ggplot2 is one of the core members of the tidyverse. So begin by Loading it with
+ggplot2 is one of the core members of the tidyverse. So begin by loading it with:
 
 ```{r setup}
 library(tidyverse)
@@ -59,7 +59,7 @@ and GC content (percent.GC) for 1kb windows in human chromosome 20.
 
 Let's read it as a tibble and modify as we did before:
 
-```{r}
+```{r eval=TRUE, include=FALSE}
 dvst <- read_csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt") %>% 
   mutate(diversity = Pi / (10*1000), cent = (start >= 25800000 & end <= 29700000)) %>% 
   rename(percent.GC = `%GC`, total.SNPs = `total SNPs`, total.Bases = `total Bases`, reference.Bases = `reference Bases`)
@@ -124,7 +124,10 @@ which indicates whether the window falls in the centromeric region of this chrom
 ggplot(data = dvst) + geom_point(mapping = aes(x=position, y=diversity, color=cent))
 ```
 
-In the above example, we mapped `cent` to the color aesthetic, but we could have mapped it to other
+<!-- other
+In the above example, we mapped `cent` to the color aesthetic, but we could have mapped it to 
+shape of the points or their transparency with `shape = cent` and `alpha = cent`. 
+
 aesthetic in the same way. Here are examples of mapping `cent` to the _alpha_ aesthetic, which controls 
 the transparency of the points, or the shape of the points.
 
@@ -139,6 +142,7 @@ ggplot(data = dvst) +
 ```
 
 This did not work so well, but you should get an idea!
+-->
 
 > ## Note
 > Geometric objects have many aesthetic attributes (e.g., color, shape, size, etc.). 
@@ -240,9 +244,9 @@ ggplot(data = dvst, mapping = (aes(x=position, y=diversity))) + geom_point()
 {: .callout}
 
 ### Overplotting
-One problem with our plots (and scatterplots in general) is overplotting (some data points obscure 
+One problem with scatterplots (and our plot in particular) is overplotting (some data points obscure 
 the information of other data points). We can’t get a sense of the distribution of diversity from this 
-figure everything is saturated from about 0.05 and below. One way to alleviate overplotting is to make 
+figure because everything is saturated from about 0.05 and below. One way to alleviate overplotting is to make 
 points somewhat transparent (the transparency level is known as the alpha):
 
 ```{r}
@@ -250,8 +254,9 @@ ggplot(data = dvst) + geom_point(mapping = aes(x=position, y=diversity), alpha=0
 ```
 Note that we set alpha=0.01 outside of the aesthetic mapping function aes() as we did with the color in
 the previous example. This is because we’re not mapping the alpha aesthetic to a column of data in our dataframe, 
-but rather giving it a fixed value for all data points.
+but rather givi0ng it a fixed value for all data points.
 
+### Density
 Let’s now look at the density of diversity across all positions. We’ll use a different geometric object, 
 `geom_density()`, which is slightly different than `geom_point()` in that it takes the data and calculates 
 a density from it for us:
@@ -276,10 +281,10 @@ that may not be apparent in simple plots.
 
 ## Exploring Data Visually with ggplot2 II: Smoothing
 Let’s look at the Dataset_S1.txt data using another useful ggplot2 feature: smoothing. 
-We’ll use ggplot2 in particular to investigate potential confounders in genomic data. 
-There are numerous potential confounders in genomic data (e.g., sequencing read depth; 
+In particular, we'll investigate potential confounders in genomic data. There are several
+potential factor that influence our estimates: sequencing read depth; 
 GC content; mapability, or whether a region is capable of having reads correctly align 
-to it; batch effects; etc.). Often with large and high-dimension datasets, visualization 
+to it; batch effects; etc. Often with large and high-dimension datasets, visualization 
 is the easiest and best way to spot these potential issues.
 
 Earlier, we used transparency to give us a sense of the most dense regions. Another 
@@ -297,8 +302,10 @@ the aesthetic in `ggplot()` function.
 
 > ## Discussion
 >
-> What does this graph tells us about the relationship between depth of sequencing and SNPs?
->
+> 1. What does this graph tells us about the relationship between depth of sequencing and SNPs?
+> 2. Why did we put the aesthetic mappings in the call to `ggplot()`?
+> 3. Try to add the `geom_smooth()` function to the diversity graphs shown above. Is it more
+>    or less informative than using `geom_density()`? Why?
 {: .discussion}
 
 > ## Challenge 1
@@ -353,11 +360,14 @@ plot the raw values of your dataset. Other graphs, like bar charts, calculate ne
   specially formatted box.
 
 The algorithm used to calculate new values for a graph is called a __stat__, short for statistical transformation. 
+
+<!--
 The figure below describes how this process works with `geom_bar()`:
 
 ```{r, echo = FALSE, out.width = "100%"}
 knitr::include_graphics("../images/visualization-stat-bar.png")
 ```
+-->
 
 You can learn which stat a geom uses by inspecting the default value for the `stat` argument. 
 For example, `?geom_bar` shows that the default value for `stat` is "count", which means that 
@@ -404,9 +414,11 @@ There are three reasons you might need to use a stat explicitly:
       )
     ```
     
-ggplot2 provides over 20 stats for you to use. Each stat is a function, so you can get help in the usual way, e.g. `?stat_bin`. To see a complete list of stats, check the [ggplot2 cheatsheet]().
+ggplot2 provides over 20 stats for you to use. Each stat is a function, so you can get help in the usual way, e.g. `?stat_bin`. 
+To see a complete list of stats, check the [ggplot2 cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf).
 
-So far we used cent, the only discrete variable in our dataset.  Let's create another one by
+### Grouping data
+So far we used `cent`, the only discrete variable in our dataset.  Let's create another one by
 splitting the percent.GC into 5 categories:
 
 ```{r}
@@ -467,7 +479,8 @@ ggplot(data = dvst) +
   geom_bar(mapping = aes(x = GC.binned, fill = GC.binned))
 ```
 
-Note what happens if you map the fill aesthetic to another variable, like `GC.binned`: the bars are automatically stacked. Each colored rectangle represents a combination of `GC.binned` and `cent`.
+But what happen if you map the fill aesthetic to another variable, like `cent`? The bars are automatically stacked! 
+Each colored rectangle represents a combination of `GC.binned` and `cent`.
 
 ```{r}
 ggplot(data = dvst) + 
@@ -498,6 +511,7 @@ The stacking is performed automatically by the __position adjustment__ specified
       geom_bar(mapping = aes(x = GC.binned, fill = cent), position = "dodge")
     ```
 
+<!--
 There's one other type of adjustment that's not useful for bar charts, but can be very useful for scatterplots, **jitter**. `position = "jitter"` adds a small amount of random noise to each point. 
 This spreads the points and expose those that othewise will be hidden by overplotting:
 
@@ -509,34 +523,52 @@ ggplot(data = mpg) +
 ```
 
 Adding randomness seems like a strange way to improve your plot, but while it makes your graph less accurate at small scales, it makes your graph _more_ revealing at large scales. Because this is such a useful operation, ggplot2 comes with a shorthand for `geom_point(position = "jitter")`: `geom_jitter()`.
+-->
 
 ## Using ggplot2 Facets
 
-Now we'll return for a minute to data manipulation and create a new tbl by merging two additional datasets available in Buffalo's bds-files GitHub repository for chapter 8. We start by reading these datasets with `read_tsv`:
+Now we'll return for a minute to data manipulation and create a new tbl by merging two additional datasets available in Buffalo's 
+bds-files GitHub repository for chapter 8. We start by reading these datasets with `read_tsv`:
 
-```{r}
+```{r eval=TRUE, include=FALSE}
 #Read datasets
 mtfs <- read_tsv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_recombrates.txt")
 rpts <- read_tsv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_repeats.txt")
 ```
+Here is how they look like:
 
-Then we combine _chr_, and *motif_start* columns in rpts tbl as _pos_ with `unite`, select this column along with the *name* column and join them with the columns in the mtfs tbl with `inner_join`. Note, [there are many ways](https://dplyr.tidyverse.org/reference/join.html) you can join to two dataframes.
+```{r}
+head(mtfs)
+head(rpts)
+```
+
+These two datasets come from a study that explored recombination rates around a degenerate sequence motif that is 
+common in some repeat classes.
+The first dataset contains estimates of the recombination rate for all windows within 40kb of each of the two motif
+variants.  The second dataset contains info about repeats each motif occur in. Our goal will be to merge these two 
+datasets to look at the effect of specific repeat background on recombination rate. 
+
+Here is the plan: 
+1. combine _chr_, and *motif_start* columns in `rpts` as _pos_ with `unite`, 
+1. select this new column along with the *name* column, and 
+1. join these two columns with the columns in the `mtfs` with `inner_join`. 
+   Note, [there are several ways](https://dplyr.tidyverse.org/reference/join.html) you can join to two dataframes.
 
 ```{r}
 #Combine columns
-rpts <- rpts %>% 
+rpts2 <- rpts %>% 
   unite(pos, chr, motif_start, sep="-") %>% 
   select(name, pos) %>% 
   inner_join(mtfs, by="pos")
 ```
 
-We are ready now to explore these data using visualization technique known as facets. 
+We will now explore these data using visualization technique known as facets. 
 Facets allow us to visualize grouped data by creating a series of separate 
 adjacent plots for each group. Let’s first glimpse at the relationship between 
 recombination rate and distance to a motif. We’ll construct this graphic in steps:
 
 ```{r}
-p <- ggplot(data = rpts, mapping = aes(x=dist, y=recom)) + geom_point(size=1)
+p <- ggplot(data = rpts2, mapping = aes(x=dist, y=recom)) + geom_point(size=1)
 p <- p + geom_smooth(method="loess", se=FALSE, span=1/10)
 print(p)
 ```
@@ -554,13 +586,13 @@ First, if you’ve explored the `rpts` dataframe, you’ll notice that the
 `motif` column contains two variations of the sequence motif:
 
 ```{r}
-distinct(rpts, motif)
+distinct(rpts2, motif)
 ```
 
 One way to compare these is by grouping and coloring the loess curves by motif sequence:
 
 ```{r}
-ggplot(data = rpts, mapping = aes(x=dist, y=recom)) + geom_point(size=1) + geom_smooth(aes(color=motif), method="loess", se=FALSE, span=1/10)
+ggplot(data = rpts2, mapping = aes(x=dist, y=recom)) + geom_point(size=1) + geom_smooth(aes(color=motif), method="loess", se=FALSE, span=1/10)
 ```
 
 Alternatively, we can split these motifs apart visually with 
@@ -574,7 +606,7 @@ The first argument of `facet_wrap()` should be a formula, which you create with 
 followed by a variable name.
 
 ```{r}
-p <- ggplot(data = rpts, mapping = aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
+p <- ggplot(data = rpts2, mapping = aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
 p <- p + geom_smooth(method='loess', se=FALSE, span=1/10)
 p <- p + facet_wrap(~ motif)
 print(p)
@@ -592,7 +624,7 @@ variable name, e.g. `+ facet_grid(. ~ motif)`.
 
 ```{r}
 rpts
-p <- ggplot(rpts, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
+p <- ggplot(rpts2, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
 p <- p + geom_smooth(method='loess', se=FALSE, span=1/16)
 p <- p + facet_grid(name ~ motif)
 print(p)
@@ -605,8 +637,8 @@ You can get a sense of the data that goes into this plot with:
 
 
 ```{r}
-table(rpts$name, rpts$motif, useNA="ifany")
-rpts %>% 
+table(rpts2$name, rpts2$motif, useNA="ifany")
+rpts2 %>% 
   count(name, motif)
 ```
 
@@ -618,7 +650,7 @@ and scales="free_y", or scales="free" to free both axes.
 For example:
 
 ```{r}
-p <- ggplot(rpts, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
+p <- ggplot(rpts2, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
 p <- p + geom_smooth(method='loess', se=FALSE, span=1/10)
 p <- p + facet_wrap( ~ motif, scales="free_y")
 print(p)
@@ -630,58 +662,60 @@ print(p)
 >
 {: .challenge}
 
-## Coordinate systems
-
-Coordinate systems are probably the most complicated part of ggplot2. The default coordinate 
-system is the Cartesian coordinate system where the x and y positions act independently 
-to determine the location of each point. There are a number of other coordinate systems 
-that are occasionally helpful.
-
-*   `coord_flip()` switches the x and y axes. This is useful (for example),
-    if you want horizontal boxplots. It's also useful for long labels: it's
-    hard to get them to fit without overlapping on the x-axis.
-    
-    ```{r} 
-    #fig.width = 3, out.width = "50%", fig.align = "default"}
-    ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
-      geom_boxplot()
-    ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
-      geom_boxplot() +
-      coord_flip()
-    ```
-
-*   `coord_quickmap()` sets the aspect ratio correctly for maps. This is very
-    important if you're plotting spatial data with ggplot2.
-
-    ```{r} 
-    #fig.width = 3, out.width = "50%", fig.align = "default", message = FALSE}
-    nz <- map_data("nz")
-
-    ggplot(nz, aes(long, lat, group = group)) +
-      geom_polygon(fill = "white", colour = "black")
-
-    ggplot(nz, aes(long, lat, group = group)) +
-      geom_polygon(fill = "white", colour = "black") +
-      coord_quickmap()
-    ```
-
-*   `coord_polar()` uses polar coordinates. Polar coordinates reveal an 
-    interesting connection between a bar chart and a Coxcomb chart.
-    
-    ```{r} 
-    #fig.width = 3, out.width = "50%", fig.align = "default", fig.asp = 1}
-    bar <- ggplot(data = diamonds) + 
-      geom_bar(
-        mapping = aes(x = cut, fill = cut), 
-        show.legend = FALSE,
-        width = 1
-      ) + 
-      theme(aspect.ratio = 1) +
-      labs(x = NULL, y = NULL)
-    
-    bar + coord_flip()
-    bar + coord_polar()
-    ```
+> ## Extra reading: coordinate systems
+>
+> 
+> Coordinate systems are probably the most complicated part of ggplot2. The default coordinate 
+> system is the Cartesian coordinate system where the x and y positions act independently 
+> to determine the location of each point. There are a number of other coordinate systems 
+> that are occasionally helpful.
+> 
+> *   `coord_flip()` switches the x and y axes. This is useful (for example),
+>     if you want horizontal boxplots. It's also useful for long labels: it's
+>     hard to get them to fit without overlapping on the x-axis.
+>     
+>     ```{r} 
+>     #fig.width = 3, out.width = "50%", fig.align = "default"}
+>     ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+>       geom_boxplot()
+>     ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+>       geom_boxplot() +
+>       coord_flip()
+>     ```
+> 
+> *   `coord_quickmap()` sets the aspect ratio correctly for maps. This is very
+>     important if you're plotting spatial data with ggplot2.
+> 
+>     ```{r} 
+>     #fig.width = 3, out.width = "50%", fig.align = "default", message = FALSE}
+>     nz <- map_data("nz")
+> 
+>     ggplot(nz, aes(long, lat, group = group)) +
+>       geom_polygon(fill = "white", colour = "black")
+> 
+>     ggplot(nz, aes(long, lat, group = group)) +
+>       geom_polygon(fill = "white", colour = "black") +
+>       coord_quickmap()
+>     ```
+> 
+> *   `coord_polar()` uses polar coordinates. Polar coordinates reveal an 
+>     interesting connection between a bar chart and a Coxcomb chart.
+>     
+>     ```{r} 
+>     #fig.width = 3, out.width = "50%", fig.align = "default", fig.asp = 1}
+>     bar <- ggplot(data = diamonds) + 
+>       geom_bar(
+>         mapping = aes(x = cut, fill = cut), 
+>         show.legend = FALSE,
+>         width = 1
+>       ) + 
+>       theme(aspect.ratio = 1) +
+>       labs(x = NULL, y = NULL)
+>     
+>     bar + coord_flip()
+>     bar + coord_polar()
+>     ```
+{: .discussion}
 
 ## Saving the plot
 `ggsave()` is a convenient function for saving a plot. It defaults to saving the last plot that you displayed, using the size of the current graphics device. It also guesses the type of graphics device from the extension.
@@ -738,6 +772,6 @@ ggplot(faithful, aes(eruptions)) +
 Sometimes we'll turn the end of a pipeline of data transformation into a plot. Watch for the transition from `%>%` to `+`. This transition is necessary because ggplot2 was created before the pipe was discovered.
 
 
-[cheat]: https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
+[cheat]: https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf
 [ggplot-doc]: http://docs.ggplot2.org/current/
 [BDS]: http://shop.oreilly.com/product/0636920030157.do

@@ -21,124 +21,47 @@ keypoints:
 > "The simple graph has brought more information to the data analyst’s mind 
 > than any other device." --- John Tukey
 
-In this lesson we will learn how to visualise your data using ggplot2. R has several systems for making graphs, but ggplot2 is one of the most elegant and most versatile. ggplot2 implements the [__grammar of graphics__](http://vita.had.co.nz/papers/layered-grammar.pdf), a coherent system for describing and building graphs. With ggplot2, you can do more faster by learning one system and applying it in many places.
+In this lesson we will learn how to visualise your data using [ggplot2](https://ggplot2.tidyverse.org/). 
+R has several systems for making graphs, but ggplot2 is probably the most versatile. 
+ggplot2 implements the [__grammar of graphics__](http://vita.had.co.nz/papers/layered-grammar.pdf), 
+a coherent system for describing and building graphs. 
+With ggplot2, you can do more faster by learning one system and applying it in many places.
 
-The lesson is based on Chapter 8 of the [Bioinformatics Data Skills](BDS) book by Vince Buffalo and Chapter 2 of the [R for Data Science](R for Data Science) book by Garrett Grolemund and Hadley Wickham.
+The lesson is based on Chapter 8 of the [Bioinformatics Data Skills](BDS) book by Vince Buffalo 
+and Chapter 2 of the [R for Data Science](R for Data Science) book by Garrett Grolemund and Hadley Wickham.
 
 ### Prerequisites
 
-ggplot2 is one of the core members of the tidyverse. Load the tidyverse by running this code:
+ggplot2 is one of the core members of the tidyverse. So begin by loading it with:
 
 
 ~~~
 library(tidyverse)
+# I assume it is installed by now, but see previous episodes if you get an error message!
 ~~~
 {: .r}
-
-If you run this code and get the error message "there is no package called ‘tidyverse’", you'll need to first install it, then re-run the `library()` command.
-
-
-~~~
-install.packages("tidyverse")
-library(tidyverse)
-~~~
-{: .r}
-
-> ## Tip
-> You only need to install a package once, but you need to reload it every time you start a new session. 
-> You can also use `require()` function to check whether ggplot2 is already installed:
-> 
-> ~~~
-> if (!require("ggplot2")) install.packages("ggplot2")
-> library(ggplot2)
-> ~~~
-> {: .r}
-{: .callout}
 
 ## Dataset
 
-We will use the dataset Dataset_S1.txt from the paper "[The Influence of Recombination on Human Genetic Diversity](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0020148)".  
-As a reminder, it contains estimates of population genetics statistics such 
+We will again use the dataset Dataset_S1.txt from the paper 
+"[The Influence of Recombination on Human Genetic Diversity](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0020148)".  
+See the previous lesson for its description.
+<!-- As a reminder, it contains estimates of population genetics statistics such 
 as nucleotide diversity (e.g., the columns Pi and Theta), recombination (column Recombination), 
 and sequence divergence as estimated by percent identity between human and chimpanzee genomes 
 (column Divergence). Other columns contain information about the sequencing depth (depth), 
 and GC content (percent.GC) for 1kb windows in human chromosome 20.
+-->
 
 Let's read it as a tibble and modify as we did before:
 
 
-~~~
-dvst <- read_csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt")
-~~~
-{: .r}
-
-
-
-~~~
-Parsed with column specification:
-cols(
-  start = col_integer(),
-  end = col_integer(),
-  `total SNPs` = col_integer(),
-  `total Bases` = col_integer(),
-  depth = col_double(),
-  `unique SNPs` = col_integer(),
-  dhSNPs = col_integer(),
-  `reference Bases` = col_integer(),
-  Theta = col_double(),
-  Pi = col_double(),
-  Heterozygosity = col_double(),
-  `%GC` = col_double(),
-  Recombination = col_double(),
-  Divergence = col_double(),
-  Constraint = col_integer(),
-  SNPs = col_integer()
-)
-~~~
-{: .output}
-
-> ## Tip
->
-> Note, that we are reading the file with dplyr function `read_csv` rather than 
-> the base function `read.cvs`!
-{: .callout}
-
-
-~~~
-(dvst <- dvst %>% 
-  mutate(diversity = Pi / (10*1000), cent = (start >= 25800000 & end <= 29700000)) %>% 
-  rename(percent.GC = `%GC`, total.SNPs = `total SNPs`, total.Bases = `total Bases`, reference.Bases = `reference Bases`))
-~~~
-{: .r}
-
-
-
-~~~
-# A tibble: 59,140 x 18
-   start   end total.SNPs total.Bases depth `unique SNPs` dhSNPs
-   <int> <int>      <int>       <int> <dbl>         <int>  <int>
- 1 55001 56000          0        1894  3.41             0      0
- 2 56001 57000          5        6683  6.68             2      2
- 3 57001 58000          1        9063  9.06             1      0
- 4 58001 59000          7       10256 10.3              3      2
- 5 59001 60000          4        8057  8.06             4      0
- 6 60001 61000          6        7051  7.05             2      1
- 7 61001 62000          7        6950  6.95             2      1
- 8 62001 63000          1        8834  8.83             1      0
- 9 63001 64000          1        9629  9.63             1      0
-10 64001 65000          3        7999  8.00             1      1
-# ... with 59,130 more rows, and 11 more variables: reference.Bases <int>,
-#   Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>,
-#   Recombination <dbl>, Divergence <dbl>, Constraint <int>, SNPs <int>,
-#   diversity <dbl>, cent <lgl>
-~~~
-{: .output}
 
 ## Exploring Data Visually with ggplot2 I: Scatterplots and Densities
 
 We'll start by using ggplot2 to create a scatterplot of nucleotide diversity along the chromosome. 
 But because our data is window-based, we’ll first add a column called position that’s 
-the midpoint between each window:
+the midpoint for each window:
 
 
 ~~~
@@ -154,7 +77,7 @@ ggplot(data = dvst) + geom_point(mapping=aes(x=position, y=diversity))
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" />
 
 > ## Note
 > With ggplot2, you begin a plot with the function `ggplot()`. `ggplot()` creates a 
@@ -170,12 +93,13 @@ ggplot(data = dvst) + geom_point(mapping=aes(x=position, y=diversity))
 > in your dataset are mapped to visual properties. The `mapping` argument is always 
 > paired with `aes()`, and the `x` and `y` arguments of `aes()` specify which variables 
 > to map to the x and y axes. ggplot2 looks for the mapped variable in the `data` 
-> argument, in this case, `dvrs`.
+> argument, in this case, `dvst`.
 {: .callout}
 
 ### A graphing template
 
-Let's turn this code into a reusable template for making graphs with ggplot2. To make a graph, replace the bracketed sections in the code below with a dataset, a geom function, or a collection of mappings.
+We can use the code above to make a reusable template for making graphs with ggplot2. 
+To make a graph, replace the bracketed sections in the code below with a dataset, a geom function, or a collection of mappings.
 
 
 ~~~
@@ -192,11 +116,9 @@ ggplot2 has many geoms (e.g., `geom_line()`, `geom_bar()`, etc). We'll talk abou
 > never expected to see." --- John Tukey
 
 Notice the missing diversity estimates in the middle of this plot. What’s going on in this region? 
-ggplot2’s strength is that it makes answering these types of questions with exploratory data analysis 
-techniques effortless. We simply need to map a possible confounder or explanatory variable to another 
-aesthetic and see if this reveals any unexpected patterns. In this case, let’s map the color aesthetic 
-of our point geometric objects to the column cent, which indicates whether the window falls in the 
-centromeric region of this chromosome
+We can explore this question easily in ggplot by mapping a possible confounder or explanatory variable to another 
+aesthetic. In this case, let’s map the color aesthetic of our point geometric objects to the column cent, 
+which indicates whether the window falls in the centromeric region of this chromosome
 
 
 ~~~
@@ -204,9 +126,12 @@ ggplot(data = dvst) + geom_point(mapping = aes(x=position, y=diversity, color=ce
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" />
 
-In the above example, we mapped `cent` to the color aesthetic, but we could have mapped it to other
+<!-- other
+In the above example, we mapped `cent` to the color aesthetic, but we could have mapped it to 
+shape of the points or their transparency with `shape = cent` and `alpha = cent`. 
+
 aesthetic in the same way. Here are examples of mapping `cent` to the _alpha_ aesthetic, which controls 
 the transparency of the points, or the shape of the points.
 
@@ -218,7 +143,7 @@ ggplot(data = dvst) +
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-10-1.png" width="50%" />
+<img src="../fig/rmd-07-unnamed-chunk-7-1.png" width="50%" />
 
 ~~~
 # Right
@@ -227,9 +152,10 @@ ggplot(data = dvst) +
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-10-2.png" width="50%" />
+<img src="../fig/rmd-07-unnamed-chunk-7-2.png" width="50%" />
 
 This did not work so well, but you should get an idea!
+-->
 
 > ## Note
 > Geometric objects have many aesthetic attributes (e.g., color, shape, size, etc.). 
@@ -256,7 +182,7 @@ ggplot(data = dvst) +
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" />
 
 Here, the color doesn't convey information about a variable, but only changes the 
 appearance of the plot. To set an aesthetic manually, set the aesthetic by name 
@@ -278,54 +204,57 @@ ggplot(data = dvst, mapping = (aes(x=position, y=diversity))) + geom_point()
 ~~~
 {: .r}
 
-### Exercises
-
-1.  What's gone wrong with this code? Why are the points not blue?
-
-    
-    ~~~
-    ggplot(data = dvst) + geom_point(mapping = aes(x = position, y = diversity, color = "blue"))
-    ~~~
-    {: .r}
-    
-    <img src="../fig/rmd-07-unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display: block; margin: auto;" />
-    
-1.  Map a continuous variable to `color`, `size`, and `shape`. How do
-    these aesthetics behave differently for categorical vs. continuous
-    variables? 
-    
-1.  What happens if you map the same variable to multiple aesthetics? 
-
-1.  What does the `stroke` aesthetic do? What shapes does it work with?
-    (Hint: use `?geom_point`)
-    
-1.  What happens if you map an aesthetic to something other than a variable 
-    name, like `aes(colour = percent.GC < 50)`?  
+> ## Discussion
+>
+> 
+> 1.  What's gone wrong with this code? Why are the points not blue?
+> 
+>     
+>     ~~~
+>     ggplot(data = dvst) + geom_point(mapping = aes(x = position, y = diversity, color = "blue"))
+>     ~~~
+>     {: .r}
+>     
+>     <img src="../fig/rmd-07-unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
+>     
+> 1.  Map a continuous variable to `color`, `size`, and `shape`. How do
+>     these aesthetics behave differently for categorical vs. continuous
+>     variables? 
+>     
+> 1.  What happens if you map the same variable to multiple aesthetics? 
+> 
+> 1.  What does the `stroke` aesthetic do? What shapes does it work with?
+>     (Hint: use `?geom_point`)
+>     
+> 1.  What happens if you map an aesthetic to something other than a variable 
+>     name, like `aes(colour = percent.GC < 50)`?  
+> 
+{: .discussion}
 
 > ## Common problems
 > 
 > As you start to run R code, you're likely to run into problems. Don't worry --- 
-> it happens to everyone! R is extremely picky, and a misplaced character can make 
-> all the difference. Make sure that every `(` is matched with a `)` and every `"` 
-> is paired with another `"`. Sometimes you'll run the code and nothing happens. 
-> Check the left-hand of your console: if it's a `+`, it means that R doesn't 
-> think you've typed a complete expression and it's waiting for you to finish it. 
-> In this case, it's usually easy to start from scratch again by pressing ESCAPE 
-> to abort processing the current command.
-> One common problem when creating ggplot2 graphics is to put the `+` in the wrong place: 
-> it has to come at the end of the line, not the start. In other words, make sure you 
-> haven't accidentally written code like this:
-> 
-> ```R
-> ggplot(data = dvst) 
-> + geom_point(mapping = aes(x = position, y = diversity))
-> ```
+> it happens to everyone! Here a a few common problems (and solutions):  
+> - Make sure that every `(` is matched with a `)` and every `"` 
+>   is paired with another `"`.  
+> - Sometimes you'll run the code and nothing happens. 
+>   Check the left-hand of your console: if it's a `+`, it means that R doesn't 
+>   think you've typed a complete expression and it's waiting for you to finish it. 
+>   In this case, it's usually easy to start from scratch again by pressing ESCAPE 
+>   to abort processing the current command. 
+> - One common problem when creating ggplot2 graphics is to put the `+` in the wrong place: 
+>   it has to come at the end of the line, not the start. In other words, make sure you 
+>   haven't accidentally written code like this:
+>   ```R
+>   ggplot(data = dvst) 
+>   + geom_point(mapping = aes(x = position, y = diversity))
+>   ```
 {: .callout}
 
 ### Overplotting
-One problem with our plots (and scatterplots in general) is overplotting (some data points obscure 
+One problem with scatterplots (and our plot in particular) is overplotting (some data points obscure 
 the information of other data points). We can’t get a sense of the distribution of diversity from this 
-figure everything is saturated from about 0.05 and below. One way to alleviate overplotting is to make 
+figure because everything is saturated from about 0.05 and below. One way to alleviate overplotting is to make 
 points somewhat transparent (the transparency level is known as the alpha):
 
 
@@ -334,10 +263,12 @@ ggplot(data = dvst) + geom_point(mapping = aes(x=position, y=diversity), alpha=0
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
 Note that we set alpha=0.01 outside of the aesthetic mapping function aes() as we did with the color in
-the previous example. This is because we’re not mapping the alpha aesthetic to a column of data in our dataframe, but rather giving it a fixed value for all data points.
+the previous example. This is because we’re not mapping the alpha aesthetic to a column of data in our dataframe, 
+but rather givi0ng it a fixed value for all data points.
 
+### Density
 Let’s now look at the density of diversity across all positions. We’ll use a different geometric object, 
 `geom_density()`, which is slightly different than `geom_point()` in that it takes the data and calculates 
 a density from it for us:
@@ -348,7 +279,7 @@ ggplot(data = dvst) + geom_density(mapping = aes(x=diversity), fill="blue")
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" />
 
 We can also map the color aesthetic of `geom_density()` to a discrete-valued column in our dataframe, 
 just as we did with `geom_point()`. `geom_density()` will create separate density plots, grouping data 
@@ -361,7 +292,7 @@ ggplot(data = dvst) + geom_density(mapping = aes(x=diversity, fill=cent), alpha=
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display: block; margin: auto;" />
 
 Immediately we’re able to see a trend that wasn’t clear by using a scatterplot: diversity is 
 skewed to more extreme values in centromeric regions. Again (because this point is worth repeating), 
@@ -370,10 +301,10 @@ that may not be apparent in simple plots.
 
 ## Exploring Data Visually with ggplot2 II: Smoothing
 Let’s look at the Dataset_S1.txt data using another useful ggplot2 feature: smoothing. 
-We’ll use ggplot2 in particular to investigate potential confounders in genomic data. 
-There are numerous potential confounders in genomic data (e.g., sequencing read depth; 
+In particular, we'll investigate potential confounders in genomic data. There are several
+potential factor that influence our estimates: sequencing read depth; 
 GC content; mapability, or whether a region is capable of having reads correctly align 
-to it; batch effects; etc.). Often with large and high-dimension datasets, visualization 
+to it; batch effects; etc. Often with large and high-dimension datasets, visualization 
 is the easiest and best way to spot these potential issues.
 
 Earlier, we used transparency to give us a sense of the most dense regions. Another 
@@ -395,15 +326,17 @@ ggplot(data = dvst, mapping = aes(x=depth, y=total.SNPs)) + geom_point(alpha=0.1
 ~~~
 {: .output}
 
-<img src="../fig/rmd-07-unnamed-chunk-17-1.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" />
 
 Notice that because both `geom_point()` and `geom_smooth()` use the same x and y mapping, we can specify 
 the aesthetic in `ggplot()` function.
 
 > ## Discussion
 >
-> What does this graph tells us about the relationship between depth of sequencing and SNPs?
->
+> 1. What does this graph tells us about the relationship between depth of sequencing and SNPs?
+> 2. Why did we put the aesthetic mappings in the call to `ggplot()`?
+> 3. Try to add the `geom_smooth()` function to the diversity graphs shown above. Is it more
+>    or less informative than using `geom_density()`? Why?
 {: .discussion}
 
 > ## Challenge 1
@@ -425,7 +358,7 @@ the aesthetic in `ggplot()` function.
 > > ~~~
 > > {: .output}
 > > 
-> > <img src="../fig/rmd-07-unnamed-chunk-18-1.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" style="display: block; margin: auto;" />
+> > <img src="../fig/rmd-07-unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" />
 > {: .solution}
 {: .challenge}
 
@@ -444,7 +377,7 @@ the aesthetic in `ggplot()` function.
 > > ~~~
 > > {: .r}
 > > 
-> > <img src="../fig/rmd-07-unnamed-chunk-19-1.png" title="plot of chunk unnamed-chunk-19" alt="plot of chunk unnamed-chunk-19" style="display: block; margin: auto;" />
+> > <img src="../fig/rmd-07-unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" style="display: block; margin: auto;" />
 > {: .solution}
 {: .challenge}
 
@@ -461,7 +394,7 @@ ggplot(data = dvst) +
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-20-1.png" title="plot of chunk unnamed-chunk-20" alt="plot of chunk unnamed-chunk-20" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-17-1.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" style="display: block; margin: auto;" />
 
 On the x-axis, the chart displays `cent`, a variable from `dvst`. On the y-axis, it displays count,
 but count is not a variable in `dvst`! Where does count come from? Many graphs, like scatterplots, 
@@ -477,9 +410,12 @@ plot the raw values of your dataset. Other graphs, like bar charts, calculate ne
   specially formatted box.
 
 The algorithm used to calculate new values for a graph is called a __stat__, short for statistical transformation. 
+
+<!--
 The figure below describes how this process works with `geom_bar()`:
 
-<img src="../images/visualization-stat-bar.png" title="plot of chunk unnamed-chunk-21" alt="plot of chunk unnamed-chunk-21" width="100%" style="display: block; margin: auto;" />
+<img src="../images/visualization-stat-bar.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" width="100%" style="display: block; margin: auto;" />
+-->
 
 You can learn which stat a geom uses by inspecting the default value for the `stat` argument. 
 For example, `?geom_bar` shows that the default value for `stat` is "count", which means that 
@@ -497,7 +433,7 @@ ggplot(data = dvst) +
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-22-1.png" title="plot of chunk unnamed-chunk-22" alt="plot of chunk unnamed-chunk-22" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-19-1.png" title="plot of chunk unnamed-chunk-19" alt="plot of chunk unnamed-chunk-19" style="display: block; margin: auto;" />
 
 This works because every geom has a default stat; and every stat has a default geom. This means 
 that you can typically use geoms without worrying about the underlying statistical transformation. 
@@ -517,7 +453,7 @@ There are three reasons you might need to use a stat explicitly:
     ~~~
     {: .r}
     
-    <img src="../fig/rmd-07-unnamed-chunk-23-1.png" title="plot of chunk unnamed-chunk-23" alt="plot of chunk unnamed-chunk-23" style="display: block; margin: auto;" />
+    <img src="../fig/rmd-07-unnamed-chunk-20-1.png" title="plot of chunk unnamed-chunk-20" alt="plot of chunk unnamed-chunk-20" style="display: block; margin: auto;" />
 
 1.  You might want to draw greater attention to the statistical transformation
     in your code. For example, you might use `stat_summary()`, which
@@ -536,11 +472,13 @@ There are three reasons you might need to use a stat explicitly:
     ~~~
     {: .r}
     
-    <img src="../fig/rmd-07-unnamed-chunk-24-1.png" title="plot of chunk unnamed-chunk-24" alt="plot of chunk unnamed-chunk-24" style="display: block; margin: auto;" />
+    <img src="../fig/rmd-07-unnamed-chunk-21-1.png" title="plot of chunk unnamed-chunk-21" alt="plot of chunk unnamed-chunk-21" style="display: block; margin: auto;" />
     
-ggplot2 provides over 20 stats for you to use. Each stat is a function, so you can get help in the usual way, e.g. `?stat_bin`. To see a complete list of stats, check the [ggplot2 cheatsheet]().
+ggplot2 provides over 20 stats for you to use. Each stat is a function, so you can get help in the usual way, e.g. `?stat_bin`. 
+To see a complete list of stats, check the [ggplot2 cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf).
 
-So far we used cent, the only discrete variable in our dataset.  Let's create another one by
+### Grouping data
+So far we used `cent`, the only discrete variable in our dataset.  Let's create another one by
 splitting the percent.GC into 5 categories:
 
 
@@ -577,7 +515,7 @@ ggplot(data = dvst) + geom_bar(mapping = aes(x=GC.binned))
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-26-1.png" title="plot of chunk unnamed-chunk-26" alt="plot of chunk unnamed-chunk-26" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-23-1.png" title="plot of chunk unnamed-chunk-23" alt="plot of chunk unnamed-chunk-23" style="display: block; margin: auto;" />
 
 The bins created from `cut()` are useful in grouping data (a concept we often use in data analysis). 
 For example, we can use the GC.binned column to group data by %GC content bins to see how GC content 
@@ -589,7 +527,7 @@ ggplot(data = dvst) + geom_density(mapping = aes(x=depth, linetype=GC.binned), a
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-27-1.png" title="plot of chunk unnamed-chunk-27" alt="plot of chunk unnamed-chunk-27" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-24-1.png" title="plot of chunk unnamed-chunk-24" alt="plot of chunk unnamed-chunk-24" style="display: block; margin: auto;" />
 
 What happens if we geom_bar()’s x aesthetic is mapped to a continuous column (e.g., percent.GC)? 
 geom_bar() will automatically bin the data itself, creating a histogram:
@@ -600,7 +538,7 @@ ggplot(data = dvst) + geom_bar(mapping = aes(x=percent.GC))
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-28-1.png" title="plot of chunk unnamed-chunk-28" alt="plot of chunk unnamed-chunk-28" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-25-1.png" title="plot of chunk unnamed-chunk-25" alt="plot of chunk unnamed-chunk-25" style="display: block; margin: auto;" />
 
 But it does not look like the plot we had!  Hence, the challenge:
 
@@ -635,7 +573,7 @@ ggplot(data = dvst) +
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-29-1.png" title="plot of chunk unnamed-chunk-29" alt="plot of chunk unnamed-chunk-29" width="50%" />
+<img src="../fig/rmd-07-unnamed-chunk-26-1.png" title="plot of chunk unnamed-chunk-26" alt="plot of chunk unnamed-chunk-26" width="50%" />
 
 ~~~
 ggplot(data = dvst) + 
@@ -643,9 +581,10 @@ ggplot(data = dvst) +
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-29-2.png" title="plot of chunk unnamed-chunk-29" alt="plot of chunk unnamed-chunk-29" width="50%" />
+<img src="../fig/rmd-07-unnamed-chunk-26-2.png" title="plot of chunk unnamed-chunk-26" alt="plot of chunk unnamed-chunk-26" width="50%" />
 
-Note what happens if you map the fill aesthetic to another variable, like `GC.binned`: the bars are automatically stacked. Each colored rectangle represents a combination of `GC.binned` and `cent`.
+But what happen if you map the fill aesthetic to another variable, like `cent`? The bars are automatically stacked! 
+Each colored rectangle represents a combination of `GC.binned` and `cent`.
 
 
 ~~~
@@ -654,7 +593,7 @@ ggplot(data = dvst) +
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-30-1.png" title="plot of chunk unnamed-chunk-30" alt="plot of chunk unnamed-chunk-30" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-27-1.png" title="plot of chunk unnamed-chunk-27" alt="plot of chunk unnamed-chunk-27" style="display: block; margin: auto;" />
 
 The stacking is performed automatically by the __position adjustment__ specified by the `position` argument. If you don't want a stacked bar chart, you can use one of three other options: `"identity"`, `"dodge"` or `"fill"`.
 
@@ -674,7 +613,7 @@ The stacking is performed automatically by the __position adjustment__ specified
     ~~~
     {: .r}
     
-    <img src="../fig/rmd-07-unnamed-chunk-31-1.png" title="plot of chunk unnamed-chunk-31" alt="plot of chunk unnamed-chunk-31" style="display: block; margin: auto;" />
+    <img src="../fig/rmd-07-unnamed-chunk-28-1.png" title="plot of chunk unnamed-chunk-28" alt="plot of chunk unnamed-chunk-28" style="display: block; margin: auto;" />
 
 *   `position = "dodge"` places overlapping objects directly _beside_ one 
     another. This makes it easier to compare individual values.
@@ -686,8 +625,9 @@ The stacking is performed automatically by the __position adjustment__ specified
     ~~~
     {: .r}
     
-    <img src="../fig/rmd-07-unnamed-chunk-32-1.png" title="plot of chunk unnamed-chunk-32" alt="plot of chunk unnamed-chunk-32" style="display: block; margin: auto;" />
+    <img src="../fig/rmd-07-unnamed-chunk-29-1.png" title="plot of chunk unnamed-chunk-29" alt="plot of chunk unnamed-chunk-29" style="display: block; margin: auto;" />
 
+<!--
 There's one other type of adjustment that's not useful for bar charts, but can be very useful for scatterplots, **jitter**. `position = "jitter"` adds a small amount of random noise to each point. 
 This spreads the points and expose those that othewise will be hidden by overplotting:
 
@@ -698,7 +638,7 @@ ggplot(data = mpg) +
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-33-1.png" title="plot of chunk unnamed-chunk-33" alt="plot of chunk unnamed-chunk-33" width="50%" />
+<img src="../fig/rmd-07-unnamed-chunk-30-1.png" title="plot of chunk unnamed-chunk-30" alt="plot of chunk unnamed-chunk-30" width="50%" />
 
 ~~~
 ggplot(data = mpg) + 
@@ -706,86 +646,99 @@ ggplot(data = mpg) +
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-33-2.png" title="plot of chunk unnamed-chunk-33" alt="plot of chunk unnamed-chunk-33" width="50%" />
+<img src="../fig/rmd-07-unnamed-chunk-30-2.png" title="plot of chunk unnamed-chunk-30" alt="plot of chunk unnamed-chunk-30" width="50%" />
 
 Adding randomness seems like a strange way to improve your plot, but while it makes your graph less accurate at small scales, it makes your graph _more_ revealing at large scales. Because this is such a useful operation, ggplot2 comes with a shorthand for `geom_point(position = "jitter")`: `geom_jitter()`.
+-->
 
 ## Using ggplot2 Facets
 
-Now we'll return for a minute to data manipulation and create a new tbl by merging two additional datasets available in Buffalo's bds-files GitHub repository for chapter 8. We start by reading these datasets with `read_tsv`:
+Now we'll return for a minute to data manipulation and create a new tbl by merging two additional datasets available in Buffalo's 
+bds-files GitHub repository for chapter 8. We start by reading these datasets with `read_tsv`:
+
+
+Here is how they look like:
 
 
 ~~~
-#Read datasets
-mtfs <- read_tsv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_recombrates.txt")
-~~~
-{: .r}
-
-
-
-~~~
-Parsed with column specification:
-cols(
-  chr = col_character(),
-  motif_start = col_integer(),
-  motif_end = col_integer(),
-  dist = col_double(),
-  recomb_start = col_integer(),
-  recomb_end = col_integer(),
-  recom = col_double(),
-  motif = col_character(),
-  pos = col_character()
-)
-~~~
-{: .output}
-
-
-
-~~~
-rpts <- read_tsv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_repeats.txt")
+head(mtfs)
 ~~~
 {: .r}
 
 
 
 ~~~
-Parsed with column specification:
-cols(
-  chr = col_character(),
-  start = col_integer(),
-  end = col_integer(),
-  name = col_character(),
-  motif_start = col_integer()
-)
+# A tibble: 6 x 9
+  chr   motif_start motif_end  dist recomb_start recomb_end   recom motif 
+  <chr>       <int>     <int> <dbl>        <int>      <int>   <dbl> <chr> 
+1 chrX     35471312  35471325 39323     35430651   35433340 0.00150 CCTCC…
+2 chrX     35471312  35471325 36977     35433339   35435344 0.00150 CCTCC…
+3 chrX     35471312  35471325 34798     35435343   35437699 0.00150 CCTCC…
+4 chrX     35471312  35471325 31850     35437698   35441240 0.00150 CCTCC…
+5 chrX     35471312  35471325 27463     35441239   35446472 0.00150 CCTCC…
+6 chrX     35471312  35471325 24834     35446471   35446498 0.00160 CCTCC…
+# ... with 1 more variable: pos <chr>
 ~~~
 {: .output}
 
-Then we combine _chr_, and *motif_start* columns in rpts tbl as _pos_ with `unite`, select this column along with the *name* column and join them with the columns in the mtfs tbl with `inner_join`. Note, [there are many ways](https://dplyr.tidyverse.org/reference/join.html) you can join to two dataframes.
+
+
+~~~
+head(rpts)
+~~~
+{: .r}
+
+
+
+~~~
+# A tibble: 6 x 5
+  chr       start       end name  motif_start
+  <chr>     <int>     <int> <chr>       <int>
+1 chrX   63005829  63006173 L2       63005830
+2 chrX   67746983  67747478 L2       67747232
+3 chrX  118646988 118647529 L2      118647199
+4 chrX  123998417 123998701 L2      123998675
+5 chr13  36171897  36172404 L2       36172069
+6 chr13  47030437  47031075 L2       47030836
+~~~
+{: .output}
+
+These two datasets come from a study that explored recombination rates around a degenerate sequence motif that is 
+common in some repeat classes.
+The first dataset contains estimates of the recombination rate for all windows within 40kb of each of the two motif
+variants.  The second dataset contains info about repeats each motif occur in. Our goal will be to merge these two 
+datasets to look at the effect of specific repeat background on recombination rate. 
+
+Here is the plan: 
+1. combine _chr_, and *motif_start* columns in `rpts` as _pos_ with `unite`, 
+1. select this new column along with the *name* column, and 
+1. join these two columns with the columns in the `mtfs` with `inner_join`. 
+   Note, [there are several ways](https://dplyr.tidyverse.org/reference/join.html) you can join to two dataframes.
 
 
 ~~~
 #Combine columns
-rpts <- rpts %>% 
+rpts2 <- rpts %>% 
   unite(pos, chr, motif_start, sep="-") %>% 
   select(name, pos) %>% 
   inner_join(mtfs, by="pos")
 ~~~
 {: .r}
 
-We are ready now to explore these data using visualization technique known as facets. 
+We will now explore these data using visualization technique known as facets. 
 Facets allow us to visualize grouped data by creating a series of separate 
 adjacent plots for each group. Let’s first glimpse at the relationship between 
 recombination rate and distance to a motif. We’ll construct this graphic in steps:
 
 
 ~~~
-p <- ggplot(data = rpts, mapping = aes(x=dist, y=recom)) + geom_point(size=1)
+p <- ggplot(data = rpts2, mapping = aes(x=dist, y=recom)) + geom_point(size=1)
 p <- p + geom_smooth(method="loess", se=FALSE, span=1/10)
 print(p)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-36-1.png" title="plot of chunk unnamed-chunk-36" alt="plot of chunk unnamed-chunk-36" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-34-1.png" title="plot of chunk unnamed-chunk-34" alt="plot of chunk unnamed-chunk-34" style="display: block; margin: auto;" />
 
 Note that we’ve turned off `geom_smooth()`’s standard error estimates, 
 adjusted the smoothing with `span`, and set the smoothing method to "loess".  
@@ -801,7 +754,7 @@ First, if you’ve explored the `rpts` dataframe, you’ll notice that the
 
 
 ~~~
-distinct(rpts, motif)
+distinct(rpts2, motif)
 ~~~
 {: .r}
 
@@ -820,11 +773,11 @@ One way to compare these is by grouping and coloring the loess curves by motif s
 
 
 ~~~
-ggplot(data = rpts, mapping = aes(x=dist, y=recom)) + geom_point(size=1) + geom_smooth(aes(color=motif), method="loess", se=FALSE, span=1/10)
+ggplot(data = rpts2, mapping = aes(x=dist, y=recom)) + geom_point(size=1) + geom_smooth(aes(color=motif), method="loess", se=FALSE, span=1/10)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-38-1.png" title="plot of chunk unnamed-chunk-38" alt="plot of chunk unnamed-chunk-38" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-36-1.png" title="plot of chunk unnamed-chunk-36" alt="plot of chunk unnamed-chunk-36" style="display: block; margin: auto;" />
 
 Alternatively, we can split these motifs apart visually with 
 facets using ggplot2’s `facet_wrap()` or `facet_grid()`.
@@ -838,14 +791,14 @@ followed by a variable name.
 
 
 ~~~
-p <- ggplot(data = rpts, mapping = aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
+p <- ggplot(data = rpts2, mapping = aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
 p <- p + geom_smooth(method='loess', se=FALSE, span=1/10)
 p <- p + facet_wrap(~ motif)
 print(p)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-39-1.png" title="plot of chunk unnamed-chunk-39" alt="plot of chunk unnamed-chunk-39" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-37-1.png" title="plot of chunk unnamed-chunk-37" alt="plot of chunk unnamed-chunk-37" style="display: block; margin: auto;" />
 
 
 ### `Facet_grid()`
@@ -866,34 +819,34 @@ rpts
 
 
 ~~~
-# A tibble: 9,218 x 10
-   name  pos    chr   motif_start motif_end   dist recomb_start recomb_end
-   <chr> <chr>  <chr>       <int>     <int>  <dbl>        <int>      <int>
- 1 L2    chrX-… chrX     63005830  63005843  37772     62965644   62970485
- 2 L2    chrX-… chrX     63005830  63005843  34673     62970484   62971843
- 3 L2    chrX-… chrX     63005830  63005843  30084     62971842   62979662
- 4 L2    chrX-… chrX     63005830  63005843  21750     62979661   62988511
- 5 L2    chrX-… chrX     63005830  63005843  10682     62988510   63001800
- 6 L2    chrX-… chrX     63005830  63005843   2210     63001799   63005455
- 7 L2    chrX-… chrX     63005830  63005843 -  384     63005454   63006988
- 8 L2    chrX-… chrX     63005830  63005843 - 3530     63006987   63011745
- 9 L2    chrX-… chrX     63005830  63005843 - 6024     63011744   63011976
-10 L2    chrX-… chrX     63005830  63005843 -12691     63011975   63025080
-# ... with 9,208 more rows, and 2 more variables: recom <dbl>, motif <chr>
+# A tibble: 317 x 5
+   chr       start       end name  motif_start
+   <chr>     <int>     <int> <chr>       <int>
+ 1 chrX   63005829  63006173 L2       63005830
+ 2 chrX   67746983  67747478 L2       67747232
+ 3 chrX  118646988 118647529 L2      118647199
+ 4 chrX  123998417 123998701 L2      123998675
+ 5 chr13  36171897  36172404 L2       36172069
+ 6 chr13  47030437  47031075 L2       47030836
+ 7 chr13 112828064 112828466 L2      112828268
+ 8 chr12  44799399  44799664 L2       44799602
+ 9 chr12  71407097  71407379 L2       71407292
+10 chr12 102646349 102646646 L2      102646586
+# ... with 307 more rows
 ~~~
 {: .output}
 
 
 
 ~~~
-p <- ggplot(rpts, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
+p <- ggplot(rpts2, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
 p <- p + geom_smooth(method='loess', se=FALSE, span=1/16)
 p <- p + facet_grid(name ~ motif)
 print(p)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-40-1.png" title="plot of chunk unnamed-chunk-40" alt="plot of chunk unnamed-chunk-40" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-38-1.png" title="plot of chunk unnamed-chunk-38" alt="plot of chunk unnamed-chunk-38" style="display: block; margin: auto;" />
 
 We see some patterns emerging here: motif CCTCCCTAGCCAC on 
 a THE1B repeat background has a strong effect on recombination
@@ -903,7 +856,7 @@ You can get a sense of the data that goes into this plot with:
 
 
 ~~~
-table(rpts$name, rpts$motif, useNA="ifany")
+table(rpts2$name, rpts2$motif, useNA="ifany")
 ~~~
 {: .r}
 
@@ -920,7 +873,7 @@ table(rpts$name, rpts$motif, useNA="ifany")
 
 
 ~~~
-rpts %>% 
+rpts2 %>% 
   count(name, motif)
 ~~~
 {: .r}
@@ -946,14 +899,14 @@ For example:
 
 
 ~~~
-p <- ggplot(rpts, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
+p <- ggplot(rpts2, aes(x=dist, y=recom)) + geom_point(size=1, color="grey")
 p <- p + geom_smooth(method='loess', se=FALSE, span=1/10)
 p <- p + facet_wrap( ~ motif, scales="free_y")
 print(p)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-07-unnamed-chunk-42-1.png" title="plot of chunk unnamed-chunk-42" alt="plot of chunk unnamed-chunk-42" style="display: block; margin: auto;" />
+<img src="../fig/rmd-07-unnamed-chunk-40-1.png" title="plot of chunk unnamed-chunk-40" alt="plot of chunk unnamed-chunk-40" style="display: block; margin: auto;" />
 
 > ## Challenge 4: Recombination rate by chromosome
 > 
@@ -961,109 +914,111 @@ print(p)
 >
 {: .challenge}
 
-## Coordinate systems
-
-Coordinate systems are probably the most complicated part of ggplot2. The default coordinate 
-system is the Cartesian coordinate system where the x and y positions act independently 
-to determine the location of each point. There are a number of other coordinate systems 
-that are occasionally helpful.
-
-*   `coord_flip()` switches the x and y axes. This is useful (for example),
-    if you want horizontal boxplots. It's also useful for long labels: it's
-    hard to get them to fit without overlapping on the x-axis.
-    
-    
-    ~~~
-    #fig.width = 3, out.width = "50%", fig.align = "default"}
-    ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
-      geom_boxplot()
-    ~~~
-    {: .r}
-    
-    <img src="../fig/rmd-07-unnamed-chunk-43-1.png" title="plot of chunk unnamed-chunk-43" alt="plot of chunk unnamed-chunk-43" style="display: block; margin: auto;" />
-    
-    ~~~
-    ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
-      geom_boxplot() +
-      coord_flip()
-    ~~~
-    {: .r}
-    
-    <img src="../fig/rmd-07-unnamed-chunk-43-2.png" title="plot of chunk unnamed-chunk-43" alt="plot of chunk unnamed-chunk-43" style="display: block; margin: auto;" />
-
-*   `coord_quickmap()` sets the aspect ratio correctly for maps. This is very
-    important if you're plotting spatial data with ggplot2.
-
-    
-    ~~~
-    #fig.width = 3, out.width = "50%", fig.align = "default", message = FALSE}
-    nz <- map_data("nz")
-    ~~~
-    {: .r}
-    
-    
-    
-    ~~~
-    
-    Attaching package: 'maps'
-    ~~~
-    {: .output}
-    
-    
-    
-    ~~~
-    The following object is masked from 'package:purrr':
-    
-        map
-    ~~~
-    {: .output}
-    
-    
-    
-    ~~~
-    ggplot(nz, aes(long, lat, group = group)) +
-      geom_polygon(fill = "white", colour = "black")
-    ~~~
-    {: .r}
-    
-    <img src="../fig/rmd-07-unnamed-chunk-44-1.png" title="plot of chunk unnamed-chunk-44" alt="plot of chunk unnamed-chunk-44" style="display: block; margin: auto;" />
-    
-    ~~~
-    ggplot(nz, aes(long, lat, group = group)) +
-      geom_polygon(fill = "white", colour = "black") +
-      coord_quickmap()
-    ~~~
-    {: .r}
-    
-    <img src="../fig/rmd-07-unnamed-chunk-44-2.png" title="plot of chunk unnamed-chunk-44" alt="plot of chunk unnamed-chunk-44" style="display: block; margin: auto;" />
-
-*   `coord_polar()` uses polar coordinates. Polar coordinates reveal an 
-    interesting connection between a bar chart and a Coxcomb chart.
-    
-    
-    ~~~
-    #fig.width = 3, out.width = "50%", fig.align = "default", fig.asp = 1}
-    bar <- ggplot(data = diamonds) + 
-      geom_bar(
-        mapping = aes(x = cut, fill = cut), 
-        show.legend = FALSE,
-        width = 1
-      ) + 
-      theme(aspect.ratio = 1) +
-      labs(x = NULL, y = NULL)
-    
-    bar + coord_flip()
-    ~~~
-    {: .r}
-    
-    <img src="../fig/rmd-07-unnamed-chunk-45-1.png" title="plot of chunk unnamed-chunk-45" alt="plot of chunk unnamed-chunk-45" style="display: block; margin: auto;" />
-    
-    ~~~
-    bar + coord_polar()
-    ~~~
-    {: .r}
-    
-    <img src="../fig/rmd-07-unnamed-chunk-45-2.png" title="plot of chunk unnamed-chunk-45" alt="plot of chunk unnamed-chunk-45" style="display: block; margin: auto;" />
+> ## Extra reading: coordinate systems
+>
+> 
+> Coordinate systems are probably the most complicated part of ggplot2. The default coordinate 
+> system is the Cartesian coordinate system where the x and y positions act independently 
+> to determine the location of each point. There are a number of other coordinate systems 
+> that are occasionally helpful.
+> 
+> *   `coord_flip()` switches the x and y axes. This is useful (for example),
+>     if you want horizontal boxplots. It's also useful for long labels: it's
+>     hard to get them to fit without overlapping on the x-axis.
+>     
+>     
+>     ~~~
+>     #fig.width = 3, out.width = "50%", fig.align = "default"}
+>     ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+>       geom_boxplot()
+>     ~~~
+>     {: .r}
+>     
+>     <img src="../fig/rmd-07-unnamed-chunk-41-1.png" title="plot of chunk unnamed-chunk-41" alt="plot of chunk unnamed-chunk-41" style="display: block; margin: auto;" />
+>     
+>     ~~~
+>     ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+>       geom_boxplot() +
+>       coord_flip()
+>     ~~~
+>     {: .r}
+>     
+>     <img src="../fig/rmd-07-unnamed-chunk-41-2.png" title="plot of chunk unnamed-chunk-41" alt="plot of chunk unnamed-chunk-41" style="display: block; margin: auto;" />
+> 
+> *   `coord_quickmap()` sets the aspect ratio correctly for maps. This is very
+>     important if you're plotting spatial data with ggplot2.
+> 
+>     
+>     ~~~
+>     #fig.width = 3, out.width = "50%", fig.align = "default", message = FALSE}
+>     nz <- map_data("nz")
+>     ~~~
+>     {: .r}
+>     
+>     
+>     
+>     ~~~
+>     
+>     Attaching package: 'maps'
+>     ~~~
+>     {: .output}
+>     
+>     
+>     
+>     ~~~
+>     The following object is masked from 'package:purrr':
+>     
+>         map
+>     ~~~
+>     {: .output}
+>     
+>     
+>     
+>     ~~~
+>     ggplot(nz, aes(long, lat, group = group)) +
+>       geom_polygon(fill = "white", colour = "black")
+>     ~~~
+>     {: .r}
+>     
+>     <img src="../fig/rmd-07-unnamed-chunk-42-1.png" title="plot of chunk unnamed-chunk-42" alt="plot of chunk unnamed-chunk-42" style="display: block; margin: auto;" />
+>     
+>     ~~~
+>     ggplot(nz, aes(long, lat, group = group)) +
+>       geom_polygon(fill = "white", colour = "black") +
+>       coord_quickmap()
+>     ~~~
+>     {: .r}
+>     
+>     <img src="../fig/rmd-07-unnamed-chunk-42-2.png" title="plot of chunk unnamed-chunk-42" alt="plot of chunk unnamed-chunk-42" style="display: block; margin: auto;" />
+> 
+> *   `coord_polar()` uses polar coordinates. Polar coordinates reveal an 
+>     interesting connection between a bar chart and a Coxcomb chart.
+>     
+>     
+>     ~~~
+>     #fig.width = 3, out.width = "50%", fig.align = "default", fig.asp = 1}
+>     bar <- ggplot(data = diamonds) + 
+>       geom_bar(
+>         mapping = aes(x = cut, fill = cut), 
+>         show.legend = FALSE,
+>         width = 1
+>       ) + 
+>       theme(aspect.ratio = 1) +
+>       labs(x = NULL, y = NULL)
+>     
+>     bar + coord_flip()
+>     ~~~
+>     {: .r}
+>     
+>     <img src="../fig/rmd-07-unnamed-chunk-43-1.png" title="plot of chunk unnamed-chunk-43" alt="plot of chunk unnamed-chunk-43" style="display: block; margin: auto;" />
+>     
+>     ~~~
+>     bar + coord_polar()
+>     ~~~
+>     {: .r}
+>     
+>     <img src="../fig/rmd-07-unnamed-chunk-43-2.png" title="plot of chunk unnamed-chunk-43" alt="plot of chunk unnamed-chunk-43" style="display: block; margin: auto;" />
+{: .discussion}
 
 ## Saving the plot
 `ggsave()` is a convenient function for saving a plot. It defaults to saving the last plot that you displayed, using the size of the current graphics device. It also guesses the type of graphics device from the extension.
@@ -1126,6 +1081,6 @@ ggplot(faithful, aes(eruptions)) +
 Sometimes we'll turn the end of a pipeline of data transformation into a plot. Watch for the transition from `%>%` to `+`. This transition is necessary because ggplot2 was created before the pipe was discovered.
 
 
-[cheat]: https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
+[cheat]: https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf
 [ggplot-doc]: http://docs.ggplot2.org/current/
 [BDS]: http://shop.oreilly.com/product/0636920030157.do
