@@ -670,47 +670,9 @@ bds-files GitHub repository for chapter 8. We start by reading these datasets wi
 ~~~
 #Read datasets
 mtfs <- read_tsv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_recombrates.txt")
-~~~
-{: .r}
-
-
-
-~~~
-Parsed with column specification:
-cols(
-  chr = col_character(),
-  motif_start = col_integer(),
-  motif_end = col_integer(),
-  dist = col_double(),
-  recomb_start = col_integer(),
-  recomb_end = col_integer(),
-  recom = col_double(),
-  motif = col_character(),
-  pos = col_character()
-)
-~~~
-{: .output}
-
-
-
-~~~
 rpts <- read_tsv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_repeats.txt")
 ~~~
 {: .r}
-
-
-
-~~~
-Parsed with column specification:
-cols(
-  chr = col_character(),
-  start = col_integer(),
-  end = col_integer(),
-  name = col_character(),
-  motif_start = col_integer()
-)
-~~~
-{: .output}
 Here is how they look like:
 
 
