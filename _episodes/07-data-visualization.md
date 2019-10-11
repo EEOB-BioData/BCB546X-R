@@ -448,7 +448,8 @@ The figure below describes how this process works with `geom_bar()`:
 
 <img src="../images/visualization-stat-bar.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" width="100%" style="display: block; margin: auto;" />
 -->
->  ## Extra reading: more about stats
+
+> ## Extra reading: more about stats
 > 
 > You can learn which stat a geom uses by inspecting the default value for the `stat` argument. 
 > For example, `?geom_bar` shows that the default value for `stat` is "count", which means that 
@@ -510,7 +511,7 @@ The figure below describes how this process works with `geom_bar()`:
 > ggplot2 provides over 20 stats for you to use. Each stat is a function, so you can get help in the usual way, e.g. `?stat_bin`. 
 > To see a complete list of stats, check the [ggplot2 cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf).
 > 
-{:discussion}
+{: .discussion}
 
 ### Grouping data
 So far we used `cent`, the only discrete variable in our dataset.  Let's create another one by
