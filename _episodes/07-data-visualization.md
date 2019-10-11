@@ -56,6 +56,37 @@ and GC content (percent.GC) for 1kb windows in human chromosome 20.
 Let's read it as a tibble and modify as we did before:
 
 
+~~~
+dvst <- read_csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/Dataset_S1.txt") %>% 
+  mutate(diversity = Pi / (10*1000), cent = (start >= 25800000 & end <= 29700000)) %>% 
+  rename(percent.GC = `%GC`, total.SNPs = `total SNPs`, total.Bases = `total Bases`, reference.Bases = `reference Bases`)
+~~~
+{: .r}
+
+
+
+~~~
+Parsed with column specification:
+cols(
+  start = col_integer(),
+  end = col_integer(),
+  `total SNPs` = col_integer(),
+  `total Bases` = col_integer(),
+  depth = col_double(),
+  `unique SNPs` = col_integer(),
+  dhSNPs = col_integer(),
+  `reference Bases` = col_integer(),
+  Theta = col_double(),
+  Pi = col_double(),
+  Heterozygosity = col_double(),
+  `%GC` = col_double(),
+  Recombination = col_double(),
+  Divergence = col_double(),
+  Constraint = col_integer(),
+  SNPs = col_integer()
+)
+~~~
+{: .output}
 
 ## Exploring Data Visually with ggplot2 I: Scatterplots and Densities
 
@@ -657,6 +688,50 @@ Now we'll return for a minute to data manipulation and create a new tbl by mergi
 bds-files GitHub repository for chapter 8. We start by reading these datasets with `read_tsv`:
 
 
+~~~
+#Read datasets
+mtfs <- read_tsv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_recombrates.txt")
+~~~
+{: .r}
+
+
+
+~~~
+Parsed with column specification:
+cols(
+  chr = col_character(),
+  motif_start = col_integer(),
+  motif_end = col_integer(),
+  dist = col_double(),
+  recomb_start = col_integer(),
+  recomb_end = col_integer(),
+  recom = col_double(),
+  motif = col_character(),
+  pos = col_character()
+)
+~~~
+{: .output}
+
+
+
+~~~
+rpts <- read_tsv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_repeats.txt")
+~~~
+{: .r}
+
+
+
+~~~
+Parsed with column specification:
+cols(
+  chr = col_character(),
+  start = col_integer(),
+  end = col_integer(),
+  name = col_character(),
+  motif_start = col_integer()
+)
+~~~
+{: .output}
 Here is how they look like:
 
 
