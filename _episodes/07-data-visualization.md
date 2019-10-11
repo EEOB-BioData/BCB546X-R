@@ -63,31 +63,6 @@ dvst <- read_csv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/c
 ~~~
 {: .r}
 
-
-
-~~~
-Parsed with column specification:
-cols(
-  start = col_integer(),
-  end = col_integer(),
-  `total SNPs` = col_integer(),
-  `total Bases` = col_integer(),
-  depth = col_double(),
-  `unique SNPs` = col_integer(),
-  dhSNPs = col_integer(),
-  `reference Bases` = col_integer(),
-  Theta = col_double(),
-  Pi = col_double(),
-  Heterozygosity = col_double(),
-  `%GC` = col_double(),
-  Recombination = col_double(),
-  Divergence = col_double(),
-  Constraint = col_integer(),
-  SNPs = col_integer()
-)
-~~~
-{: .output}
-
 ## Exploring Data Visually with ggplot2 I: Scatterplots and Densities
 
 We'll start by using ggplot2 to create a scatterplot of nucleotide diversity along the chromosome. 
