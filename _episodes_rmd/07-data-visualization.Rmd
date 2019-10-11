@@ -360,6 +360,7 @@ plot the raw values of your dataset. Other graphs, like bar charts, calculate ne
   specially formatted box.
 
 The algorithm used to calculate new values for a graph is called a __stat__, short for statistical transformation. 
+For example, `geom_bar()` uses `stat_count()` that simply counts the number of observations.
 
 <!--
 The figure below describes how this process works with `geom_bar()`:
@@ -368,54 +369,57 @@ The figure below describes how this process works with `geom_bar()`:
 knitr::include_graphics("../images/visualization-stat-bar.png")
 ```
 -->
-
-You can learn which stat a geom uses by inspecting the default value for the `stat` argument. 
-For example, `?geom_bar` shows that the default value for `stat` is "count", which means that 
-`geom_bar()` uses `stat_count()`. `stat_count()` is documented on the same page as `geom_bar()`, 
-and if you scroll down you can find a section called "Computed variables". That describes how 
-it computes two new variables: `count` and `prop`.
-
-You can generally use geoms and stats interchangeably. For example, you can recreate the previous 
-plot using `stat_count()` instead of `geom_bar()`:
-
-```{r}
-ggplot(data = dvst) + 
-  stat_count(mapping = aes(x = cent))
-```
-
-This works because every geom has a default stat; and every stat has a default geom. This means 
-that you can typically use geoms without worrying about the underlying statistical transformation. 
-There are three reasons you might need to use a stat explicitly:
-
-1.  You might want to override the default stat. For example, the height of the bar may be already
-    present in the data as another variable, in which case you will use `stat = "identity"`
-
-1.  You might want to override the default mapping from transformed variables
-    to aesthetics. For example, you might want to display a bar chart of
-    proportion, rather than count:
-    
-    ```{r}
-    ggplot(data = dvst) + 
-      geom_bar(mapping = aes(x = cent, y = ..prop.., group = 1))
-    ```
-
-1.  You might want to draw greater attention to the statistical transformation
-    in your code. For example, you might use `stat_summary()`, which
-    summarises the y values for each unique x value, to draw 
-    attention to the summary that you're computing:
-    
-    ```{r}
-    ggplot(data = dvst) + 
-      stat_summary(
-        mapping = aes(x = cent, y = percent.GC),
-        fun.ymin = min,
-        fun.ymax = max,
-        fun.y = median
-      )
-    ```
-    
-ggplot2 provides over 20 stats for you to use. Each stat is a function, so you can get help in the usual way, e.g. `?stat_bin`. 
-To see a complete list of stats, check the [ggplot2 cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf).
+>  ## Extra reading: more about stats
+> 
+> You can learn which stat a geom uses by inspecting the default value for the `stat` argument. 
+> For example, `?geom_bar` shows that the default value for `stat` is "count", which means that 
+> `geom_bar()` uses `stat_count()`. `stat_count()` is documented on the same page as `geom_bar()`, 
+> and if you scroll down you can find a section called "Computed variables". That describes how 
+> it computes two new variables: `count` and `prop`.
+> 
+> You can generally use geoms and stats interchangeably. For example, you can recreate the previous 
+> plot using `stat_count()` instead of `geom_bar()`:
+> 
+> ```{r}
+> ggplot(data = dvst) + 
+>   stat_count(mapping = aes(x = cent))
+> ```
+> 
+> This works because every geom has a default stat; and every stat has a default geom. This means 
+> that you can typically use geoms without worrying about the underlying statistical transformation. 
+> There are three reasons you might need to use a stat explicitly:
+> 
+> 1.  You might want to override the default stat. For example, the height of the bar may be already
+>     present in the data as another variable, in which case you will use `stat = "identity"`
+> 
+> 1.  You might want to override the default mapping from transformed variables
+>     to aesthetics. For example, you might want to display a bar chart of
+>     proportion, rather than count:
+>     
+>     ```{r}
+>     ggplot(data = dvst) + 
+>       geom_bar(mapping = aes(x = cent, y = ..prop.., group = 1))
+>     ```
+> 
+> 1.  You might want to draw greater attention to the statistical transformation
+>     in your code. For example, you might use `stat_summary()`, which
+>     summarises the y values for each unique x value, to draw 
+>     attention to the summary that you're computing:
+>     
+>     ```{r}
+>     ggplot(data = dvst) + 
+>       stat_summary(
+>         mapping = aes(x = cent, y = percent.GC),
+>         fun.ymin = min,
+>         fun.ymax = max,
+>         fun.y = median
+>       )
+>     ```
+>     
+> ggplot2 provides over 20 stats for you to use. Each stat is a function, so you can get help in the usual way, e.g. `?stat_bin`. 
+> To see a complete list of stats, check the [ggplot2 cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf).
+> 
+{:discussion}
 
 ### Grouping data
 So far we used `cent`, the only discrete variable in our dataset.  Let's create another one by
@@ -452,7 +456,7 @@ But it does not look like the plot we had!  Hence, the challenge:
 > 
 > We've seen before how different bin widths can drastically change the way we view and 
 > understand the data. Try creating a histogram of Pi with varying binwidths using: 
-> `ggplot(dvst) + geom_bar(aes(x=Pi), binwidth=1) + scale_x_continu ous(limits=c(0.01, 80))`. 
+> `ggplot(dvst) + geom_hist(aes(x=Pi), binwidth=1) + scale_x_continuous(limits=c(0.01, 80))`. 
 > Using scale_x_continuous() just ignores all windows with 0 Pi and zooms into the figure. 
 > Try binwidths of 0.05, 0.5, 1, 5, and 10. What do you observe?  
 >
@@ -463,7 +467,6 @@ But it does not look like the plot we had!  Hence, the challenge:
 > > bin will contain fewer data points and consequently be more noisy (and undersmoothed). 
 > > Using wider bins smooth over this noise. However, bins that are too wide result in oversmoothing, 
 > > which can hide details about the data.
-> > ggplot(d, aes(x=percent.GC, y=depth)) + geom_point() + geom_smooth()
 > {: .solution}
 {: .challenge}
 
