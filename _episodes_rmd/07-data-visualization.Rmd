@@ -534,7 +534,7 @@ Adding randomness seems like a strange way to improve your plot, but while it ma
 Now we'll return for a minute to data manipulation and create a new tbl by merging two additional datasets available in Buffalo's 
 bds-files GitHub repository for chapter 8. We start by reading these datasets with `read_tsv`:
 
-```{r}
+```{r, message=FALSE} 
 #Read datasets
 mtfs <- read_tsv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_recombrates.txt")
 rpts <- read_tsv("https://raw.githubusercontent.com/vsbuffalo/bds-files/master/chapter-08-r/motif_repeats.txt")
