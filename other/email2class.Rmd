@@ -1,0 +1,133 @@
+---
+title: "Email_to_class"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## MailR
+
+```{r}
+## Never worked well
+## Turn on the less secure option at https://myaccount.google.com/lesssecureapps
+```
+
+## GMAILR
+
+See 
+
+### Testing (it works!)
+```{r}
+suppressPackageStartupMessages(library(gmailr))
+getwd()
+## edit line below to reflect YOUR json credential filename
+gmailr::use_secret_file("client_secret.json")
+## It would not identify itself authomatically!  Need this!!!
+gmail_auth()
+
+## edit below with email addresses from your life
+test_email <- mime(
+  To = "dennis.lavrov@gmail.com",
+  From = "dennis.lavrov@gmail.com",
+  Subject = "this is just a gmailr test",
+  body = "Can you hear me now?")
+
+send_message(test_email)
+
+## verify that the email arrives succesfully!
+```
+
+### Creating email list
+
+```{r}
+library(tidyverse)
+class_list <- read_csv("~/Downloads/SPRING2019EEOB_563.CSV") %>% select(`First Name`,`ISU EMAIL`)
+#View(class_list)
+class_list[3] <- sample(x=class_list[[2]],size=nrow(class_list), replace = FALSE)
+class_list[4] <- sample(x=class_list[[2]],size=nrow(class_list), replace = FALSE)
+same_name = TRUE
+while (same_name) {
+  for (i in 1:nrow(class_list)) {
+    if (class_list[i,2] == class_list[i,3] || class_list[i,2] == class_list[i,4] || class_list[i,3] == class_list[i,4]) {
+      class_list[3] <- sample(x=class_list[[2]],size=nrow(class_list), replace = FALSE)
+      class_list[4] <- sample(x=class_list[[2]],size=nrow(class_list), replace = FALSE)
+      same_name <- TRUE
+      break()
+    }
+    else {
+      same_name <- FALSE
+    }
+  }
+}
+View(class_list)
+
+```
+
+### Sending emails
+
+By default gmailr will use a global project. However if you are going to be doing a heavy user and will do a lot of queries please setup your own project with the steps below.
+
+Check https://github.com/jennybc/send-email-with-r for details!
+
+I have found this works better -- or only works at all -- if I use Google Chrome versus, say, Safari. YMMV.
+
+Pick a name for your project. I chose "gmailr-tutorial" for this write-up. Let's call this PROJ-NAME from now on.
+
+Create a new project at https://console.developers.google.com/project.
+
+Overview screen > Google Apps APIs > Gmail API.
+
+Enable!
+Click "Go to Credentials" or navigate directly to Credentials.
+
+You want a "client ID".
+
+Yes, you will have to "Configure consent screen".
+
+The email should be pre-filled, since presumably you are signed in with the correct Google account. Enter PROJ-NAME as the Product name and leave everything else blank. Click Save.
+Back to ... Create client ID. Select application type "Other". Enter PROJ-NAME again here for the name. Click "Create".
+
+OAuth client pop up will show you your client ID and secret. You don't need to copy them -- there are better ways to get this info. Dismiss with "OK".
+
+Click on the download icon at the far right of your project's OAuth 2.0 client ID listing to get a JSON file with your ID and secret. You'll get a file named something like this:
+
+    client_secret_<LOTS OF DIGITS AND LETTERS>.apps.googleusercontent.com.json
+I rename this after the project, e.g., PROJ-NAME.json and move into the directory where the bulk emailing project lives.
+
+Optional if you are using Git, add a line like this to your .gitignore file
+
+    PROJ-NAME.json
+You can add members to specific projects from Google Developers Console, allowing them to also download JSON credentials for the same project. I do that for my TAs, for example.
+
+
+
+```{r}
+suppressPackageStartupMessages(library(gmailr))
+getwd()
+## edit line below to reflect YOUR json credential filename
+use_secret_file("client_secret.json")
+for (i in 1:nrow(class_list)) {
+  recepient <- as.character(class_list[i,2])
+  
+  ###### MESSAGE STARTS
+  text <- paste0("Dear ", class_list[i,1], ",
+
+Please send a link to your final project GitHub repository to ",class_list[i,3]," and ", class_list[i,4]," for a peer review by 11:59pm on 4/18!  Please  remember that it is your responsibility to submit your ms. and return your reviews on time. 
+
+Your friendly R script
+:)",collapse = NULL)
+  ####### MESSAGE ENDS
+  
+  my_email <- mime(
+  To = recepient,
+  Bcc = "dennis.lavrov@gmail.com",
+  From = "dennis.lavrov@gmail.com",
+  Subject = "Submission of the final project ms.",
+  body = text)
+  
+  send_message(my_email)
+}
+```
+
