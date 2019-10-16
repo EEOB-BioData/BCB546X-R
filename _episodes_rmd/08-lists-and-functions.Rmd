@@ -17,7 +17,12 @@ keypoints:
 - "Load functions into programs using `source`."
 ---
 
-
+```{r, include=FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("08-")
+# Silently load in the data so the rest of the lesson works
+library(tidyverse)
+```
 
 ## Writing and Applying Functions to Data
 
@@ -32,46 +37,19 @@ data analysis problems with apply functions is tricky at first, but mastering it
 
 Suppose you have a list of numeric values (here, generated at random with rnorm()):
 
-
-~~~
+```{r}
 ll <- list(a=rnorm(6, mean=1), b=rnorm(6, mean=4), c=rnorm(6, mean=6))
 ll
-~~~
-{: .r}
-
-
-
-~~~
-$a
-[1]  0.4566291  2.9066607  0.6482210  2.5568056 -0.6501125  2.0435838
-
-$b
-[1] 4.388538 3.662917 4.404968 2.736759 3.463592 3.871258
-
-$c
-[1] 7.846269 6.270864 4.753010 6.878142 5.330177 4.831111
-~~~
-{: .output}
+```
 
 How might we calculate the mean of each vector stored in this list? 
 If you’re familiar with for loops in other languages, you may approach this problem using R’s for loops:
 
-
-~~~
+```{r}
 for (i in 1:length(ll)) {
   print(mean(ll[[i]]))
 }
-~~~
-{: .r}
-
-
-
-~~~
-[1] 1.326965
-[1] 3.754672
-[1] 5.984929
-~~~
-{: .output}
+```
 
 However, this is not idiomatic R; a better approach is to use an `apply` function that applies another function to each list element.
 
@@ -94,25 +72,9 @@ For example,
 to calculate the mean of each list element, we’d want to apply the function `mean()` to each element. To do so, 
 we can use the function `lapply()` (the l is for list):
 
-
-~~~
+```{r}
 lapply(ll, mean)
-~~~
-{: .r}
-
-
-
-~~~
-$a
-[1] 1.326965
-
-$b
-[1] 3.754672
-
-$c
-[1] 5.984929
-~~~
-{: .output}
+```
 
 `lapply()` has several advantages over the loop shown above: 
 
@@ -132,47 +94,15 @@ We can also use `lapply()` in parallel (see p. 233 of the textbook for details)
 > to `lapply()`. For example, mean() returns NA if some data are missing.  We ignore NA values by
 > calling `mean()` with the argument `na.rm=TRUE`:
 >
-> 
-> ~~~
+> ```{r}
 > ll[[c(3,2)]] <- NA
 > lapply(ll, mean)
-> ~~~
-> {: .r}
+> ```
 > 
-> 
-> 
-> ~~~
-> $a
-> [1] 1.326965
-> 
-> $b
-> [1] 3.754672
-> 
-> $c
-> [1] NA
-> ~~~
-> {: .output}
-> 
-> 
-> ~~~
+> ```{r}
 > ll[[c(3,2)]] <- NA
 > lapply(ll, mean, na.rm=TRUE)
-> ~~~
-> {: .r}
-> 
-> 
-> 
-> ~~~
-> $a
-> [1] 1.326965
-> 
-> $b
-> [1] 3.754672
-> 
-> $c
-> [1] 5.927742
-> ~~~
-> {: .output}
+> ```
 >
 {: .callout}
 
@@ -200,37 +130,19 @@ applying functions is such a common operation in R.
 For example, we could write a simple version of R’s mean() 
 function with na.rm=TRUE and apply it to the list:
 
-
-~~~
+```{r}
 meanRemoveNA <- function(x) mean(x, na.rm=TRUE)
 lapply(ll, meanRemoveNA)
-~~~
-{: .r}
-
-
-
-~~~
-$a
-[1] 1.326965
-
-$b
-[1] 3.754672
-
-$c
-[1] 5.927742
-~~~
-{: .output}
+```
 
 The syntax for meanRemoveNA() is a common shortened version of the general syntax for R functions:
 
-
-~~~
+```{r, eval=FALSE}
 fun_name <- function(args) {
   # body, containing R expressions  
   return(value)
 }
-~~~
-{: .r}
+```
 
 Function definitions consist of arguments, a body, and a return value. Functions that contain only one line 
 in their body can omit the braces (as the `meanRemoveNA() function does`). Similarly, using `return()` to specify 
@@ -241,28 +153,11 @@ Alternatively, we could forgo creating a function named `meanRemoveNA()` in our 
 and instead use an *anonymous function*. Anonymous functions are useful when we only need a function once for 
 a specific task:
 
-
-~~~
+```{r}
 lapply(ll, function(x) mean(x, na.rm=TRUE))
-~~~
-{: .r}
+```
 
-
-
-~~~
-$a
-[1] 1.326965
-
-$b
-[1] 3.754672
-
-$c
-[1] 5.927742
-~~~
-{: .output}
-
-
-~~~
+```{r, warning=TRUE}
 meanRemoveNAVerbose <- function(x, warn=TRUE) {
 # A function that removes missing values when calculating the mean # and warns us about it.
 if (any(is.na(x)) && warn) { warning("removing some missing values!")
@@ -270,29 +165,7 @@ if (any(is.na(x)) && warn) { warning("removing some missing values!")
 mean(x, na.rm=TRUE)
 }
 lapply(ll, meanRemoveNAVerbose)
-~~~
-{: .r}
-
-
-
-~~~
-Warning in FUN(X[[i]], ...): removing some missing values!
-~~~
-{: .error}
-
-
-
-~~~
-$a
-[1] 1.326965
-
-$b
-[1] 3.754672
-
-$c
-[1] 5.927742
-~~~
-{: .output}
+```
 
 Note, that functions over one line should be kept in a file and sent to the interpreter. RStudio conveniently 
 allows you to send a whole function definition at once with Command-Option-f on a Mac and Control-Alt-f on Windows.
@@ -301,11 +174,9 @@ If you've been writing these functions down into a separate R script
 (a good idea!), you can load in the functions into our R session by using the
 `source` function:
 
-
-~~~
+```{r, eval=FALSE}
 source("functions/functions-lesson.R")
-~~~
-{: .r}
+```
 
 > ## Function tips
 > **Pass by value**

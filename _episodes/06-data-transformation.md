@@ -39,6 +39,7 @@ In addition, much of `dplyr` key functionality is written in C++ for speed.
 ~~~
 if (!require("tidyverse")) install.packages("tidyverse")
 library(tidyverse)
+library(tidyr)
 ~~~
 {: .r}
 
@@ -1124,4 +1125,78 @@ ggvis, will use the pipe.
 Finally, one of the best features of dplyr is 
 that all of these same methods also work with database connections. For example, you can manipulate a SQLite 
 database with all of the same verbs we’ve used here.
+
+> ## Extra reading: tidy data
+>
+> The collection **tidyverse** that we've been using is a universe of operation on _tidy data_. But what is tidy data?
+> 
+> Tidy data is a standard way of storing data where:
+>
+> - Every column is variable.
+> - Every row is an observation.
+> - Every cell is a single value.
+> 
+> If you ensure that your data is tidy, you’ll spend less time fighting with the tools and more time working on your analysis. 
+> Learn more about tidy data in vignette(["tidy-data"](https://tidyr.tidyverse.org/articles/tidy-data.html)).
+>
+> `tidyr` package within `tidyverse` helps you create **tidy data**
+>
+> tidyr functions fall into five main categories:
+> 
+> - **Pivotting** which converts between long and wide forms. tidyr 1.0.0 introduces `pivot_longer()` and `pivot_wider()`, replacing the older `spread()` and `gather()` functions.  
+> - **Rectangling**, which turns deeply nested lists (as from JSON) into tidy tibbles.  
+> - **Nesting** converts grouped data to a form where each group becomes a single row containing a nested data frame, and unnesting does the opposite.  
+> - **Splitting** and **combining** character columns. Use `separate()` and `extract()` to pull a single character column into multiple columns; use `unite()` to combine multiple columns into a single character column.  
+> - **Handling missing values**: Make implicit missing values explicit with `complete()`; make explicit missing values implicit with `drop_na()`; replace missing values with next/previous value with `fill()`, or a known value with `replace_na()`.  
+> See [https://tidyr.tidyverse.org/](https://tidyr.tidyverse.org/) for more info.
+>
+> ### Pivot Longer
+>
+> `pivot_longer()` makes datasets longer by increasing the number of rows and decreasing the number of columns.  
+> `pivot_longer()` is commonly needed to tidy wild-caught datasets as they often optimise for ease of data 
+> entry or ease of comparison rather than ease of analysis.
+> 
+> Here is an example of an untidy dataset:
+>
+> 
+> ~~~
+> relig_income
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+> Error in eval(expr, envir, enclos): object 'relig_income' not found
+> ~~~
+> {: .error}
+>
+> This dataset contains three variables:
+> `religion`, stored in the rows,
+> `income` spread across the column names, and
+> `count` stored in the cell values.
+> 
+> To tidy it we use `pivot_longer()`:
+>
+> 
+> ~~~
+> relig_income %>% pivot_longer(-religion, names_to = "income", values_to = "count")
+> ~~~
+> {: .r}
+> 
+> 
+> 
+> ~~~
+> Error in eval(expr, envir, enclos): object 'relig_income' not found
+> ~~~
+> {: .error}
+> 
+> - The first argument is the dataset to reshape, relig_income.
+> - The second argument describes which columns need to be reshaped. In this case, it’s every column apart from religion.
+> - The names_to gives the name of the variable that will be created from the data stored in the column names, i.e. income.
+> - The values_to gives the name of the variable that will be created from the data stored in the cell value, i.e. count.
+>
+> See [https://tidyr.tidyverse.org/articles/pivot.html](https://tidyr.tidyverse.org/articles/pivot.html) for more info.
+{: .discussion}
+
 
