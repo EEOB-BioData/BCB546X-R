@@ -200,12 +200,12 @@ filter(dvst,`total SNPs` >= 85)
 
 ~~~
 # A tibble: 3 x 17
-     start      end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
-     <int>    <int>        <int>         <int> <dbl>         <int>  <int>
-1  2621001  2622000           93         11337  11.3            13     10
-2 13023001 13024000           88         11784  11.8            11      1
-3 47356001 47357000           87         12505  12.5             9      7
-# ... with 10 more variables: `reference Bases` <int>, Theta <dbl>,
+   start    end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
+   <int>  <int>        <int>         <int> <dbl>         <int>  <int>
+1 2.62e6 2.62e6           93         11337  11.3            13     10
+2 1.30e7 1.30e7           88         11784  11.8            11      1
+3 4.74e7 4.74e7           87         12505  12.5             9      7
+# … with 10 more variables: `reference Bases` <int>, Theta <dbl>,
 #   Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>, Recombination <dbl>,
 #   Divergence <dbl>, Constraint <int>, SNPs <int>, GC.binned <fct>
 ~~~
@@ -224,12 +224,12 @@ filter(dvst, Pi > 16, percent.GC > 80)
 
 ~~~
 # A tibble: 3 x 17
-     start      end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
-     <int>    <int>        <int>         <int> <dbl>         <int>  <int>
-1 63097001 63098000            5           947  2.39             2      1
-2 63188001 63189000            2          1623  3.21             2      0
-3 63189001 63190000            5          1395  1.89             3      2
-# ... with 10 more variables: `reference Bases` <int>, Theta <dbl>,
+   start    end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
+   <int>  <int>        <int>         <int> <dbl>         <int>  <int>
+1 6.31e7 6.31e7            5           947  2.39             2      1
+2 6.32e7 6.32e7            2          1623  3.21             2      0
+3 6.32e7 6.32e7            5          1395  1.89             3      2
+# … with 10 more variables: `reference Bases` <int>, Theta <dbl>,
 #   Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>, Recombination <dbl>,
 #   Divergence <dbl>, Constraint <int>, SNPs <int>, GC.binned <fct>
 ~~~
@@ -260,12 +260,12 @@ assignment in parentheses:
 > 
 > ~~~
 > # A tibble: 3 x 17
->      start      end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
->      <int>    <int>        <int>         <int> <dbl>         <int>  <int>
-> 1 63097001 63098000            5           947  2.39             2      1
-> 2 63188001 63189000            2          1623  3.21             2      0
-> 3 63189001 63190000            5          1395  1.89             3      2
-> # ... with 10 more variables: `reference Bases` <int>, Theta <dbl>,
+>    start    end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
+>    <int>  <int>        <int>         <int> <dbl>         <int>  <int>
+> 1 6.31e7 6.31e7            5           947  2.39             2      1
+> 2 6.32e7 6.32e7            2          1623  3.21             2      0
+> 3 6.32e7 6.32e7            5          1395  1.89             3      2
+> # … with 10 more variables: `reference Bases` <int>, Theta <dbl>,
 > #   Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>, Recombination <dbl>,
 > #   Divergence <dbl>, Constraint <int>, SNPs <int>, GC.binned <fct>
 > ~~~
@@ -459,11 +459,11 @@ mutate(dvst, cent = start >= 25800000 & end <= 29700000)
  7 61001 62000            7          6950  6.95             2      1
  8 62001 63000            1          8834  8.83             1      0
  9 63001 64000            1          9629  9.63             1      0
-10 64001 65000            3          7999  8.00             1      1
-# ... with 59,130 more rows, and 11 more variables: `reference
-#   Bases` <int>, Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>,
-#   percent.GC <dbl>, Recombination <dbl>, Divergence <dbl>,
-#   Constraint <int>, SNPs <int>, GC.binned <fct>, cent <lgl>
+10 64001 65000            3          7999  8                1      1
+# … with 59,130 more rows, and 11 more variables: `reference Bases` <int>,
+#   Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>,
+#   Recombination <dbl>, Divergence <dbl>, Constraint <int>, SNPs <int>,
+#   GC.binned <fct>, cent <lgl>
 ~~~
 {: .output}
 
@@ -489,11 +489,11 @@ dvst
  7 61001 62000            7          6950  6.95             2      1
  8 62001 63000            1          8834  8.83             1      0
  9 63001 64000            1          9629  9.63             1      0
-10 64001 65000            3          7999  8.00             1      1
-# ... with 59,130 more rows, and 10 more variables: `reference
-#   Bases` <int>, Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>,
-#   percent.GC <dbl>, Recombination <dbl>, Divergence <dbl>,
-#   Constraint <int>, SNPs <int>, GC.binned <fct>
+10 64001 65000            3          7999  8                1      1
+# … with 59,130 more rows, and 10 more variables: `reference Bases` <int>,
+#   Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>,
+#   Recombination <dbl>, Divergence <dbl>, Constraint <int>, SNPs <int>,
+#   GC.binned <fct>
 ~~~
 {: .output}
 
@@ -580,11 +580,11 @@ mutate(dvst, diversity = Pi / (10*1000)) # rescale, removing 10x and making per 
  7 61001 62000            7          6950  6.95             2      1
  8 62001 63000            1          8834  8.83             1      0
  9 63001 64000            1          9629  9.63             1      0
-10 64001 65000            3          7999  8.00             1      1
-# ... with 59,130 more rows, and 11 more variables: `reference
-#   Bases` <int>, Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>,
-#   percent.GC <dbl>, Recombination <dbl>, Divergence <dbl>,
-#   Constraint <int>, SNPs <int>, GC.binned <fct>, diversity <dbl>
+10 64001 65000            3          7999  8                1      1
+# … with 59,130 more rows, and 11 more variables: `reference Bases` <int>,
+#   Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>,
+#   Recombination <dbl>, Divergence <dbl>, Constraint <int>, SNPs <int>,
+#   GC.binned <fct>, diversity <dbl>
 ~~~
 {: .output}
 
@@ -616,17 +616,17 @@ transmute(dvst,
 # A tibble: 59,140 x 2
    diversity cent 
        <dbl> <lgl>
- 1  0        F    
- 2  0.00104  F    
- 3  0.000199 F    
- 4  0.000956 F    
- 5  0.000851 F    
- 6  0.000912 F    
- 7  0.000806 F    
- 8  0.000206 F    
- 9  0.000188 F    
-10  0.000541 F    
-# ... with 59,130 more rows
+ 1  0        FALSE
+ 2  0.00104  FALSE
+ 3  0.000199 FALSE
+ 4  0.000956 FALSE
+ 5  0.000851 FALSE
+ 6  0.000912 FALSE
+ 7  0.000806 FALSE
+ 8  0.000206 FALSE
+ 9  0.000188 FALSE
+10  0.000541 FALSE
+# … with 59,130 more rows
 ~~~
 {: .output}
 
@@ -690,23 +690,22 @@ arrange(dvst, cent, percent.GC)
 
 ~~~
 # A tibble: 59,140 x 19
-      start      end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
-      <int>    <int>        <int>         <int> <dbl>         <int>  <int>
- 1 43448001 43449000            5           690  2.66             5      0
- 2 14930001 14931000           19          3620  4.57             7      1
- 3 37777001 37778000            3           615  1.12             3      0
- 4 54885001 54886000            1          2298  3.69             1      0
- 5 54888001 54889000           15          3823  3.87            11      1
- 6 41823001 41824000           15          6950  6.95            10      4
- 7 50530001 50531000           10          7293  7.29             2      2
- 8 39612001 39613000           13          8254  8.25             5      3
- 9 55012001 55013000            7          7028  7.03             7      0
-10 22058001 22059000            4           281  1.20             4      0
-# ... with 59,130 more rows, and 12 more variables: `reference
-#   Bases` <int>, Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>,
-#   percent.GC <dbl>, Recombination <dbl>, Divergence <dbl>,
-#   Constraint <int>, SNPs <int>, GC.binned <fct>, diversity <dbl>,
-#   cent <lgl>
+    start    end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
+    <int>  <int>        <int>         <int> <dbl>         <int>  <int>
+ 1 4.34e7 4.34e7            5           690  2.66             5      0
+ 2 1.49e7 1.49e7           19          3620  4.57             7      1
+ 3 3.78e7 3.78e7            3           615  1.12             3      0
+ 4 5.49e7 5.49e7            1          2298  3.69             1      0
+ 5 5.49e7 5.49e7           15          3823  3.87            11      1
+ 6 4.18e7 4.18e7           15          6950  6.95            10      4
+ 7 5.05e7 5.05e7           10          7293  7.29             2      2
+ 8 3.96e7 3.96e7           13          8254  8.25             5      3
+ 9 5.50e7 5.50e7            7          7028  7.03             7      0
+10 2.21e7 2.21e7            4           281  1.2              4      0
+# … with 59,130 more rows, and 12 more variables: `reference Bases` <int>,
+#   Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>,
+#   Recombination <dbl>, Divergence <dbl>, Constraint <int>, SNPs <int>,
+#   GC.binned <fct>, diversity <dbl>, cent <lgl>
 ~~~
 {: .output}
 
@@ -722,23 +721,22 @@ arrange(dvst, desc(cent), percent.GC)
 
 ~~~
 # A tibble: 59,140 x 19
-      start      end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
-      <int>    <int>        <int>         <int> <dbl>         <int>  <int>
- 1 25869001 25870000           10          7292  7.29             6      2
- 2 29318001 29319000            2          6192  6.19             2      0
- 3 29372001 29373000            5          7422  7.42             3      2
- 4 26174001 26175000            1          7816  7.82             1      0
- 5 26182001 26183000            2          6630  6.63             1      1
- 6 25924001 25925000           30          7127  7.13            15      8
- 7 26155001 26156000            0          9449  9.45             0      0
- 8 25926001 25927000           21          8197  8.20            13      6
- 9 29519001 29520000           15          8135  8.14            13      2
-10 25901001 25902000            9          9126  9.13             5      2
-# ... with 59,130 more rows, and 12 more variables: `reference
-#   Bases` <int>, Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>,
-#   percent.GC <dbl>, Recombination <dbl>, Divergence <dbl>,
-#   Constraint <int>, SNPs <int>, GC.binned <fct>, diversity <dbl>,
-#   cent <lgl>
+    start    end `total SNPs` `total Bases` depth `unique SNPs` dhSNPs
+    <int>  <int>        <int>         <int> <dbl>         <int>  <int>
+ 1 2.59e7 2.59e7           10          7292  7.29             6      2
+ 2 2.93e7 2.93e7            2          6192  6.19             2      0
+ 3 2.94e7 2.94e7            5          7422  7.42             3      2
+ 4 2.62e7 2.62e7            1          7816  7.82             1      0
+ 5 2.62e7 2.62e7            2          6630  6.63             1      1
+ 6 2.59e7 2.59e7           30          7127  7.13            15      8
+ 7 2.62e7 2.62e7            0          9449  9.45             0      0
+ 8 2.59e7 2.59e7           21          8197  8.2             13      6
+ 9 2.95e7 2.95e7           15          8135  8.14            13      2
+10 2.59e7 2.59e7            9          9126  9.13             5      2
+# … with 59,130 more rows, and 12 more variables: `reference Bases` <int>,
+#   Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>,
+#   Recombination <dbl>, Divergence <dbl>, Constraint <int>, SNPs <int>,
+#   GC.binned <fct>, diversity <dbl>, cent <lgl>
 ~~~
 {: .output}
 
@@ -783,7 +781,7 @@ select(dvst, start, end, Divergence)
  8 62001 63000    0.0150 
  9 63001 64000    0.00901
 10 64001 65000    0.00701
-# ... with 59,130 more rows
+# … with 59,130 more rows
 ~~~
 {: .output}
 
@@ -810,8 +808,8 @@ select(dvst, depth:Pi)
  7  6.95             2      1              1000  8.60  8.06
  8  8.83             1      0              1000  4.01  2.06
  9  9.63             1      0              1000  3.37  1.88
-10  8.00             1      1              1000  4.16  5.41
-# ... with 59,130 more rows
+10  8                1      1              1000  4.16  5.41
+# … with 59,130 more rows
 ~~~
 {: .output}
 
@@ -829,17 +827,17 @@ select(dvst, -(start:percent.GC))
 # A tibble: 59,140 x 7
    Recombination Divergence Constraint  SNPs GC.binned   diversity cent 
            <dbl>      <dbl>      <int> <int> <fct>           <dbl> <lgl>
- 1       0.00960    0.00301          0     0 (51.6,68.5]  0        F    
- 2       0.00960    0.0180           0     0 (34.7,51.6]  0.00104  F    
- 3       0.00960    0.00701          0     0 (34.7,51.6]  0.000199 F    
- 4       0.00960    0.0120           0     0 (34.7,51.6]  0.000956 F    
- 5       0.00960    0.0240           0     0 (34.7,51.6]  0.000851 F    
- 6       0.00960    0.0160           0     0 (34.7,51.6]  0.000912 F    
- 7       0.00960    0.0120           0     0 (34.7,51.6]  0.000806 F    
- 8       0.00960    0.0150           0     0 (34.7,51.6]  0.000206 F    
- 9       0.00960    0.00901         58     1 (34.7,51.6]  0.000188 F    
-10       0.00958    0.00701          0     1 (17.7,34.7]  0.000541 F    
-# ... with 59,130 more rows
+ 1       0.00960    0.00301          0     0 (51.6,68.5]  0        FALSE
+ 2       0.00960    0.0180           0     0 (34.7,51.6]  0.00104  FALSE
+ 3       0.00960    0.00701          0     0 (34.7,51.6]  0.000199 FALSE
+ 4       0.00960    0.0120           0     0 (34.7,51.6]  0.000956 FALSE
+ 5       0.00960    0.0240           0     0 (34.7,51.6]  0.000851 FALSE
+ 6       0.00960    0.0160           0     0 (34.7,51.6]  0.000912 FALSE
+ 7       0.00960    0.0120           0     0 (34.7,51.6]  0.000806 FALSE
+ 8       0.00960    0.0150           0     0 (34.7,51.6]  0.000206 FALSE
+ 9       0.00960    0.00901         58     1 (34.7,51.6]  0.000188 FALSE
+10       0.00958    0.00701          0     1 (17.7,34.7]  0.000541 FALSE
+# … with 59,130 more rows
 ~~~
 {: .output}
 
@@ -901,17 +899,17 @@ select(dvst, cent, everything())
 # A tibble: 59,140 x 19
    cent  start   end total.SNPs total.Bases depth unique.SNPs dhSNPs
    <lgl> <int> <int>      <int>       <int> <dbl>       <int>  <int>
- 1 F     55001 56000          0        1894  3.41           0      0
- 2 F     56001 57000          5        6683  6.68           2      2
- 3 F     57001 58000          1        9063  9.06           1      0
- 4 F     58001 59000          7       10256 10.3            3      2
- 5 F     59001 60000          4        8057  8.06           4      0
- 6 F     60001 61000          6        7051  7.05           2      1
- 7 F     61001 62000          7        6950  6.95           2      1
- 8 F     62001 63000          1        8834  8.83           1      0
- 9 F     63001 64000          1        9629  9.63           1      0
-10 F     64001 65000          3        7999  8.00           1      1
-# ... with 59,130 more rows, and 11 more variables: reference.Bases <int>,
+ 1 FALSE 55001 56000          0        1894  3.41           0      0
+ 2 FALSE 56001 57000          5        6683  6.68           2      2
+ 3 FALSE 57001 58000          1        9063  9.06           1      0
+ 4 FALSE 58001 59000          7       10256 10.3            3      2
+ 5 FALSE 59001 60000          4        8057  8.06           4      0
+ 6 FALSE 60001 61000          6        7051  7.05           2      1
+ 7 FALSE 61001 62000          7        6950  6.95           2      1
+ 8 FALSE 62001 63000          1        8834  8.83           1      0
+ 9 FALSE 63001 64000          1        9629  9.63           1      0
+10 FALSE 64001 65000          3        7999  8              1      1
+# … with 59,130 more rows, and 11 more variables: reference.Bases <int>,
 #   Theta <dbl>, Pi <dbl>, Heterozygosity <dbl>, percent.GC <dbl>,
 #   Recombination <dbl>, Divergence <dbl>, Constraint <int>, SNPs <int>,
 #   GC.binned <fct>, diversity <dbl>
@@ -955,8 +953,8 @@ summarise(by_cent, GC = mean(percent.GC, na.rm = TRUE), averageSNPs=mean(total.S
 # A tibble: 2 x 4
   cent     GC averageSNPs allSNPs
   <lgl> <dbl>       <dbl>   <int>
-1 F      44.2        8.87  518743
-2 T      39.7       11.6     7950
+1 FALSE  44.2        8.87  518743
+2 TRUE   39.7       11.6     7950
 ~~~
 {: .output}
 
@@ -977,8 +975,8 @@ summarize(by_GC, depth=mean(depth))
 # A tibble: 2 x 2
   `percent.GC >= 80` depth
   <lgl>              <dbl>
-1 F                   8.18
-2 T                   2.24
+1 FALSE               8.18
+2 TRUE                2.24
 ~~~
 {: .output}
 
@@ -999,8 +997,8 @@ summarize(by_GC, mean_depth=mean(depth), n_rows=n())
 # A tibble: 2 x 3
   `percent.GC >= 80` mean_depth n_rows
   <lgl>                   <dbl>  <int>
-1 F                        8.18  59131
-2 T                        2.24      9
+1 FALSE                    8.18  59131
+2 TRUE                     2.24      9
 ~~~
 {: .output}
 
@@ -1027,8 +1025,8 @@ summarize(by_GC, mean_depth=mean(depth), n_rows=n())
 > > # A tibble: 2 x 4
 > >   cent  nt_diversity   min n_rows
 > >   <lgl>        <dbl> <int>  <int>
-> > 1 F          0.00123     1  58455
-> > 2 T          0.00204     1    685
+> > 1 FALSE      0.00123     1  58455
+> > 2 TRUE       0.00204     1    685
 > > ~~~
 > > {: .output}
 > > Indeed, the centromere does appear to have higher nucleotide diversity than other regions in this data. 
@@ -1087,8 +1085,8 @@ dvst %>%
 # A tibble: 2 x 3
   `GC.percent >= 80` mean_depth n_rows
   <lgl>                   <dbl>  <int>
-1 F                        8.18  59131
-2 T                        2.24      9
+1 FALSE                    8.18  59131
+2 TRUE                     2.24      9
 ~~~
 {: .output}
 
@@ -1167,9 +1165,31 @@ database with all of the same verbs we’ve used here.
 > 
 > 
 > ~~~
-> Error in eval(expr, envir, enclos): object 'relig_income' not found
+> # A tibble: 18 x 11
+>    religion `<$10k` `$10-20k` `$20-30k` `$30-40k` `$40-50k` `$50-75k`
+>    <chr>      <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
+>  1 Agnostic      27        34        60        81        76       137
+>  2 Atheist       12        27        37        52        35        70
+>  3 Buddhist      27        21        30        34        33        58
+>  4 Catholic     418       617       732       670       638      1116
+>  5 Don’t k…      15        14        15        11        10        35
+>  6 Evangel…     575       869      1064       982       881      1486
+>  7 Hindu          1         9         7         9        11        34
+>  8 Histori…     228       244       236       238       197       223
+>  9 Jehovah…      20        27        24        24        21        30
+> 10 Jewish        19        19        25        25        30        95
+> 11 Mainlin…     289       495       619       655       651      1107
+> 12 Mormon        29        40        48        51        56       112
+> 13 Muslim         6         7         9        10         9        23
+> 14 Orthodox      13        17        23        32        32        47
+> 15 Other C…       9         7        11        13        13        14
+> 16 Other F…      20        33        40        46        49        63
+> 17 Other W…       5         2         3         4         2         7
+> 18 Unaffil…     217       299       374       365       341       528
+> # … with 4 more variables: `$75-100k` <dbl>, `$100-150k` <dbl>,
+> #   `>150k` <dbl>, `Don't know/refused` <dbl>
 > ~~~
-> {: .error}
+> {: .output}
 >
 > This dataset contains three variables:
 > `religion`, stored in the rows,
@@ -1187,9 +1207,22 @@ database with all of the same verbs we’ve used here.
 > 
 > 
 > ~~~
-> Error in eval(expr, envir, enclos): object 'relig_income' not found
+> # A tibble: 180 x 3
+>    religion income             count
+>    <chr>    <chr>              <dbl>
+>  1 Agnostic <$10k                 27
+>  2 Agnostic $10-20k               34
+>  3 Agnostic $20-30k               60
+>  4 Agnostic $30-40k               81
+>  5 Agnostic $40-50k               76
+>  6 Agnostic $50-75k              137
+>  7 Agnostic $75-100k             122
+>  8 Agnostic $100-150k            109
+>  9 Agnostic >150k                 84
+> 10 Agnostic Don't know/refused    96
+> # … with 170 more rows
 > ~~~
-> {: .error}
+> {: .output}
 > 
 > - The first argument is the dataset to reshape, relig_income.
 > - The second argument describes which columns need to be reshaped. In this case, it’s every column apart from religion.

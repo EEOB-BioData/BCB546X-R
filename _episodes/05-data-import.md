@@ -242,19 +242,19 @@ challenge
 
 ~~~
 # A tibble: 2,000 x 2
-        x y         
-    <dbl> <date>    
- 1  404   NA        
- 2 4172   NA        
- 3 3004   NA        
- 4  787   NA        
- 5   37.0 NA        
- 6 2332   NA        
- 7 2489   NA        
- 8 1449   NA        
- 9 3665   NA        
-10 3863   NA        
-# ... with 1,990 more rows
+       x y         
+   <dbl> <date>    
+ 1   404 NA        
+ 2  4172 NA        
+ 3  3004 NA        
+ 4   787 NA        
+ 5    37 NA        
+ 6  2332 NA        
+ 7  2489 NA        
+ 8  1449 NA        
+ 9  3665 NA        
+10  3863 NA        
+# … with 1,990 more rows
 ~~~
 {: .output}
 
@@ -293,7 +293,7 @@ cols(
  8  1449 <NA> 
  9  3665 <NA> 
 10  3863 <NA> 
-# ... with 1,990 more rows
+# … with 1,990 more rows
 ~~~
 {: .output}
 
@@ -314,19 +314,19 @@ This makes CSVs a little unreliable for caching interim results---you need to re
     
     ~~~
     # A tibble: 2,000 x 2
-            x y         
-        <dbl> <date>    
-     1  404   NA        
-     2 4172   NA        
-     3 3004   NA        
-     4  787   NA        
-     5   37.0 NA        
-     6 2332   NA        
-     7 2489   NA        
-     8 1449   NA        
-     9 3665   NA        
-    10 3863   NA        
-    # ... with 1,990 more rows
+           x y         
+       <dbl> <date>    
+     1   404 NA        
+     2  4172 NA        
+     3  3004 NA        
+     4   787 NA        
+     5    37 NA        
+     6  2332 NA        
+     7  2489 NA        
+     8  1449 NA        
+     9  3665 NA        
+    10  3863 NA        
+    # … with 1,990 more rows
     ~~~
     {: .output}
   
@@ -707,8 +707,8 @@ guess_encoding(charToRaw(x1))
 # A tibble: 2 x 2
   encoding   confidence
   <chr>           <dbl>
-1 ISO-8859-1      0.460
-2 ISO-8859-9      0.230
+1 ISO-8859-1       0.46
+2 ISO-8859-9       0.23
 ~~~
 {: .output}
 
@@ -725,7 +725,7 @@ guess_encoding(charToRaw(x2))
 # A tibble: 1 x 2
   encoding confidence
   <chr>         <dbl>
-1 KOI8-R        0.420
+1 KOI8-R         0.42
 ~~~
 {: .output}
 
@@ -879,8 +879,8 @@ a multiple of vector length (arg 1)
 
 ~~~
 Warning: 1000 parsing failures.
-row # A tibble: 5 x 5 col     row col   expected               actual             file               expected   <int> <chr> <chr>                  <chr>              <chr>              actual 1  1001 x     no trailing characters .23837975086644292 '/Users/dlavrov/L… file 2  1002 x     no trailing characters .41167997173033655 '/Users/dlavrov/L… row 3  1003 x     no trailing characters .7460716762579978  '/Users/dlavrov/L… col 4  1004 x     no trailing characters .723450553836301   '/Users/dlavrov/L… expected 5  1005 x     no trailing characters .614524137461558   '/Users/dlavrov/L…
-... ................. ... .......................................................................... ........ .......................................................................... ...... .......................................................................... .... .......................................................................... ... .......................................................................... ... .......................................................................... ........ ..........................................................................
+row # A tibble: 5 x 5 col     row col   expected        actual      file                              expected   <int> <chr> <chr>           <chr>       <chr>                             actual 1  1001 x     no trailing ch… .238379750… '/Users/dlavrov/Library/R/3.3/li… file 2  1002 x     no trailing ch… .411679971… '/Users/dlavrov/Library/R/3.3/li… row 3  1003 x     no trailing ch… .746071676… '/Users/dlavrov/Library/R/3.3/li… col 4  1004 x     no trailing ch… .723450553… '/Users/dlavrov/Library/R/3.3/li… expected 5  1005 x     no trailing ch… .614524137… '/Users/dlavrov/Library/R/3.3/li…
+... ................. ... ........................................................................... ........ ........................................................................... ...... ........................................................................... .... ........................................................................... ... ........................................................................... ... ........................................................................... ........ ...........................................................................
 See problems(...) for more details.
 ~~~
 {: .error}
@@ -923,8 +923,8 @@ cols(
 ~~~
 Warning in rbind(names(probs), probs_f): number of columns of result is not a multiple of vector length (arg 1)
 Warning in rbind(names(probs), probs_f): 1000 parsing failures.
-row # A tibble: 5 x 5 col     row col   expected               actual             file               expected   <int> <chr> <chr>                  <chr>              <chr>              actual 1  1001 x     no trailing characters .23837975086644292 '/Users/dlavrov/L… file 2  1002 x     no trailing characters .41167997173033655 '/Users/dlavrov/L… row 3  1003 x     no trailing characters .7460716762579978  '/Users/dlavrov/L… col 4  1004 x     no trailing characters .723450553836301   '/Users/dlavrov/L… expected 5  1005 x     no trailing characters .614524137461558   '/Users/dlavrov/L…
-... ................. ... .......................................................................... ........ .......................................................................... ...... .......................................................................... .... .......................................................................... ... .......................................................................... ... .......................................................................... ........ ..........................................................................
+row # A tibble: 5 x 5 col     row col   expected        actual      file                              expected   <int> <chr> <chr>           <chr>       <chr>                             actual 1  1001 x     no trailing ch… .238379750… '/Users/dlavrov/Library/R/3.3/li… file 2  1002 x     no trailing ch… .411679971… '/Users/dlavrov/Library/R/3.3/li… row 3  1003 x     no trailing ch… .746071676… '/Users/dlavrov/Library/R/3.3/li… col 4  1004 x     no trailing ch… .723450553… '/Users/dlavrov/Library/R/3.3/li… expected 5  1005 x     no trailing ch… .614524137… '/Users/dlavrov/Library/R/3.3/li…
+... ................. ... ........................................................................... ........ ........................................................................... ...... ........................................................................... .... ........................................................................... ... ........................................................................... ... ........................................................................... ........ ...........................................................................
 See problems(...) for more details.
 ~~~
 {: .error}
@@ -945,19 +945,19 @@ problems(challenge)
 
 ~~~
 # A tibble: 1,000 x 5
-     row col   expected               actual             file             
-   <int> <chr> <chr>                  <chr>              <chr>            
- 1  1001 x     no trailing characters .23837975086644292 '/Users/dlavrov/…
- 2  1002 x     no trailing characters .41167997173033655 '/Users/dlavrov/…
- 3  1003 x     no trailing characters .7460716762579978  '/Users/dlavrov/…
- 4  1004 x     no trailing characters .723450553836301   '/Users/dlavrov/…
- 5  1005 x     no trailing characters .614524137461558   '/Users/dlavrov/…
- 6  1006 x     no trailing characters .473980569280684   '/Users/dlavrov/…
- 7  1007 x     no trailing characters .5784610391128808  '/Users/dlavrov/…
- 8  1008 x     no trailing characters .2415937229525298  '/Users/dlavrov/…
- 9  1009 x     no trailing characters .11437866208143532 '/Users/dlavrov/…
-10  1010 x     no trailing characters .2983446326106787  '/Users/dlavrov/…
-# ... with 990 more rows
+     row col   expected        actual      file                            
+   <int> <chr> <chr>           <chr>       <chr>                           
+ 1  1001 x     no trailing ch… .238379750… '/Users/dlavrov/Library/R/3.3/l…
+ 2  1002 x     no trailing ch… .411679971… '/Users/dlavrov/Library/R/3.3/l…
+ 3  1003 x     no trailing ch… .746071676… '/Users/dlavrov/Library/R/3.3/l…
+ 4  1004 x     no trailing ch… .723450553… '/Users/dlavrov/Library/R/3.3/l…
+ 5  1005 x     no trailing ch… .614524137… '/Users/dlavrov/Library/R/3.3/l…
+ 6  1006 x     no trailing ch… .473980569… '/Users/dlavrov/Library/R/3.3/l…
+ 7  1007 x     no trailing ch… .578461039… '/Users/dlavrov/Library/R/3.3/l…
+ 8  1008 x     no trailing ch… .241593722… '/Users/dlavrov/Library/R/3.3/l…
+ 9  1009 x     no trailing ch… .114378662… '/Users/dlavrov/Library/R/3.3/l…
+10  1010 x     no trailing ch… .298344632… '/Users/dlavrov/Library/R/3.3/l…
+# … with 990 more rows
 ~~~
 {: .output}
 

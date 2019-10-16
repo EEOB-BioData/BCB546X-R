@@ -516,7 +516,7 @@ select(dvst, GC.binned)
  8 (34.7,51.6]
  9 (34.7,51.6]
 10 (17.7,34.7]
-# ... with 59,130 more rows
+# … with 59,130 more rows
 ~~~
 {: .output}
 
@@ -685,15 +685,15 @@ head(mtfs)
 
 ~~~
 # A tibble: 6 x 9
-  chr   motif_start motif_end  dist recomb_start recomb_end   recom motif 
-  <chr>       <int>     <int> <dbl>        <int>      <int>   <dbl> <chr> 
-1 chrX     35471312  35471325 39323     35430651   35433340 0.00150 CCTCC…
-2 chrX     35471312  35471325 36977     35433339   35435344 0.00150 CCTCC…
-3 chrX     35471312  35471325 34798     35435343   35437699 0.00150 CCTCC…
-4 chrX     35471312  35471325 31850     35437698   35441240 0.00150 CCTCC…
-5 chrX     35471312  35471325 27463     35441239   35446472 0.00150 CCTCC…
-6 chrX     35471312  35471325 24834     35446471   35446498 0.00160 CCTCC…
-# ... with 1 more variable: pos <chr>
+  chr   motif_start motif_end   dist recomb_start recomb_end  recom motif
+  <chr>       <int>     <int>  <dbl>        <int>      <int>  <dbl> <chr>
+1 chrX     35471312  35471325 39323      35430651   35433340 0.0015 CCTC…
+2 chrX     35471312  35471325 36977      35433339   35435344 0.0015 CCTC…
+3 chrX     35471312  35471325 34798.     35435343   35437699 0.0015 CCTC…
+4 chrX     35471312  35471325 31850.     35437698   35441240 0.0015 CCTC…
+5 chrX     35471312  35471325 27463      35441239   35446472 0.0015 CCTC…
+6 chrX     35471312  35471325 24834      35446471   35446498 0.0016 CCTC…
+# … with 1 more variable: pos <chr>
 ~~~
 {: .output}
 
@@ -848,7 +848,7 @@ rpts
  8 chr12  44799399  44799664 L2       44799602
  9 chr12  71407097  71407379 L2       71407292
 10 chr12 102646349 102646646 L2      102646586
-# ... with 307 more rows
+# … with 307 more rows
 ~~~
 {: .output}
 
