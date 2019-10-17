@@ -43,10 +43,17 @@ send_message(test_email)
 
 ```{r}
 library(tidyverse)
-class_list <- read_csv("~/Downloads/SPRING2019EEOB_563.CSV") %>% select(`First Name`,`ISU EMAIL`)
-#View(class_list)
+class_list <- read_csv("~/Downloads/FALL__2019EEOB_546X_1.CSV") %>% select(`First Name`,`ISU EMAIL`)
+View(class_list)
+break()
+#### Manually remove students who audit or don't come to class
+class_list <- class_list[-c(18, 29), ]
+#### Fix the name 
+class_list[1,1] <- "Mahule"
+#### End of manual fixes
 class_list[3] <- sample(x=class_list[[2]],size=nrow(class_list), replace = FALSE)
 class_list[4] <- sample(x=class_list[[2]],size=nrow(class_list), replace = FALSE)
+
 same_name = TRUE
 while (same_name) {
   for (i in 1:nrow(class_list)) {
@@ -62,7 +69,6 @@ while (same_name) {
   }
 }
 View(class_list)
-
 ```
 
 ### Sending emails
@@ -107,14 +113,14 @@ You can add members to specific projects from Google Developers Console, allowin
 suppressPackageStartupMessages(library(gmailr))
 getwd()
 ## edit line below to reflect YOUR json credential filename
-use_secret_file("client_secret.json")
+use_secret_file("~/client_secret.json")
 for (i in 1:nrow(class_list)) {
   recepient <- as.character(class_list[i,2])
   
   ###### MESSAGE STARTS
   text <- paste0("Dear ", class_list[i,1], ",
 
-Please send a link to your final project GitHub repository to ",class_list[i,3]," and ", class_list[i,4]," for a peer review by 11:59pm on 4/18!  Please  remember that it is your responsibility to submit your ms. and return your reviews on time. 
+Please send a link to your R assignment's GitHub repository to ",class_list[i,3]," and ", class_list[i,4]," for a peer review by 1:00 pm on 10/18!  Please  remember that it is your responsibility to submit your link and to return your reviews on time. 
 
 Your friendly R script
 :)",collapse = NULL)
